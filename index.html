@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>فرم ثبت ملک املاک معین رامسر</title>
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Vazir', sans-serif;
+      direction: rtl;
+      text-align: center;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    .header {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .header h1 {
+      margin: 0;
+    }
+
+    form {
+      margin: 20px auto;
+      width: 90%;
+      max-width: 600px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .form-row.three-columns > div {
+      flex: 1;
+    }
+
+    .form-row > div {
+      flex: 1;
+    }
+
+    input, select, button, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+      box-sizing: border-box;
+      font-family: 'Vazir', sans-serif;
+    }
+
+    input.error-field, select.error-field, textarea.error-field {
+      border: 2px solid red;
+      background-color: rgba(255, 0, 0, 0.05);
+    }
+
+    button {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-top: 20px;
+      padding: 12px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .error {
+      color: red;
+      font-size: 14px;
+      margin-top: 5px;
+      margin-bottom: 10px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      text-align: right;
+    }
+
+    .section-title {
+      background-color: #f0f0f0;
+      padding: 10px;
+      margin: 20px 0 15px 0;
+      border-radius: 5px;
+      font-weight: bold;
+      text-align: right;
+    }
+
+    .radio-group {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .radio-group label {
+      display: inline-flex;
+      align-items: center;
+      margin: 0 10px;
+      cursor: pointer;
+    }
+
+    .radio-group input[type="radio"] {
+      width: auto;
+      margin-left: 5px;
+    }
+
+    .checkbox-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 20px;
+      justify-content: center;
+    }
+
+    .checkbox-container div {
+      flex: 1 1 30%;
+      min-width: 150px;
+      margin-bottom: 5px;
+      text-align: center;
+    }
+
+    .checkbox-container input[type="checkbox"] {
+      width: auto;
+      margin-left: 5px;
+      vertical-align: middle;
+    }
+
+    .checkbox-container label {
+      display: inline;
+      vertical-align: middle;
+      text-align: center;
+    }
+
+    .horizontal-options {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      margin: 15px 0;
+      flex-wrap: wrap;
+    }
+
+    .horizontal-options div {
+      display: flex;
+      align-items: center;
+    }
+
+    .horizontal-options input[type="checkbox"], .horizontal-options input[type="radio"] {
+      width: auto;
+      margin-left: 5px;
+      vertical-align: middle;
+    }
+
+    .horizontal-options label {
+      display: inline;
+      vertical-align: middle;
+    }
+
+    .horizontal-options input[type="text"] {
+      width: 120px;
+    }
+
+    .image-preview {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .image-preview img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 5px;
+    }
+
+    .upload-btn-wrapper {
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+      margin: 10px 0;
+      width: fit-content;
+      max-width: 100%;
+    }
+
+    .upload-btn {
+      border: 2px solid #ccc;
+      color: #666;
+      background-color: white;
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 16px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .upload-btn-wrapper input[type=file] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+
+    .short-field {
+      width: 150px !important;
+      margin: 0 auto;
+    }
+
+    .amenities-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .amenity-item {
+      display: flex;
+      align-items: center;
+      margin: 5px;
+    }
+
+    .amenity-item input[type="checkbox"] {
+      margin-left: 5px;
+    }
+    
+    .two-column-grid {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 10px 0;
+      flex-wrap: wrap;
+    }
+    
+    .two-column-grid div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .two-column-grid input[type="checkbox"] {
+      margin-left: 3px;
+    }
+    
+    .important-field {
+      border: 2px solid red;
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 5px;
+    }
+    
+    .important-field label {
+      color: red;
+      font-weight: bold;
+    }
+    
+    /* Hamburger Menu Styles */
+    .hamburger-menu {
+      position: absolute;
+      top: 50%;
+      left: 20px;
+      transform: translateY(-50%);
+      font-size: 24px;
+      cursor: pointer;
+      z-index: 100;
+    }
+    
+    .menu-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 200;
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .menu-content {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 500px;
+      position: relative;
+    }
+    
+    .menu-close {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    
+    .menu-options {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0;
+    }
+    
+    .menu-options li {
+      margin: 15px 0;
+      padding: 10px;
+      background-color: #f0f0f0;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    
+    .menu-options li a {
+      text-decoration: none;
+      color: #333;
+      display: block;
+    }
+    
+    /* Button styles */
+    .button-container {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+    
+    .submit-btn, .reset-btn {
+      width: 48%;
+      padding: 12px;
+    }
+    
+    .submit-btn {
+      background-color: #007BFF;
+    }
+    
+    .reset-btn {
+      background-color: #6c757d;
+    }
+
+    /* Instagram gradient button */
+    .instagram-btn {
+      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+      color: white;
+    }
+
+    /* Telegram button */
+    .telegram-btn {
+      background-color: #0088CC;
+      color: white;
+    }
+
+    .contact-btn {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .location-btn {
+      background-color: #fd7e14;
+      color: white;
+    }
+
+    .full-width {
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .checkbox-label {
+      margin-right: 3px;
+    }
+    
+    .inline-radio {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    
+    .inline-radio label {
+      margin: 0 3px 0 10px;
+    }
+
+    /* Success Message Overlay */
+    .success-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 300;
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .success-content {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    .success-content h2 {
+      color: #28a745;
+      margin-bottom: 20px;
+    }
+
+    .success-content p {
+      font-size: 18px;
+      margin-bottom: 25px;
+    }
+
+    .success-content .small-text {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .close-btn {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-family: 'Vazir', sans-serif;
+      font-size: 16px;
+    }
+
+    /* Custom Confirm Dialog */
+    .confirm-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 300;
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .confirm-content {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 400px;
+      text-align: center;
+      font-family: 'Vazir', sans-serif;
+    }
+
+    .confirm-content p {
+      font-size: 18px;
+      margin-bottom: 25px;
+    }
+
+    .confirm-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .confirm-buttons button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-family: 'Vazir', sans-serif;
+      font-size: 16px;
+      margin-top: 0;
+    }
+
+    .confirm-yes {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    .confirm-no {
+      background-color: #6c757d;
+      color: white;
+    }
+
+    .enclosed-field {
+      display: flex;
+      align-items: center;
+    }
+
+    .enclosed-field label {
+      margin-left: 10px;
+      margin-bottom: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <!-- منوی همبرگری -->
+    <div class="hamburger-menu" id="hamburgerMenu">
+      <i class="fas fa-bars"></i>
+    </div>
+    
+    <h1>فرم ثبت ملک املاک معین رامسر</h1>
+  </div>
+  
+  <!-- منوی همبرگری - اورلی -->
+  <div class="menu-overlay" id="menuOverlay">
+    <div class="menu-content">
+      <div class="menu-close" id="menuClose">
+        <i class="fas fa-times"></i>
+      </div>
+      <h2>منوی املاک معین رامسر</h2>
+      <ul class="menu-options">
+        <li class="contact-btn">
+          <a href="tel:+989113930981"><i class="fas fa-phone"></i> تماس با ما: ۰۹۱۱۳۹۳۰۹۸۱</a>
+        </li>
+        <li class="contact-btn">
+          <a href="tel:+989112903932"><i class="fas fa-phone"></i> تماس با ما: ۰۹۱۱۲۹۰۳۹۳۲</a>
+        </li>
+        <li class="location-btn">
+          <a href="https://maps.app.goo.gl/NWXkgHLXBvZQnuKi8" target="_blank"><i class="fas fa-map-marker-alt"></i> لوکیشن دفتر</a>
+        </li>
+        <li class="instagram-btn">
+          <a href="https://www.instagram.com/amlak.moein/" target="_blank"><i class="fab fa-instagram"></i> اینستاگرام ما</a>
+        </li>
+        <li class="telegram-btn">
+          <a href="https://t.me/amlakmoein4" target="_blank"><i class="fab fa-telegram"></i> کانال تلگرام ما</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  
+  <!-- پیام موفقیت آمیز بودن ارسال فرم -->
+  <div class="success-overlay" id="successOverlay">
+    <div class="success-content">
+      <h2>اطلاعات با موفقیت ثبت شد</h2>
+      <p>مرسی از صبوری شما</p>
+      <p class="small-text">املاک معین رامسر</p>
+      <button class="close-btn" id="closeSuccessBtn">بستن</button>
+    </div>
+  </div>
+
+  <!-- دیالوگ تأیید برای پاک کردن فرم -->
+  <div class="confirm-overlay" id="confirmOverlay">
+    <div class="confirm-content">
+      <p>مطمئنید که می‌خواهید پاک کنید؟</p>
+      <div class="confirm-buttons">
+        <button class="confirm-yes" id="confirmYesBtn">بله</button>
+        <button class="confirm-no" id="confirmNoBtn">نه، پاک نکن</button>
+      </div>
+    </div>
+  </div>
+  
+  <form id="propertyForm">
+    <!-- ردیف اول: نام و نام خانوادگی -->
+    <div class="form-row">
+      <div>
+        <label for="firstName">نام <span style="color: red;">*</span></label>
+        <input type="text" id="firstName" required>
+        <p class="error hidden" id="firstNameError">لطفاً نام خود را فقط به زبان فارسی وارد کنید.</p>
+      </div>
+      <div>
+        <label for="lastName">نام خانوادگی <span style="color: red;">*</span></label>
+        <input type="text" id="lastName" required>
+        <p class="error hidden" id="lastNameError">لطفاً نام خانوادگی خود را فقط به زبان فارسی وارد کنید.</p>
+      </div>
+    </div>
+
+    <!-- ردیف دوم: شماره تماس و شماره تماس دیگر -->
+    <div class="form-row">
+      <div>
+        <label for="phone">شماره تماس <span style="color: red;">*</span></label>
+        <input type="text" id="phone" required>
+        <p class="error hidden" id="phoneError">شماره تماس باید ۱۱ رقم باشد.</p>
+      </div>
+      <div>
+        <label for="altPhone">شماره تماس دیگر یا تلفن ثابت</label>
+        <input type="text" id="altPhone">
+        <p class="error hidden" id="altPhoneError">لطفاً فقط عدد وارد کنید.</p>
+      </div>
+    </div>
+
+    <!-- نوع ملک -->
+    <div class="section-title">نوع ملک <span style="color: red;">*</span></div>
+    <div class="radio-group">
+      <label>
+        <input type="radio" name="propertyType" value="آپارتمان" id="apartment"> آپارتمان
+      </label>
+      <label>
+        <input type="radio" name="propertyType" value="ویلا" id="villa"> ویلا
+      </label>
+      <label>
+        <input type="radio" name="propertyType" value="زمین" id="land"> زمین
+      </label>
+      <label>
+        <input type="radio" name="propertyType" value="تجاری" id="commercial"> تجاری
+      </label>
+      <label>
+        <input type="radio" name="propertyType" value="پیش‌فروش" id="presale"> پیش‌فروش
+      </label>
+      <label>
+        <input type="radio" name="propertyType" value="کلنگی" id="old"> کلنگی
+      </label>
+    </div>
+    <p class="error hidden" id="typeError">لطفاً یک نوع ملک را انتخاب کنید.</p>
+    
+    <!-- نوع پیش فروش - در ابتدا مخفی است -->
+    <div id="presaleTypeSection" class="hidden">
+      <div class="section-title">نوع پیش فروش</div>
+      <div class="horizontal-options">
+        <div>
+          <input type="radio" id="presale-apartment" name="presaleType" value="آپارتمان">
+          <label for="presale-apartment">آپارتمان</label>
+        </div>
+        <div>
+          <input type="radio" id="presale-villa" name="presaleType" value="ویلا">
+          <label for="presale-villa">ویلا</label>
+        </div>
+      </div>
+      
+      <div class="important-field">
+        <label for="projectProgress">پروژه در حال حاضر در چه مرحله‌ای هست؟ <span style="color: red;">*</span></label>
+        <textarea id="projectProgress" rows="3" required></textarea>
+      </div>
+    </div>
+
+    <!-- بخش اطلاعات آپارتمان - در ابتدا مخفی است -->
+    <div id="apartmentDetails" class="hidden">
+      <!-- شهری یا روستایی -->
+      <div class="section-title">شهری یا روستایی؟</div>
+      <div class="horizontal-options">
+        <div>
+          <input type="radio" id="urban-apartment" name="location-apartment" value="شهری">
+          <label for="urban-apartment">شهری</label>
+        </div>
+        <div>
+          <input type="radio" id="rural-apartment" name="location-apartment" value="روستایی">
+          <label for="rural-apartment">روستایی</label>
+        </div>
+        <div>
+          <label for="otherLocation-apartment">سایر:</label>
+          <input type="text" id="otherLocation-apartment" class="short-field">
+        </div>
+      </div>
+
+      <!-- متراژ زمین و متراژ واحد -->
+      <div class="form-row">
+        <div>
+          <label for="landArea-apartment">متراژ زمین <span style="color: red;">*</span></label>
+          <input type="text" id="landArea-apartment" required>
+        </div>
+        <div>
+          <label for="unitArea-apartment">متراژ واحد <span style="color: red;">*</span></label>
+          <input type="text" id="unitArea-apartment" required>
+        </div>
+      </div>
+
+      <!-- تعداد اتاق‌ها و سال ساخت -->
+      <div class="form-row">
+        <div>
+          <label for="roomCount-apartment">تعداد اتاق‌ها <span style="color: red;">*</span></label>
+          <input type="number" id="roomCount-apartment" required>
+        </div>
+        <div>
+          <label for="buildYear-apartment">سال ساخت <span style="color: red;">*</span></label>
+          <input type="number" id="buildYear-apartment" required>
+        </div>
+      </div>
+
+      <!-- مشخصات آشپزخانه -->
+      <div class="section-title">مشخصات آشپزخانه</div>
+      <div class="checkbox-container">
+        <div>
+          <input type="checkbox" id="metalCabinet" name="kitchen-apartment" value="کابینت فلزی">
+          <label for="metalCabinet">کابینت فلزی</label>
+        </div>
+        <div>
+          <input type="checkbox" id="mdfKitchen" name="kitchen-apartment" value="کابینت MDF">
+          <label for="mdfKitchen">کابینت MDF</label>
+        </div>
+        <div>
+          <input type="checkbox" id="highgloss" name="kitchen-apartment" value="هایگلس">
+          <label for="highgloss">هایگلس</label>
+        </div>
+        <div>
+          <input type="checkbox" id="membrane" name="kitchen-apartment" value="ممبران">
+          <label for="membrane">ممبران</label>
+        </div>
+        <div>
+          <input type="checkbox" id="stove" name="kitchen-apartment" value="اجاق گاز">
+          <label for="stove">اجاق گاز</label>
+        </div>
+        <div>
+          <input type="checkbox" id="hood" name="kitchen-apartment" value="هود">
+          <label for="hood">هود</label>
+        </div>
+        <div>
+          <input type="checkbox" id="sink" name="kitchen-apartment" value="سینک">
+          <label for="sink">سینک</label>
+        </div>
+        <div>
+          <input type="checkbox" id="oven" name="kitchen-apartment" value="فر">
+          <label for="oven">فر</label>
+        </div>
+        <div>
+          <input type="checkbox" id="matbakh" name="kitchen-apartment" value="مطبخ">
+          <label for="matbakh">مطبخ</label>
+        </div>
+        <div>
+          <input type="checkbox" id="laundry" name="kitchen-apartment" value="لاندری">
+          <label for="laundry">لاندری</label>
+        </div>
+        <div>
+          <input type="checkbox" id="fullFurnish" name="kitchen-apartment" value="فول فرنیش">
+          <label for="fullFurnish">فول فرنیش</label>
+        </div>
+        <div>
+          <input type="checkbox" id="openKitchen" name="kitchen-apartment" value="اپن">
+          <label for="openKitchen">اپن</label>
+        </div>
+      </div>
+      <div>
+        <label for="otherKitchen-apartment">سایر موارد آشپزخانه:</label>
+        <input type="text" id="otherKitchen-apartment" class="full-width">
+      </div>
+
+      <!-- تاسیسات -->
+      <div class="section-title">تاسیسات</div>
+      <div class="horizontal-options">
+        <div>
+          <input type="checkbox" id="package-apartment" name="facilities-apartment" value="پکیج">
+          <label for="package-apartment">پکیج</label>
+        </div>
+        <div>
+          <input type="checkbox" id="gas-apartment" name="facilities-apartment" value="گاز">
+          <label for="gas-apartment">گاز</label>
+        </div>
+        <div>
+          <label for="otherFacilities-apartment">سایر:</label>
+          <input type="text" id="otherFacilities-apartment" class="short-field">
+        </div>
+      </div>
+
+      <!-- سایر امکانات -->
+      <div class="section-title">سایر امکانات</div>
+      <div class="checkbox-container">
+        <div>
+          <input type="checkbox" id="cctv-apartment" name="amenities-apartment" value="دوربین مداربسته">
+          <label for="cctv-apartment">دوربین مداربسته</label>
+        </div>
+        <div>
+          <input type="checkbox" id="balcony-apartment" name="amenities-apartment" value="بالکن">
+          <label for="balcony-apartment">بالکن</label>
+        </div>
+        <div>
+          <input type="checkbox" id="terrace-apartment" name="amenities-apartment" value="تراس">
+          <label for="terrace-apartment">تراس</label>
+        </div>
+        <div>
+          <input type="checkbox" id="closet-apartment" name="amenities-apartment" value="کمد دیواری">
+          <label for="closet-apartment">کمد دیواری</label>
+        </div>
+        <div>
+          <input type="checkbox" id="bbq-apartment" name="amenities-apartment" value="باربیکیو">
+          <label for="bbq-apartment">باربیکیو</label>
+        </div>
+        <div>
+          <input type="checkbox" id="masterBedroom-apartment" name="amenities-apartment" value="خواب مستر">
+          <label for="masterBedroom-apartment">خواب مستر</label>
+        </div>
+      </div>
+      <div>
+        <label for="otherAmenities-apartment">سایر امکانات:</label>
+        <input type="text" id="otherAmenities-apartment" class="full-width">
+      </div>
+
+      <!-- مشاعات -->
+      <div class="section-title">مشاعات</div>
+      <div class="checkbox-container">
+        <div>
+          <input type="checkbox" id="lobby" name="commonAreas-apartment" value="لابی">
+          <label for="lobby">لابی</label>
+        </div>
+        <div>
+          <input type="checkbox" id="pool" name="commonAreas-apartment" value="استخر">
+          <label for="pool">استخر</label>
+        </div>
+        <div>
+          <input type="checkbox" id="jacuzzi" name="commonAreas-apartment" value="جکوزی">
+          <label for="jacuzzi">جکوزی</label>
+        </div>
+        <div>
+          <input type="checkbox" id="sauna" name="commonAreas-apartment" value="سونا">
+          <label for="sauna">سونا</label>
+        </div>
+        <div>
+          <input type="checkbox" id="gym" name="commonAreas-apartment" value="سالن ورزشی">
+          <label for="gym">سالن ورزشی</label>
+        </div>
+        <div>
+          <input type="checkbox" id="carwash" name="commonAreas-apartment" value="کارواش">
+          <label for="carwash">کارواش</label>
+        </div>
+        <div>
+          <input type="checkbox" id="roofGarden" name="commonAreas-apartment" value="روف گاردن">
+          <label for="roofGarden">روف گاردن</label>
+        </div>
+        <div>
+          <input type="checkbox" id="parking" name="commonAreas-apartment" value="پارکینگ">
+          <label for="parking">پارکینگ</label>
+        </div>
+        <div>
+          <input type="checkbox" id="storage" name="commonAreas-apartment" value="انباری">
+          <label for="storage">انباری</label>
+        </div>
+        <div>
+          <input type="checkbox" id="elevator" name="commonAreas-apartment" value="آسانسور">
+          <label for="elevator">آسانسور</label>
+        </div>
+      </div>
+      <div>
+        <label for="otherCommonAreas-apartment">سایر مشاعات:</label>
+        <input type="text" id="otherCommonAreas-apartment" class="full-width">
+      </div>
+
+      <!-- سایر توضیحات و امکانات -->
+      <div class="section-title">سایر توضیحات و امکانات</div>
+      <textarea id="otherDetails-apartment" rows="4"></textarea>
+    </div>
+
+    <!-- بخش اطلاعات ویلا - در ابتدا مخفی است -->
+    <div id="villaDetails" class="hidden">
+      <!-- شهری یا روستایی -->
+      <div class="section-title">شهری یا روستایی؟</div>
+      <div class="horizontal-options">
+        <div>
+          <input type="radio" id="urban-villa" name="location-villa" value="شهری">
+          <label for="urban-villa">شهری</label>
+        </div>
+        <div>
+          <input type="radio" id="rural-villa" name="location-villa" value="روستایی">
+          <label for="rural-villa">روستایی</label>
+        </div>
+        <div>
+          <label for="otherLocation-villa">سایر:</label>
+          <input type="text" id="otherLocation-villa" class="short-field">
+        </div>
+      </div>
+
+      <!-- متراژ زمین و متراژ بنا -->
+      <div class="form-row">
+        <div>
+          <label for="landArea-villa">متراژ زمین <span style="color: red;">*</span></label>
+          <input type="text" id="landArea-villa" required>
+        </div>
+        <div>
+          <label for="buildingArea-villa">متراژ بنا <span style="color: red;">*</span></label>
+          <input type="text" id="buildingArea-villa" required>
+        </div>
+      </div>
+
+      <!-- تعداد اتاق‌ها و سال ساخت -->
+      <div class="form-row">
+        <div>
+          <label for="roomCount-villa">تعداد اتاق‌ها <span style="color: red;">*</span></label>
+          <input type="number" id="roomCount-villa" required>
+        </div>
+        <div>
+          <label for="buildYear-villa">سال ساخت <span style="color: red;">*</span></label>
+          <input type="number" id="buildYear-villa" required>
+        </div>
+      </div>
+
+      <!-- مشخصات آشپزخانه -->
+      <div class="section-title">مشخصات آشپزخانه</div>
+      <div class="checkbox-container">
+        <div>
+          <input type="checkbox" id="metalCabinet-villa" name="kitchen-villa" value="کابینت فلزی">
+          <label for="metalCabinet-villa">کابینت فلزی</label>
+        </div>
+        <div>
+          <input type="checkbox" id="mdfKitchen-villa" name="kitchen-villa" value="کابینت MDF">
+          <label for="mdfKitchen-villa">کابینت MDF</label>
+        </div>
+        <div>
+          <input type="checkbox" id="highgloss-villa" name="kitchen-villa" value="هایگلس">
+          <label for="highgloss-villa">هایگلس</label>
+        </div>
+        <div>
+          <input type="checkbox" id="membrane-villa" name="kitchen-villa" value="ممبران">
+          <label for="membrane-villa">ممبران</label>
+        </div>
+        <div>
+          <input type="checkbox" id="stove-villa" name="kitchen-villa" value="اجاق گاز">
+          <label for="stove-villa">اجاق گاز</label>
+        </div>
+        <div>
+          <input type="checkbox" id="hood-villa" name="kitchen-villa" value="هود">
+          <label for="hood-villa">هود</label>
+        </div>
+        <div>
+          <input type="checkbox" id="sink-villa" name="kitchen-villa" value="سینک">
+          <label for="sink-villa">سینک</label>
+        </div>
+        <div>
+          <input type="checkbox" id="oven-villa" name="kitchen-villa" value="فر">
+          <label for="oven-villa">فر</label>
+        </div>
+        <div>
+          <input type="checkbox" id="matbakh-villa" name="kitchen-villa" value="مطبخ">
+          <label for="matbakh-villa">مطبخ</label>
+        </div>
+        <div>
+          <input type="checkbox" id="laundry-villa" name="kitchen-villa" value="لاندری">
+          <label for="laundry-villa">لاندری</label>
+        </div>
+        <div>
+          <input type="checkbox" id="fullFurnish-villa" name="kitchen-villa" value="فول فرنیش">
+          <label for="fullFurnish-villa">فول فرنیش</label>
+        </div>
+        <div>
+          <input type="checkbox" id="openKitchen-villa" name="kitchen-villa" value="اپن">
+          <label for="openKitchen-villa">اپن</label>
+        </div>
+      </div>
+      <div>
+        <label for="otherKitchen-villa">سایر موارد آشپزخانه:</label>
+        <input type="text" id="otherKitchen-villa" class="full-width">
+      </div>
+
+      <!-- تاسیسات -->
+      <div class="section-title">تاسیسات</div>
+      <div class="horizontal-options">
+        <div>
+          <input type="checkbox" id="package-villa" name="facilities-villa" value="پکیج">
+          <label for="package-villa">پکیج</label>
+        </div>
+        <div>
+          <input type="checkbox" id="gas-villa" name="facilities-villa" value="گاز">
+          <label for="gas-villa">گاز</label>
+        </div>
+        <div>
+          <label for="otherFacilities-villa">سایر:</label>
+          <input type="text" id="otherFacilities-villa" class="short-field">
+        </div>
+      </div>
+
+      <!-- امکانات ویلا -->
+      <div class="section-title">امکانات ویلا</div>
+      <div class="checkbox-container">
+        <div>
+          <input type="checkbox" id="cctv-villa" name="amenities-villa" value="دوربین مداربسته">
+          <label for="cctv-villa">دوربین مداربسته</label>
+        </div>
+        <div>
+          <input type="checkbox" id="balcony-villa" name="amenities-villa" value="بالکن">
+          <label for="balcony-villa">بالکن</label>
+        </div>
+        <div>
+          <input type="checkbox" id="terrace-villa" name="amenities-villa" value="تراس">
+          <label for="terrace-villa">تراس</label>
+        </div>
+        <div>
+          <input type="checkbox" id="closet-villa" name="amenities-villa" value="کمد دیواری">
+          <label for="closet-villa">کمد دیواری</label>
+        </div>
+        <div>
+          <input type="checkbox" id="bbq-villa" name="amenities-villa" value="باربیکیو">
+          <label for="bbq-villa">باربیکیو</label>
+        </div>
+        <div>
+          <input type="checkbox" id="pool-villa" name="amenities-villa" value="استخر">
+          <label for="pool-villa">استخر</label>
+        </div>
+        <div>
+          <input type="checkbox" id="sauna-villa" name="amenities-villa" value="سونا">
+          <label for="sauna-villa">سونا</label>
+        </div>
+        <div>
+          <input type="checkbox" id="jacuzzi-villa" name="amenities-villa" value="جکوزی">
+          <label for="jacuzzi-villa">جکوزی</label>
+        </div>
+        <div>
+          <input type="checkbox" id="masterBedroom-villa" name="amenities-villa" value="خواب مستر">
+          <label for="masterBedroom-villa">خواب مستر</label>
+        </div>
+      </div>
+      <div>
+        <label for="otherAmenities-villa">سایر امکانات:</label>
+        <input type="text" id="otherAmenities-villa" class="full-width">
+      </div>
+
+      <!-- سایر توضیحات و امکانات -->
+      <div class="section-title">سایر توضیحات و امکانات</div>
+      <textarea id="otherDetails-villa" rows="4"></textarea>
+    </div>
+
+    <!-- بخش اطلاعات زمین - در ابتدا مخفی است -->
+    <div id="landDetails" class="hidden">
+      <!-- شهری یا روستایی -->
+      <div class="section-title">شهری یا روستایی؟</div>
+      <div class="horizontal-options">
+        <div>
+          <input type="radio" id="urban-land" name="location-land" value="شهری">
+          <label for="urban-land">شهری</label>
+        </div>
+        <div>
+          <input type="radio" id="rural-land" name="location-land" value="روستایی">
+          <label for="rural-land">روستایی</label>
+        </div>
+        <div>
+          <label for="otherLocation-land">سایر:</label>
+          <input type="text" id="otherLocation-land" class="short-field">
+        </div>
+      </div>
+
+      <!-- متراژ زمین و کاربری -->
+      <div class="form-row">
+        <div>
+          <label for="landArea-land">متراژ زمین <span style="color: red;">*</span></label>
+          <input type="text" id="landArea-land" required>
+        </div>
+        <div>
+          <label for="landUsage">کاربری <span style="color: red;">*</span></label>
+          <input type="text" id="landUsage" required>
+        </div>
+      </div>
+
+      <!-- بَر زمین و عمق زمین -->
+      <div class="form-row">
+        <div>
+          <label for="landWidth">بَر زمین</label>
+          <input type="text" id="landWidth">
+        </div>
+        <div>
+          <label for="landDepth">عمق زمین</label>
+          <input type="text" id="landDepth">
+        </div>
+      </div>
+
+      <!-- عرض کوچه و دور زمین محصور -->
+      <div class="form-row">
+        <div>
+          <label for="alleyWidth">عرض کوچه</label>
+          <input type="text" id="alleyWidth">
+        </div>
+        <div class="enclosed-field">
+          <label for="enclosed">دور زمین محصور</label>
+          <input type="radio" id="enclosed-yes" name="enclosed" value="هست">
+          <label for="enclosed-yes">هست</label>
+          <input type="radio" id="enclosed-no" name="enclosed" value="نیست">
+          <label for="enclosed-no">نیست</label>
+        </div>
+      </div>
+
+      <!-- موقعیت -->
+      <div class="section-title">موقعیت</div>
+      <div class="horizontal-options">
+        <div>
+          <input type="radio" id="north" name="position" value="شمالی">
+          <label for="north">شمالی</label>
+        </div>
+        <div>
+          <input type="radio" id="south" name="position" value="جنوبی">
+          <label for="south">جنوبی</label>
+        </div>
+        <div>
+          <input type="radio" id="east" name="position" value="شرقی">
+          <label for="east">شرقی</label>
+        </div>
+        <div>
+          <input type="radio" id="west" name="position" value="غربی">
+          <label for="west">غربی</label>
+        </div>
+      </div>
+
+      <!-- سایر توضیحات -->
+      <div class="section-title">سایر توضیحات</div>
+      <textarea id="otherDetails-land" rows="4"></textarea>
+    </div>
+
+    <!-- بخش اطلاعات تجاری - در ابتدا مخفی است -->
+    <div id="commercialDetails" class="hidden">
+      <!-- متراژ مغازه، ارتفاع مغازه و دهنه مغازه -->
+      <div class="form-row three-columns">
+        <div>
+          <label for="shopArea">متراژ مغازه <span style="color: red;">*</span></label>
+          <input type="text" id="shopArea" required>
+        </div>
+        <div>
+          <label for="shopHeight">ارتفاع مغازه</label>
+          <input type="text" id="shopHeight">
+        </div>
+        <div>
+          <label for="shopWidth">دهنه مغازه</label>
+          <input type="text" id="shopWidth">
+        </div>
+      </div>
+
+      <!-- اگر به شکل دیگری هست در پایین توضیح دهید -->
+      <div class="section-title">اگر به شکل دیگری هست در پایین توضیح دهید</div>
+      <textarea id="shopDetails" rows="3"></textarea>
+
+      <!-- امکانات، امتیازات و سایر توضیحات -->
+      <div class="section-title">امکانات، امتیازات و سایر توضیحات</div>
+      <textarea id="otherDetails-commercial" rows="4"></textarea>
+    </div>
+
+    <!-- بخش اطلاعات کلنگی - در ابتدا مخفی است -->
+    <div id="oldDetails" class="hidden">
+      <!-- شهری یا روستایی -->
+      <div class="section-title">شهری یا روستایی؟</div>
+      <div class="horizontal-options">
+        <div>
+          <input type="radio" id="urban-old" name="location-old" value="شهری">
+          <label for="urban-old">شهری</label>
+        </div>
+        <div>
+          <input type="radio" id="rural-old" name="location-old" value="روستایی">
+          <label for="rural-old">روستایی</label>
+        </div>
+        <div>
+          <label for="otherLocation-old">سایر:</label>
+          <input type="text" id="otherLocation-old" class="short-field">
+        </div>
+      </div>
+
+      <!-- متراژ زمین و متراژ بنا -->
+      <div class="form-row">
+        <div>
+          <label for="landArea-old">متراژ زمین <span style="color: red;">*</span></label>
+          <input type="text" id="landArea-old" required>
+        </div>
+        <div>
+          <label for="buildingArea-old">متراژ بنا <span style="color: red;">*</span></label>
+          <input type="text" id="buildingArea-old" required>
+        </div>
+      </div>
+
+      <!-- وضعیت سکونت -->
+      <div class="section-title">وضعیت سکونت</div>
+      <div class="horizontal-options">
+        <div>
+          <input type="radio" id="livable" name="livability" value="قابل سکونت">
+          <label for="livable">قابل سکونت</label>
+        </div>
+        <div>
+          <input type="radio" id="notLivable" name="livability" value="غیر قابل سکونت">
+          <label for="notLivable">غیر قابل سکونت</label>
+        </div>
+      </div>
+
+      <!-- بَر زمین و عمق زمین -->
+      <div class="form-row">
+        <div>
+          <label for="landWidth-old">بَر زمین</label>
+          <input type="text" id="landWidth-old">
+        </div>
+        <div>
+          <label for="landDepth-old">عمق زمین</label>
+          <input type="text" id="landDepth-old">
+        </div>
+      </div>
+
+      <!-- امتیازات -->
+      <div class="section-title">امتیازات</div>
+      <div class="two-column-grid">
+        <div>
+          <input type="checkbox" id="water" name="utilities" value="آب">
+          <label for="water" class="checkbox-label">آب</label>
+        </div>
+        <div>
+          <input type="checkbox" id="electricity" name="utilities" value="برق">
+          <label for="electricity" class="checkbox-label">برق</label>
+        </div>
+        <div>
+          <input type="checkbox" id="gas" name="utilities" value="گاز">
+          <label for="gas" class="checkbox-label">گاز</label>
+        </div>
+        <div>
+          <input type="checkbox" id="phone" name="utilities" value="تلفن">
+          <label for="phone" class="checkbox-label">تلفن</label>
+        </div>
+      </div>
+
+      <!-- امکانات -->
+      <div class="section-title">امکانات</div>
+      <textarea id="amenities-old" rows="4" placeholder="امکانات موجود را وارد کنید..."></textarea>
+    </div>
+
+    <!-- بخش اطلاعات پیش فروش آپارتمان - در ابتدا مخفی است -->
+    <div id="presaleApartmentDetails" class="hidden">
+      <!-- شهری یا روستایی -->
+      <div class="section-title">شهری یا روستایی؟</div>
+      <div class="horizontal-options">
+        <div>
+          <input type="radio" id="urban-presale-apartment" name="location-presale-apartment" value="شهری">
+          <label for="urban-presale-apartment">شهری</label>
+        </div>
+        <div>
+          <input type="radio" id="rural-presale-apartment" name="location-presale-apartment" value="روستایی">
+          <label for="rural-presale-apartment">روستایی</label>
+        </div>
+        <div>
+          <label for="otherLocation-presale-apartment">سایر:</label>
+          <input type="text" id="otherLocation-presale-apartment" class="short-field">
+        </div>
+      </div>
+
+      <!-- متراژ زمین، متراژ واحد و تعداد اتاق -->
+      <div class="form-row three-columns">
+        <div>
+          <label for="landArea-presale-apartment">متراژ زمین <span style="color: red;">*</span></label>
+          <input type="text" id="landArea-presale-apartment" required>
+        </div>
+        <div>
+          <label for="unitArea-presale-apartment">متراژ واحد <span style="color: red;">*</span></label>
+          <input type="text" id="unitArea-presale-apartment" required>
+        </div>
+        <div>
+          <label for="roomCount-presale-apartment">تعداد اتاق <span style="color: red;">*</span></label>
+          <input type="number" id="roomCount-presale-apartment" required>
+        </div>
+      </div>
+
+      <!-- تعداد طبقه، طبقه چندم و تعداد واحد در هر طبقه -->
+      <div class="form-row three-columns">
+        <div>
+          <label for="floorCount-presale-apartment">تعداد طبقه</label>
+          <input type="number" id="floorCount-presale-apartment">
+        </div>
+        <div>
+          <label for="floorNumber-presale-apartment">طبقه چندم؟</label>
+          <input type="number" id="floorNumber-presale-apartment">
+        </div>
+        <div>
+          <label for="unitsPerFloor-presale-apartment">تعداد واحد در هر طبقه</label>
+          <input type="number" id="unitsPerFloor-presale-apartment">
+        </div>
+      </div>
+
+      <!-- توضیحات بیشتر -->
+      <div>
+        <label for="moreDetails-presale-apartment">توضیحات بیشتر را وارد کنید:</label>
+        <textarea id="moreDetails-presale-apartment" rows="3" class="full-width"></textarea>
+      </div>
+
+      <!-- مشخصات آشپزخانه -->
+      <div class="section-title">مشخصات آشپزخانه (در صورت مشخص بودن)</div>
+      <div class="checkbox-container">
+        <div>
+          <input type="checkbox" id="metalCabinet-presale" name="kitchen-presale-apartment" value="کابینت فلزی">
+          <label for="metalCabinet-presale">کابینت فلزی</label>
+        </div>
+        <div>
+          <input type="checkbox" id="mdfKitchen-presale" name="kitchen-presale-apartment" value="کابینت MDF">
+          <label for="mdfKitchen-presale">کابینت MDF</label>
+        </div>
+        <div>
+          <input type="checkbox" id="openKitchen-presale" name="kitchen-presale-apartment" value="اپن">
+          <label for="openKitchen-presale">اپن</label>
+        </div>
+      </div>
+      <div>
+        <label for="otherKitchen-presale-apartment">توضیحات آشپزخانه:</label>
+        <textarea id="otherKitchen-presale-apartment" rows="2" class="full-width"></textarea>
+      </div>
+
+      <!-- سایر توضیحات و امکانات -->
+      <div class="section-title">سایر توضیحات و امکانات</div>
+      <textarea id="otherDetails-presale-apartment" rows="4"></textarea>
+    </div>
+
+    <!-- بخش اطلاعات پیش فروش ویلا - در ابتدا مخفی است -->
+    <div id="presaleVillaDetails" class="hidden">
+      <!-- شهری یا روستایی -->
+      <div class="section-title">شهری یا روستایی؟</div>
+      <div class="horizontal-options">
+        <div>
+          <input type="radio" id="urban-presale-villa" name="location-presale-villa" value="شهری">
+          <label for="urban-presale-villa">شهری</label>
+        </div>
+        <div>
+          <input type="radio" id="rural-presale-villa" name="location-presale-villa" value="روستایی">
+          <label for="rural-presale-villa">روستایی</label>
+        </div>
+        <div>
+          <label for="otherLocation-presale-villa">سایر:</label>
+          <input type="text" id="otherLocation-presale-villa" class="short-field">
+        </div>
+      </div>
+
+      <!-- متراژ زمین و متراژ بنا -->
+      <div class="form-row">
+        <div>
+          <label for="landArea-presale-villa">متراژ زمین <span style="color: red;">*</span></label>
+          <input type="text" id="landArea-presale-villa" required>
+        </div>
+        <div>
+          <label for="buildingArea-presale-villa">متراژ بنا <span style="color: red;">*</span></label>
+          <input type="text" id="buildingArea-presale-villa" required>
+        </div>
+      </div>
+
+      <!-- تعداد اتاق‌ها و تعداد طبقات -->
+      <div class="form-row">
+        <div>
+          <label for="roomCount-presale-villa">تعداد اتاق‌ها <span style="color: red;">*</span></label>
+          <input type="number" id="roomCount-presale-villa" required>
+        </div>
+        <div>
+          <label for="floorCount-presale-villa">تعداد طبقات <span style="color: red;">*</span></label>
+          <input type="number" id="floorCount-presale-villa" required>
+        </div>
+      </div>
+
+      <!-- سایر توضیحات و امکانات -->
+      <div class="section-title">سایر توضیحات و امکانات</div>
+      <textarea id="otherDetails-presale-villa" rows="4"></textarea>
+    </div>
+
+    <!-- بخش‌های مشترک - در ابتدا مخفی است -->
+    <div id="commonDetails" class="hidden">
+      <!-- وضعیت سند -->
+      <div class="section-title">وضعیت سند <span style="color: red;">*</span></div>
+      <div class="horizontal-options">
+        <div>
+          <input type="checkbox" id="singlePage" name="document" value="سند تک برگ" required>
+          <label for="singlePage">سند تک برگ</label>
+        </div>
+        <div>
+          <input type="checkbox" id="booklet" name="document" value="سند دفترچه">
+          <label for="booklet">سند دفترچه</label>
+        </div>
+        <div>
+          <input type="checkbox" id="agreement" name="document" value="قولنامه‌ای">
+          <label for="agreement">قولنامه‌ای</label>
+        </div>
+        <div>
+          <label for="otherDocument">سایر:</label>
+          <input type="text" id="otherDocument" class="short-field">
+        </div>
+      </div>
+      <p class="error hidden" id="documentError">لطفاً وضعیت سند را مشخص کنید.</p>
+
+      <!-- قیمت - برای آپارتمان، زمین و تجاری -->
+      <div id="priceSection-meter" class="hidden">
+        <div class="section-title">قیمت</div>
+        <div class="form-row">
+          <div>
+            <label for="pricePerMeter">قیمت متری</label>
+            <input type="text" id="pricePerMeter">
+          </div>
+          <div>
+            <label for="totalPrice">قیمت کلی <span style="color: red;">*</span></label>
+            <input type="text" id="totalPrice" required>
+          </div>
+        </div>
+      </div>
+
+      <!-- قیمت - برای سایر موارد -->
+      <div id="priceSection-normal">
+        <div class="section-title">قیمت <span style="color: red;">*</span></div>
+        <input type="text" id="price" required placeholder="قیمت به تومان">
+      </div>
+
+      <!-- شرایط فروش -->
+      <div class="section-title">شرایط فروش <span style="color: red;">*</span></div>
+      <div class="horizontal-options">
+        <div>
+          <input type="checkbox" id="cash" name="saleConditions" value="نقدی">
+          <label for="cash">نقدی</label>
+        </div>
+        <div>
+          <input type="checkbox" id="conditional" name="saleConditions" value="شرایطی">
+          <label for="conditional">شرایطی</label>
+        </div>
+        <div>
+          <input type="checkbox" id="exchange" name="saleConditions" value="تهاتر/معاوضه">
+          <label for="exchange">تهاتر/معاوضه</label>
+        </div>
+      </div>
+      <p class="error hidden" id="saleConditionError">لطفاً حداقل یک گزینه را انتخاب کنید.</p>
+      <div>
+        <label for="saleConditionDetails">توضیحات بیشتر را وارد کنید:</label>
+        <textarea id="saleConditionDetails" rows="2" class="full-width"></textarea>
+      </div>
+
+      <!-- آدرس دقیق -->
+      <div class="section-title">آدرس دقیق <span style="color: red;">*</span></div>
+      <textarea id="address" rows="3" required></textarea>
+    </div>
+
+    <!-- آپلود عکس - در ابتدا مخفی است -->
+    <div id="imageUploadSection" class="hidden">
+      <div class="section-title">آپلود عکس</div>
+      <div class="upload-btn-wrapper">
+        <div class="upload-btn">
+          <span>برای آپلود عکس کلیک کنید یا عکس را اینجا رها کنید</span>
+        </div>
+        <input type="file" id="imageUpload" multiple accept="image/*">
+      </div>
+      <div class="image-preview" id="imagePreview"></div>
+    </div>
+
+    <!-- دکمه‌های ارسال و پاک کردن -->
+    <div class="button-container">
+      <button type="submit" class="submit-btn">ارسال اطلاعات</button>
+      <button type="button" id="resetBtn" class="reset-btn">پاک کردن اطلاعات</button>
+    </div>
+  </form>
+
+  <script src="script.js"></script>
+</body>
+</html>
