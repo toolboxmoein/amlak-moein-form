@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
   // مقداردهی اولیه EmailJS
   (function() {
-    // کلید عمومی EmailJS شما 
+    // کلید عمومی EmailJS شما را اینجا قرار دهید
     emailjs.init("7zOCMQKl0bRjmv6cn");
   })();
   
@@ -797,67 +797,54 @@ document.addEventListener('DOMContentLoaded', function() {
     // ایجاد متن پیام
     const messageText = createEmailMessage(formData);
     
-    // تبدیل اطلاعات مختص هر نوع ملک به رشته JSON
-    let apartmentDetailsStr = '';
-    let villaDetailsStr = '';
-    let landDetailsStr = '';
-    let commercialDetailsStr = '';
-    let oldDetailsStr = '';
-    let presaleApartmentDetailsStr = '';
-    let presaleVillaDetailsStr = '';
-    
-    if (formData.apartmentDetails) {
-      apartmentDetailsStr = formatApartmentDetails(formData.apartmentDetails);
-    }
-    if (formData.villaDetails) {
-      villaDetailsStr = formatVillaDetails(formData.villaDetails);
-    }
-    if (formData.landDetails) {
-      landDetailsStr = formatLandDetails(formData.landDetails);
-    }
-    if (formData.commercialDetails) {
-      commercialDetailsStr = formatCommercialDetails(formData.commercialDetails);
-    }
-    if (formData.oldDetails) {
-      oldDetailsStr = formatOldDetails(formData.oldDetails);
-    }
-    if (formData.presaleApartmentDetails) {
-      presaleApartmentDetailsStr = formatPresaleApartmentDetails(formData.presaleApartmentDetails);
-    }
-    if (formData.presaleVillaDetails) {
-      presaleVillaDetailsStr = formatPresaleVillaDetails(formData.presaleVillaDetails);
-    }
-    
     // ایجاد پارامترهای ارسال به EmailJS
     const templateParams = {
       name: `${formData.firstName} ${formData.lastName}`,
       phone: formData.phone,
-      altPhone: formData.altPhone,
       property_type: formData.propertyType,
       message: messageText,
-      // اضافه کردن اطلاعات مختص هر نوع ملک
-      apartmentDetails: apartmentDetailsStr,
-      villaDetails: villaDetailsStr,
-      landDetails: landDetailsStr,
-      commercialDetails: commercialDetailsStr,
-      oldDetails: oldDetailsStr,
-      presaleType: formData.presaleType || '',
-      projectProgress: formData.projectProgress || '',
-      presaleApartmentDetails: presaleApartmentDetailsStr,
-      presaleVillaDetails: presaleVillaDetailsStr,
-      // اطلاعات مشترک
-      documentType: formData.documentType.join(', '),
-      otherDocument: formData.otherDocument,
-      pricePerMeter: formData.pricePerMeter || '',
-      totalPrice: formData.totalPrice || '',
-      price: formData.price || '',
-      saleConditions: formData.saleConditions.join(', '),
-      saleConditionDetails: formData.saleConditionDetails,
-      address: formData.address,
       // اضافه کردن تصاویر (حداکثر 3 تصویر به دلیل محدودیت EmailJS)
       image_count: images.length,
       images_note: images.length > 3 ? `تعداد کل تصاویر: ${images.length} (فقط 3 تصویر اول نمایش داده می‌شود)` : ''
     };
+    
+    // اضافه کردن اطلاعات مختص هر نوع ملک
+    if (formData.propertyType === 'آپارتمان') {
+      templateParams.apartmentDetails = formatApartmentDetails(formData.apartmentDetails);
+    } else if (formData.propertyType === 'ویلا') {
+      templateParams.villaDetails = formatVillaDetails(formData.villaDetails);
+    } else if (formData.propertyType === 'زمین') {
+      templateParams.landDetails = formatLandDetails(formData.landDetails);
+    } else if (formData.propertyType === 'تجاری') {
+      templateParams.commercialDetails = formatCommercialDetails(formData.commercialDetails);
+    } else if (formData.propertyType === 'کلنگی') {
+      templateParams.oldDetails = formatOldDetails(formData.oldDetails);
+    } else if (formData.propertyType === 'پیش‌فروش') {
+      templateParams.presaleType = formData.presaleType;
+      templateParams.projectProgress = formData.projectProgress;
+      
+      if (formData.presaleType === 'آپارتمان') {
+        templateParams.presaleApartmentDetails = formatPresaleApartmentDetails(formData.presaleApartmentDetails);
+      } else if (formData.presaleType === 'ویلا') {
+        templateParams.presaleVillaDetails = formatPresaleVillaDetails(formData.presaleVillaDetails);
+      }
+    }
+    
+    // اضافه کردن اطلاعات مشترک
+    templateParams.documentType = formData.documentType.join(', ');
+    templateParams.otherDocument = formData.otherDocument;
+    templateParams.saleConditions = formData.saleConditions.join(', ');
+    templateParams.saleConditionDetails = formData.saleConditionDetails;
+    templateParams.address = formData.address;
+    templateParams.altPhone = formData.altPhone;
+    
+    // اضافه کردن اطلاعات قیمت
+    if (formData.propertyType === 'آپارتمان' || formData.propertyType === 'زمین' || formData.propertyType === 'تجاری') {
+      templateParams.pricePerMeter = formData.pricePerMeter;
+      templateParams.totalPrice = formData.totalPrice;
+    } else {
+      templateParams.price = formData.price;
+    }
     
     // اضافه کردن تصاویر (حداکثر 3 تصویر)
     for (let i = 0; i < Math.min(images.length, 3); i++) {
@@ -866,8 +853,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // ارسال به EmailJS
     emailjs.send(
-      "service_rds9l25", // شناسه سرویس شما که در عکس نمایش داده شده
-      "template_5do0c0n", // شناسه قالب شما که در عکس نمایش داده شده
+      "service_rds9l25", // شناسه سرویس شما در EmailJS
+      "template_5do0c0n", // شناسه قالب شما در EmailJS
       templateParams
     )
     .then(function(response) {
