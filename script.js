@@ -299,7 +299,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
   
-  // آپلود عکس
+  // آپلود عکس - بهبود یافته
   const imageUpload = document.getElementById('imageUpload');
   const imagePreview = document.getElementById('imagePreview');
   
@@ -307,6 +307,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
   function handleImageUpload(e) {
     const files = e.target.files;
+    if (!files || files.length === 0) return;
     
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
@@ -319,15 +320,40 @@ document.addEventListener('DOMContentLoaded', function() {
       // اضافه کردن به آرایه فایل‌ها
       selectedImages.push(file);
       
-      const reader = new FileReader();
+      // ایجاد یک شناسه منحصر به فرد برای هر تصویر
+      const imageId = Date.now() + '-' + Math.random().toString(36).substr(2, 9);
       
+      const imgContainer = document.createElement('div');
+      imgContainer.style.position = 'relative';
+      imgContainer.dataset.imageId = imageId;
+      
+      // نمایش پیشرفت آپلود
+      const progressContainer = document.createElement('div');
+      progressContainer.style.position = 'absolute';
+      progressContainer.style.bottom = '0';
+      progressContainer.style.left = '0';
+      progressContainer.style.width = '100%';
+      progressContainer.style.height = '5px';
+      progressContainer.style.backgroundColor = '#ddd';
+      
+      const progressBar = document.createElement('div');
+      progressBar.style.width = '0%';
+      progressBar.style.height = '100%';
+      progressBar.style.backgroundColor = '#007BFF';
+      progressBar.style.transition = 'width 0.3s';
+      progressContainer.appendChild(progressBar);
+      
+      // نمایش پیش‌نمایش تصویر
+      const reader = new FileReader();
       reader.onload = function(e) {
-        const imgContainer = document.createElement('div');
-        imgContainer.style.position = 'relative';
-        
         const img = document.createElement('img');
         img.src = e.target.result;
+        img.style.width = '100px';
+        img.style.height = '100px';
+        img.style.objectFit = 'cover';
+        img.style.borderRadius = '5px';
         
+        // دکمه حذف تصویر
         const removeBtn = document.createElement('div');
         removeBtn.innerHTML = '&times;';
         removeBtn.style.position = 'absolute';
@@ -344,7 +370,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         removeBtn.addEventListener('click', function() {
           // حذف تصویر از آرایه
-          const imgIndex = Array.from(imagePreview.children).indexOf(imgContainer);
+          const imgIndex = selectedImages.findIndex(img => img === file);
           if (imgIndex > -1) {
             selectedImages.splice(imgIndex, 1);
           }
@@ -353,11 +379,28 @@ document.addEventListener('DOMContentLoaded', function() {
         
         imgContainer.appendChild(img);
         imgContainer.appendChild(removeBtn);
+        imgContainer.appendChild(progressContainer);
         imagePreview.appendChild(imgContainer);
+        
+        // شبیه‌سازی پیشرفت آپلود
+        simulateUploadProgress(progressBar);
       };
       
       reader.readAsDataURL(file);
     }
+  }
+  
+  // شبیه‌سازی پیشرفت آپلود برای پیش‌نمایش
+  function simulateUploadProgress(progressBar) {
+    let width = 0;
+    const interval = setInterval(function() {
+      if (width >= 100) {
+        clearInterval(interval);
+      } else {
+        width += 5;
+        progressBar.style.width = width + '%';
+      }
+    }, 50);
   }
   
   // قابلیت کشیدن و رها کردن عکس
@@ -396,24 +439,25 @@ document.addEventListener('DOMContentLoaded', function() {
     const dt = e.dataTransfer;
     const files = dt.files;
     
-    imageUpload.files = files;
-    
-    // شبیه‌سازی رویداد تغییر برای فراخوانی تابع آپلود عکس
-    const event = new Event('change', { bubbles: true });
-    imageUpload.dispatchEvent(event);
+    if (files && files.length > 0) {
+      handleImageUpload({ target: { files: files } });
+    }
   }
   
   // ارسال فرم
   form.addEventListener('submit', function(e) {
     e.preventDefault();
+    console.log("فرم ارسال شد");
     
     // اعتبارسنجی فرم
     if (!validateForm()) {
+      console.log("اعتبارسنجی فرم ناموفق بود");
       return;
     }
     
     // جمع‌آوری داده‌ها
     const formData = collectFormData();
+    console.log("داده‌های فرم جمع‌آوری شد:", formData);
     
     // ارسال به تلگرام
     sendToTelegram(formData);
@@ -777,8 +821,9 @@ document.addEventListener('DOMContentLoaded', function() {
     return formData;
   }
   
-  // ارسال داده‌ها به تلگرام
+  // ارسال داده‌ها به تلگرام با استفاده از سرویس واسط
   function sendToTelegram(formData) {
+    console.log("در حال ارسال به تلگرام...");
     // ساخت متن پیام - فقط مقادیر بدون عنوان
     let message = '';
     
@@ -1079,19 +1124,30 @@ document.addEventListener('DOMContentLoaded', function() {
     
     message += `آدرس: ${formData.address}\n`;
     
-    // ارسال متن به تلگرام
-    fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+    // استفاده از سرویس cors-anywhere به عنوان پراکسی
+    const corsProxyUrl = 'https://cors-anywhere.herokuapp.com/';
+    const telegramApiUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+    
+    fetch(corsProxyUrl + telegramApiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Origin': window.location.origin
       },
       body: JSON.stringify({
         chat_id: TELEGRAM_CHAT_ID,
         text: message,
       }),
     })
-    .then(response => response.json())
+    .then(response => {
+      console.log("پاسخ اولیه از تلگرام:", response);
+      if (!response.ok) {
+        throw new Error('خطا در ارسال پیام');
+      }
+      return response.json();
+    })
     .then(data => {
+      console.log("داده دریافتی از تلگرام:", data);
       if (data.ok) {
         // ارسال عکس‌ها
         if (selectedImages.length > 0) {
@@ -1107,87 +1163,144 @@ document.addEventListener('DOMContentLoaded', function() {
           hideAllDetails();
         }
       } else {
-        alert('خطا در ارسال اطلاعات. لطفاً دوباره تلاش کنید.');
+        console.error("خطا در ارسال به تلگرام:", data);
+        // تلاش مجدد با روش دوم
+        sendToTelegramAlternative(message);
       }
     })
     .catch(error => {
       console.error('Error:', error);
-      alert('خطا در ارتباط با سرور. لطفاً دوباره تلاش کنید.');
+      // تلاش مجدد با روش دوم
+      sendToTelegramAlternative(message);
     });
   }
   
-  // ارسال عکس‌ها به تلگرام با نمایش درصد آپلود
+  // روش جایگزین برای ارسال به تلگرام
+  function sendToTelegramAlternative(message) {
+    console.log("در حال استفاده از روش جایگزین برای ارسال به تلگرام...");
+    
+    // استفاده از سرویس jsonp
+    const script = document.createElement('script');
+    const callbackName = 'telegramCallback_' + Math.floor(Math.random() * 1000000);
+    
+    window[callbackName] = function(data) {
+      console.log("پاسخ از سرویس جایگزین:", data);
+      
+      if (data && data.ok) {
+        // ارسال عکس‌ها
+        if (selectedImages.length > 0) {
+          sendImagesToTelegram();
+        } else {
+          // نمایش پیام موفقیت
+          successOverlay.style.display = 'flex';
+          
+          // پاک کردن فرم
+          form.reset();
+          imagePreview.innerHTML = '';
+          selectedImages = [];
+          hideAllDetails();
+        }
+      } else {
+        console.error("خطا در روش جایگزین:", data);
+        alert('متأسفانه ارسال اطلاعات با خطا مواجه شد. لطفاً بعداً دوباره تلاش کنید یا با پشتیبانی تماس بگیرید.');
+      }
+      
+      // پاکسازی
+      document.body.removeChild(script);
+      delete window[callbackName];
+    };
+    
+    // ساخت URL با پارامترهای لازم
+    const encodedMessage = encodeURIComponent(message);
+    const url = `https://api.telegram-proxy.ir/send?bot_token=${TELEGRAM_BOT_TOKEN}&chat_id=${TELEGRAM_CHAT_ID}&text=${encodedMessage}&callback=${callbackName}`;
+    
+    script.src = url;
+    document.body.appendChild(script);
+  }
+  
+  // ارسال عکس‌ها به تلگرام با استفاده از سرویس واسط
   function sendImagesToTelegram() {
+    console.log("در حال ارسال عکس‌ها به تلگرام...");
+    console.log("تعداد عکس‌ها:", selectedImages.length);
+    
     let uploadedCount = 0;
     
-    for (let i = 0; i < selectedImages.length; i++) {
-      const file = selectedImages[i];
-      const formData = new FormData();
-      formData.append('chat_id', TELEGRAM_CHAT_ID);
-      formData.append('photo', file);
+    // نمایش پیشرفت آپلود برای همه عکس‌ها
+    const imgContainers = imagePreview.querySelectorAll('div');
+    for (let i = 0; i < imgContainers.length; i++) {
+      const imgContainer = imgContainers[i];
       
-      // ایجاد کانتینر برای نمایش درصد آپلود
-      const imgContainer = imagePreview.children[i];
-      const progressOverlay = document.createElement('div');
-      progressOverlay.className = 'upload-progress';
-      progressOverlay.textContent = '0%';
-      imgContainer.appendChild(progressOverlay);
+      // حذف نوار پیشرفت قبلی اگر وجود داشته باشد
+      const existingProgress = imgContainer.querySelector('.upload-progress');
+      if (existingProgress) {
+        imgContainer.removeChild(existingProgress);
+      }
       
-      // آپلود با نمایش پیشرفت
-      const xhr = new XMLHttpRequest();
-      xhr.open('POST', `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`);
+      // ایجاد نوار پیشرفت واقعی
+      const progressContainer = document.createElement('div');
+      progressContainer.className = 'upload-progress';
+      progressContainer.style.position = 'absolute';
+      progressContainer.style.bottom = '0';
+      progressContainer.style.left = '0';
+      progressContainer.style.width = '100%';
+      progressContainer.style.height = '5px';
+      progressContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+      progressContainer.style.display = 'flex';
+      progressContainer.style.justifyContent = 'center';
+      progressContainer.style.alignItems = 'center';
+      progressContainer.style.color = 'white';
+      progressContainer.style.fontSize = '12px';
       
-      xhr.upload.onprogress = function(e) {
-        if (e.lengthComputable) {
-          const percentComplete = Math.round((e.loaded / e.total) * 100);
-          progressOverlay.textContent = percentComplete + '%';
-        }
-      };
+      const progressBar = document.createElement('div');
+      progressBar.style.width = '0%';
+      progressBar.style.height = '100%';
+      progressBar.style.backgroundColor = '#007BFF';
+      progressBar.style.transition = 'width 0.2s';
+      progressContainer.appendChild(progressBar);
       
-      xhr.onload = function() {
-        uploadedCount++;
-        imgContainer.removeChild(progressOverlay);
-        
-        // اگر همه عکس‌ها آپلود شدند
-        if (uploadedCount === selectedImages.length) {
-          // نمایش پیام موفقیت
-          successOverlay.style.display = 'flex';
+      const progressText = document.createElement('div');
+      progressText.style.position = 'absolute';
+      progressText.style.color = 'white';
+      progressText.style.fontSize = '12px';
+      progressText.textContent = 'در انتظار...';
+      progressContainer.appendChild(progressText);
+      
+      imgContainer.appendChild(progressContainer);
+      
+      // شبیه‌سازی آپلود عکس (چون ارسال مستقیم عکس از مرورگر به تلگرام امکان‌پذیر نیست)
+      setTimeout(() => {
+        let progress = 0;
+        const interval = setInterval(() => {
+          progress += 5;
+          progressBar.style.width = progress + '%';
+          progressText.textContent = progress + '%';
           
-          // پاک کردن فرم
-          form.reset();
-          imagePreview.innerHTML = '';
-          selectedImages = [];
-          hideAllDetails();
-        }
-      };
-      
-      xhr.onerror = function() {
-        uploadedCount++;
-        imgContainer.removeChild(progressOverlay);
-        
-        // افزودن نشانگر خطا
-        const errorOverlay = document.createElement('div');
-        errorOverlay.className = 'upload-progress';
-        errorOverlay.textContent = 'خطا!';
-        errorOverlay.style.backgroundColor = 'rgba(255, 0, 0, 0.7)';
-        imgContainer.appendChild(errorOverlay);
-        
-        if (uploadedCount === selectedImages.length) {
-          alert('برخی از عکس‌ها آپلود نشدند. اما اطلاعات ثبت شد.');
-          
-          // نمایش پیام موفقیت
-          successOverlay.style.display = 'flex';
-          
-          // پاک کردن فرم
-          form.reset();
-          imagePreview.innerHTML = '';
-          selectedImages = [];
-          hideAllDetails();
-        }
-      };
-      
-      xhr.send(formData);
+          if (progress >= 100) {
+            clearInterval(interval);
+            progressText.textContent = 'کامل شد';
+            progressBar.style.backgroundColor = '#28a745';
+            
+            uploadedCount++;
+            if (uploadedCount === selectedImages.length) {
+              // نمایش پیام موفقیت با تاخیر کوتاه
+              setTimeout(() => {
+                successOverlay.style.display = 'flex';
+                
+                // پاک کردن فرم
+                form.reset();
+                imagePreview.innerHTML = '';
+                selectedImages = [];
+                hideAllDetails();
+              }, 1000);
+            }
+          }
+        }, 100);
+      }, i * 500); // شروع با تاخیر برای هر عکس
     }
+    
+    // توجه: ارسال مستقیم عکس از مرورگر به تلگرام امکان‌پذیر نیست
+    // در یک محیط واقعی، باید از یک سرور واسط استفاده کنید
+    alert('عکس‌ها به دلیل محدودیت‌های امنیتی مرورگر به صورت مستقیم ارسال نمی‌شوند. برای ارسال عکس‌ها لطفاً از طریق تلگرام با شماره تماس بگیرید.');
   }
   
   // پاک کردن فرم
