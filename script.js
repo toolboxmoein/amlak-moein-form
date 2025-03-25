@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
   // مقداردهی اولیه EmailJS
   (function() {
-    // کلید عمومی EmailJS شما را اینجا قرار دهید
+    // کلید عمومی EmailJS شما
     emailjs.init("7zOCMQKl0bRjmv6cn");
   })();
   
@@ -14,6 +14,10 @@ document.addEventListener('DOMContentLoaded', function() {
   const confirmYesBtn = document.getElementById('confirmYesBtn');
   const confirmNoBtn = document.getElementById('confirmNoBtn');
   const sendingOverlay = document.getElementById('sendingOverlay');
+  
+  // متغیرهای خطای آپلود عکس
+  const imageErrorOverlay = document.getElementById('imageErrorOverlay');
+  const closeImageErrorBtn = document.getElementById('closeImageErrorBtn');
   
   // متغیرهای منوی همبرگری
   const hamburgerMenu = document.getElementById('hamburgerMenu');
@@ -37,6 +41,13 @@ document.addEventListener('DOMContentLoaded', function() {
   const presaleVillaDetails = document.getElementById('presaleVillaDetails');
   const commonDetails = document.getElementById('commonDetails');
   const imageUploadSection = document.getElementById('imageUploadSection');
+  
+  // رویداد برای بستن پیام خطای آپلود عکس
+  if (closeImageErrorBtn) {
+    closeImageErrorBtn.addEventListener('click', function() {
+      imageErrorOverlay.style.display = 'none';
+    });
+  }
   
   // رویداد برای منوی همبرگری
   hamburgerMenu.addEventListener('click', function() {
@@ -689,9 +700,10 @@ document.addEventListener('DOMContentLoaded', function() {
   function handleImageUpload(e) {
     const files = Array.from(e.target.files);
     
-    // محدود کردن تعداد عکس‌ها به 10 عدد
-    if (selectedImages.length + files.length > 10) {
-      alert('شما می‌توانید حداکثر 10 عکس آپلود کنید.');
+    // محدود کردن تعداد عکس‌ها به 3 عدد
+    if (selectedImages.length + files.length > 3) {
+      // نمایش پیام خطا
+      imageErrorOverlay.style.display = 'flex';
       return;
     }
     
@@ -722,6 +734,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const img = document.createElement('img');
         img.src = e.target.result;
         img.alt = file.name;
+        img.style.maxWidth = '150px';
+        img.style.maxHeight = '150px';
         imgContainer.appendChild(img);
         
         // دکمه حذف عکس
@@ -764,20 +778,37 @@ document.addEventListener('DOMContentLoaded', function() {
       return;
     }
     
-    // تبدیل عکس‌ها به Base64
+    // تبدیل عکس‌ها به Base64 و فشرده‌سازی
     const imagePromises = selectedImages.map(file => {
       return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          resolve({
-            name: file.name,
-            type: file.type,
-            size: file.size,
-            base64: e.target.result
-          });
-        };
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
+        // فشرده‌سازی تصویر
+        compressImage(file, 1024, 0.7).then(compressedFile => {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            resolve({
+              name: file.name,
+              type: compressedFile.type,
+              size: compressedFile.size,
+              base64: e.target.result
+            });
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(compressedFile);
+        }).catch(error => {
+          console.error('خطا در فشرده‌سازی تصویر:', error);
+          // اگر فشرده‌سازی با خطا مواجه شد، از فایل اصلی استفاده می‌کنیم
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            resolve({
+              name: file.name,
+              type: file.type,
+              size: file.size,
+              base64: e.target.result
+            });
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
       });
     });
     
@@ -792,6 +823,58 @@ document.addEventListener('DOMContentLoaded', function() {
       });
   }
   
+  // تابع فشرده‌سازی تصویر
+  function compressImage(file, maxWidth, quality) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = function(e) {
+        const img = new Image();
+        img.src = e.target.result;
+        
+        img.onload = function() {
+          let width = img.width;
+          let height = img.height;
+          
+          // تغییر اندازه تصویر اگر عرض آن بیشتر از حداکثر عرض باشد
+          if (width > maxWidth) {
+            height = (height * maxWidth) / width;
+            width = maxWidth;
+          }
+          
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // تبدیل به Blob
+          canvas.toBlob(blob => {
+            if (blob) {
+              // ایجاد فایل جدید با نام اصلی
+              const compressedFile = new File([blob], file.name, {
+                type: file.type,
+                lastModified: Date.now()
+              });
+              resolve(compressedFile);
+            } else {
+              reject(new Error('خطا در فشرده‌سازی تصویر'));
+            }
+          }, file.type, quality);
+        };
+        
+        img.onerror = function() {
+          reject(new Error('خطا در بارگذاری تصویر'));
+        };
+      };
+      
+      reader.onerror = function() {
+        reject(new Error('خطا در خواندن فایل'));
+      };
+    });
+  }
+  
   // تابع ارسال فرم به ایمیل با استفاده از EmailJS
   function sendFormToEmail(formData, images) {
     // ایجاد متن پیام
@@ -801,53 +884,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const templateParams = {
       name: `${formData.firstName} ${formData.lastName}`,
       phone: formData.phone,
+      altPhone: formData.altPhone || '',
       property_type: formData.propertyType,
       message: messageText,
-      // اضافه کردن تصاویر (حداکثر 3 تصویر به دلیل محدودیت EmailJS)
-      image_count: images.length,
-      images_note: images.length > 3 ? `تعداد کل تصاویر: ${images.length} (فقط 3 تصویر اول نمایش داده می‌شود)` : ''
+      image_count: images.length
     };
     
-    // اضافه کردن اطلاعات مختص هر نوع ملک
-    if (formData.propertyType === 'آپارتمان') {
-      templateParams.apartmentDetails = formatApartmentDetails(formData.apartmentDetails);
-    } else if (formData.propertyType === 'ویلا') {
-      templateParams.villaDetails = formatVillaDetails(formData.villaDetails);
-    } else if (formData.propertyType === 'زمین') {
-      templateParams.landDetails = formatLandDetails(formData.landDetails);
-    } else if (formData.propertyType === 'تجاری') {
-      templateParams.commercialDetails = formatCommercialDetails(formData.commercialDetails);
-    } else if (formData.propertyType === 'کلنگی') {
-      templateParams.oldDetails = formatOldDetails(formData.oldDetails);
-    } else if (formData.propertyType === 'پیش‌فروش') {
-      templateParams.presaleType = formData.presaleType;
-      templateParams.projectProgress = formData.projectProgress;
-      
-      if (formData.presaleType === 'آپارتمان') {
-        templateParams.presaleApartmentDetails = formatPresaleApartmentDetails(formData.presaleApartmentDetails);
-      } else if (formData.presaleType === 'ویلا') {
-        templateParams.presaleVillaDetails = formatPresaleVillaDetails(formData.presaleVillaDetails);
-      }
-    }
-    
-    // اضافه کردن اطلاعات مشترک
-    templateParams.documentType = formData.documentType.join(', ');
-    templateParams.otherDocument = formData.otherDocument;
-    templateParams.saleConditions = formData.saleConditions.join(', ');
-    templateParams.saleConditionDetails = formData.saleConditionDetails;
-    templateParams.address = formData.address;
-    templateParams.altPhone = formData.altPhone;
-    
-    // اضافه کردن اطلاعات قیمت
-    if (formData.propertyType === 'آپارتمان' || formData.propertyType === 'زمین' || formData.propertyType === 'تجاری') {
-      templateParams.pricePerMeter = formData.pricePerMeter;
-      templateParams.totalPrice = formData.totalPrice;
-    } else {
-      templateParams.price = formData.price;
-    }
-    
     // اضافه کردن تصاویر (حداکثر 3 تصویر)
-    for (let i = 0; i < Math.min(images.length, 3); i++) {
+    for (let i = 0; i < images.length; i++) {
       templateParams[`image_${i+1}`] = images[i].base64;
     }
     
