@@ -276,28 +276,34 @@
       cursor: pointer;
     }
     
-    .menu-items {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
+    .menu-content {
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px;
+      width: 80%;
+      max-width: 500px;
     }
     
-    .menu-item {
-      color: white;
-      text-decoration: none;
-      font-size: 1.2rem;
-      padding: 10px 20px;
-      border-radius: 5px;
-      transition: all 0.3s;
-      font-family: Vazir, Tahoma, Arial, sans-serif !important;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    .menu-table {
+      width: 100%;
+      border-collapse: collapse;
     }
     
-    .menu-item:hover {
-      background-color: rgba(255, 255, 255, 0.1);
+    .menu-table tr:nth-child(odd) {
+      background-color: #f2f2f2;
+    }
+    
+    .menu-table tr:nth-child(even) {
+      background-color: #e6e6e6;
+    }
+    
+    .menu-table td {
+      padding: 12px 15px;
+      text-align: right;
+    }
+    
+    .menu-table td:last-child {
+      text-align: left;
     }
     
     .click-animation {
@@ -345,6 +351,86 @@
       padding-top: 20px;
     }
     
+    .progress {
+      height: 20px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .success-checkmark {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto;
+      position: relative;
+      animation: checkmark 0.5s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+    }
+    
+    .success-checkmark .check-icon {
+      width: 80px;
+      height: 80px;
+      position: relative;
+      border-radius: 50%;
+      box-sizing: content-box;
+      border: 4px solid #4CAF50;
+    }
+    
+    .success-checkmark .check-icon::before {
+      top: 43px;
+      left: 19px;
+      width: 14px;
+      transform: rotate(45deg);
+      position: absolute;
+      content: "";
+      height: 4px;
+      background-color: #4CAF50;
+      animation: checkmark-check-1 0.25s ease-in-out forwards;
+    }
+    
+    .success-checkmark .check-icon::after {
+      top: 38px;
+      left: 26px;
+      width: 28px;
+      transform: rotate(45deg);
+      position: absolute;
+      content: "";
+      height: 4px;
+      background-color: #4CAF50;
+      animation: checkmark-check-2 0.25s ease-in-out forwards;
+    }
+    
+    @keyframes checkmark {
+      0% {
+        transform: scale(0);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes checkmark-check-1 {
+      0% {
+        width: 0;
+        opacity: 0;
+      }
+      100% {
+        width: 14px;
+        opacity: 1;
+      }
+    }
+    
+    @keyframes checkmark-check-2 {
+      0% {
+        width: 0;
+        opacity: 0;
+      }
+      100% {
+        width: 28px;
+        opacity: 1;
+      }
+    }
+    
     @media (max-width: 576px) {
       .container {
         padding: 15px;
@@ -362,6 +448,10 @@
       .btn {
         width: 100%;
         margin-bottom: 10px;
+      }
+      
+      .menu-content {
+        width: 95%;
       }
     }
   </style>
@@ -402,9 +492,9 @@
           </div>
           
           <div class="col-md-6">
-            <label for="altPhone" class="form-label">شماره تماس دیگر</label>
-            <input type="tel" id="altPhone" class="form-control numeric-only" placeholder="اختیاری">
-            <div id="altPhoneError" class="error hidden">لطفاً یک شماره تماس معتبر وارد کنید</div>
+            <label for="altPhone" class="form-label">شماره تماس دیگر <span class="required-star">*</span></label>
+            <input type="tel" id="altPhone" class="form-control numeric-only" placeholder="شماره باید با صفر شروع شود" required>
+            <div id="altPhoneError" class="error hidden">لطفاً یک شماره تماس معتبر 11 رقمی که با صفر شروع می‌شود وارد کنید</div>
           </div>
         </div>
       </div>
@@ -729,6 +819,90 @@
           <label for="otherDetails-apartment" class="form-label">سایر توضیحات</label>
           <textarea id="otherDetails-apartment" class="form-control" rows="3" placeholder="هر توضیح دیگری که لازم است وارد کنید"></textarea>
         </div>
+        
+        <!-- وضعیت سند -->
+        <div class="mb-4 mt-4">
+          <label class="form-label">وضعیت سند <span class="required-star">*</span></label>
+          <div class="row">
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="document" id="document-apartment-1" value="سند تک برگ">
+                <label class="form-check-label" for="document-apartment-1">سند تک برگ</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="document" id="document-apartment-2" value="سند دفترچه‌ای">
+                <label class="form-check-label" for="document-apartment-2">سند دفترچه‌ای</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="document" id="document-apartment-3" value="قولنامه‌ای">
+                <label class="form-check-label" for="document-apartment-3">قولنامه‌ای</label>
+              </div>
+            </div>
+          </div>
+          
+          <div id="documentError-apartment" class="error hidden">لطفاً وضعیت سند را انتخاب کنید</div>
+        </div>
+        
+        <!-- قیمت (متری) -->
+        <div class="mb-4">
+          <h3>قیمت</h3>
+          <div class="row">
+            <div class="col-md-6">
+              <label for="pricePerMeter-apartment" class="form-label">قیمت متری (تومان)</label>
+              <input type="text" id="pricePerMeter-apartment" class="form-control price-input" placeholder="مثال: 10,000,000">
+            </div>
+            
+            <div class="col-md-6">
+              <label for="totalPrice-apartment" class="form-label">قیمت کلی (تومان) <span class="required-star">*</span></label>
+              <input type="text" id="totalPrice-apartment" class="form-control price-input" placeholder="مثال: 1,500,000,000">
+            </div>
+          </div>
+        </div>
+        
+        <!-- شرایط فروش -->
+        <div class="mb-4">
+          <label class="form-label">شرایط فروش <span class="required-star">*</span></label>
+          <div class="row">
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-apartment-1" value="نقدی">
+                <label class="form-check-label" for="saleConditions-apartment-1">نقدی</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-apartment-2" value="قسطی">
+                <label class="form-check-label" for="saleConditions-apartment-2">قسطی</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-apartment-3" value="معاوضه">
+                <label class="form-check-label" for="saleConditions-apartment-3">معاوضه</label>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-2">
+            <input type="text" id="saleConditionDetails-apartment" class="form-control" placeholder="توضیحات شرایط فروش را وارد کنید">
+          </div>
+          
+          <div id="saleConditionError-apartment" class="error hidden">لطفاً شرایط فروش را انتخاب کنید</div>
+        </div>
+        
+        <!-- آدرس -->
+        <div class="mb-4">
+          <label for="address-apartment" class="form-label">آدرس <span class="required-star">*</span></label>
+          <textarea id="address-apartment" class="form-control" rows="3" placeholder="آدرس دقیق ملک را وارد کنید"></textarea>
+        </div>
       </div>
       
       <!-- جزئیات ویلا -->
@@ -947,6 +1121,84 @@
           <label for="otherDetails-villa" class="form-label">سایر توضیحات</label>
           <textarea id="otherDetails-villa" class="form-control" rows="3" placeholder="هر توضیح دیگری که لازم است وارد کنید"></textarea>
         </div>
+        
+        <!-- وضعیت سند -->
+        <div class="mb-4 mt-4">
+          <label class="form-label">وضعیت سند <span class="required-star">*</span></label>
+          <div class="row">
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="document" id="document-villa-1" value="سند تک برگ">
+                <label class="form-check-label" for="document-villa-1">سند تک برگ</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="document" id="document-villa-2" value="سند دفترچه‌ای">
+                <label class="form-check-label" for="document-villa-2">سند دفترچه‌ای</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="document" id="document-villa-3" value="قولنامه‌ای">
+                <label class="form-check-label" for="document-villa-3">قولنامه‌ای</label>
+              </div>
+            </div>
+          </div>
+          
+          <div id="documentError-villa" class="error hidden">لطفاً وضعیت سند را انتخاب کنید</div>
+        </div>
+        
+        <!-- قیمت (کلی) -->
+        <div class="mb-4">
+          <div class="row">
+            <div class="col-md-6">
+              <label for="price-villa" class="form-label">قیمت کلی (تومان) <span class="required-star">*</span></label>
+              <input type="text" id="price-villa" class="form-control price-input" placeholder="مثال: 1,500,000,000">
+            </div>
+          </div>
+        </div>
+        
+        <!-- شرایط فروش -->
+        <div class="mb-4">
+          <label class="form-label">شرایط فروش <span class="required-star">*</span></label>
+          <div class="row">
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-villa-1" value="نقدی">
+                <label class="form-check-label" for="saleConditions-villa-1">نقدی</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-villa-2" value="قسطی">
+                <label class="form-check-label" for="saleConditions-villa-2">قسطی</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-villa-3" value="معاوضه">
+                <label class="form-check-label" for="saleConditions-villa-3">معاوضه</label>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-2">
+            <input type="text" id="saleConditionDetails-villa" class="form-control" placeholder="توضیحات شرایط فروش را وارد کنید">
+          </div>
+          
+          <div id="saleConditionError-villa" class="error hidden">لطفاً شرایط فروش را انتخاب کنید</div>
+        </div>
+        
+        <!-- آدرس -->
+        <div class="mb-4">
+          <label for="address-villa" class="form-label">آدرس <span class="required-star">*</span></label>
+          <textarea id="address-villa" class="form-control" rows="3" placeholder="آدرس دقیق ملک را وارد کنید"></textarea>
+        </div>
       </div>
       
       <!-- جزئیات زمین -->
@@ -987,15 +1239,15 @@
           <div class="row">
             <div class="col-6">
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="enclosed" id="enclosed-yes" value="بله">
-                <label class="form-check-label" for="enclosed-yes">بله</label>
+                <input class="form-check-input" type="radio" name="enclosed" id="enclosed-yes" value="هست">
+                <label class="form-check-label" for="enclosed-yes">هست</label>
               </div>
             </div>
             
             <div class="col-6">
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="enclosed" id="enclosed-no" value="خیر">
-                <label class="form-check-label" for="enclosed-no">خیر</label>
+                <input class="form-check-input" type="radio" name="enclosed" id="enclosed-no" value="نیست">
+                <label class="form-check-label" for="enclosed-no">نیست</label>
               </div>
             </div>
           </div>
@@ -1005,11 +1257,95 @@
           <label for="otherDetails-land" class="form-label">سایر توضیحات</label>
           <textarea id="otherDetails-land" class="form-control" rows="3" placeholder="هر توضیح دیگری که لازم است وارد کنید"></textarea>
         </div>
+        
+        <!-- وضعیت سند -->
+        <div class="mb-4 mt-4">
+          <label class="form-label">وضعیت سند <span class="required-star">*</span></label>
+          <div class="row">
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="document" id="document-land-1" value="سند تک برگ">
+                <label class="form-check-label" for="document-land-1">سند تک برگ</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="document" id="document-land-2" value="سند دفترچه‌ای">
+                <label class="form-check-label" for="document-land-2">سند دفترچه‌ای</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="document" id="document-land-3" value="قولنامه‌ای">
+                <label class="form-check-label" for="document-land-3">قولنامه‌ای</label>
+              </div>
+            </div>
+          </div>
+          
+          <div id="documentError-land" class="error hidden">لطفاً وضعیت سند را انتخاب کنید</div>
+        </div>
+        
+        <!-- قیمت (متری) -->
+        <div class="mb-4">
+          <h3>قیمت</h3>
+          <div class="row">
+            <div class="col-md-6">
+              <label for="pricePerMeter-land" class="form-label">قیمت متری (تومان)</label>
+              <input type="text" id="pricePerMeter-land" class="form-control price-input" placeholder="مثال: 10,000,000">
+            </div>
+            
+            <div class="col-md-6">
+              <label for="totalPrice-land" class="form-label">قیمت کلی (تومان) <span class="required-star">*</span></label>
+              <input type="text" id="totalPrice-land" class="form-control price-input" placeholder="مثال: 1,500,000,000">
+            </div>
+          </div>
+        </div>
+        
+        <!-- شرایط فروش -->
+        <div class="mb-4">
+          <label class="form-label">شرایط فروش <span class="required-star">*</span></label>
+          <div class="row">
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-land-1" value="نقدی">
+                <label class="form-check-label" for="saleConditions-land-1">نقدی</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-land-2" value="قسطی">
+                <label class="form-check-label" for="saleConditions-land-2">قسطی</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-land-3" value="معاوضه">
+                <label class="form-check-label" for="saleConditions-land-3">معاوضه</label>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-2">
+            <input type="text" id="saleConditionDetails-land" class="form-control" placeholder="توضیحات شرایط فروش را وارد کنید">
+          </div>
+          
+          <div id="saleConditionError-land" class="error hidden">لطفاً شرایط فروش را انتخاب کنید</div>
+        </div>
+        
+        <!-- آدرس -->
+        <div class="mb-4">
+          <label for="address-land" class="form-label">آدرس <span class="required-star">*</span></label>
+          <textarea id="address-land" class="form-control" rows="3" placeholder="آدرس دقیق ملک را وارد کنید"></textarea>
+        </div>
       </div>
       
       <!-- جزئیات تجاری -->
       <div id="commercialDetails" class="form-section hidden">
-        <h3>جزئیات تجاری</h3>
+        <h3>جزئیات تجاری / مغازه</h3>
         
         <div class="row">
           <div class="col-md-4">
@@ -1036,6 +1372,90 @@
         <div class="mt-3">
           <label for="otherDetails-commercial" class="form-label">چه امکاناتی دارد</label>
           <textarea id="otherDetails-commercial" class="form-control" rows="3" placeholder="امکانات مغازه را وارد کنید"></textarea>
+        </div>
+        
+        <!-- وضعیت سند -->
+        <div class="mb-4 mt-4">
+          <label class="form-label">وضعیت سند <span class="required-star">*</span></label>
+          <div class="row">
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="document" id="document-commercial-1" value="سند تک برگ">
+                <label class="form-check-label" for="document-commercial-1">سند تک برگ</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="document" id="document-commercial-2" value="سند دفترچه‌ای">
+                <label class="form-check-label" for="document-commercial-2">سند دفترچه‌ای</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="document" id="document-commercial-3" value="قولنامه‌ای">
+                <label class="form-check-label" for="document-commercial-3">قولنامه‌ای</label>
+              </div>
+            </div>
+          </div>
+          
+          <div id="documentError-commercial" class="error hidden">لطفاً وضعیت سند را انتخاب کنید</div>
+        </div>
+        
+        <!-- قیمت (متری) -->
+        <div class="mb-4">
+          <h3>قیمت</h3>
+          <div class="row">
+            <div class="col-md-6">
+              <label for="pricePerMeter-commercial" class="form-label">قیمت متری (تومان)</label>
+              <input type="text" id="pricePerMeter-commercial" class="form-control price-input" placeholder="مثال: 10,000,000">
+            </div>
+            
+            <div class="col-md-6">
+              <label for="totalPrice-commercial" class="form-label">قیمت کلی (تومان) <span class="required-star">*</span></label>
+              <input type="text" id="totalPrice-commercial" class="form-control price-input" placeholder="مثال: 1,500,000,000">
+            </div>
+          </div>
+        </div>
+        
+        <!-- شرایط فروش -->
+        <div class="mb-4">
+          <label class="form-label">شرایط فروش <span class="required-star">*</span></label>
+          <div class="row">
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-commercial-1" value="نقدی">
+                <label class="form-check-label" for="saleConditions-commercial-1">نقدی</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-commercial-2" value="قسطی">
+                <label class="form-check-label" for="saleConditions-commercial-2">قسطی</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-commercial-3" value="معاوضه">
+                <label class="form-check-label" for="saleConditions-commercial-3">معاوضه</label>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-2">
+            <input type="text" id="saleConditionDetails-commercial" class="form-control" placeholder="توضیحات شرایط فروش را وارد کنید">
+          </div>
+          
+          <div id="saleConditionError-commercial" class="error hidden">لطفاً شرایط فروش را انتخاب کنید</div>
+        </div>
+        
+        <!-- آدرس -->
+        <div class="mb-4">
+          <label for="address-commercial" class="form-label">آدرس <span class="required-star">*</span></label>
+          <textarea id="address-commercial" class="form-control" rows="3" placeholder="آدرس دقیق ملک را وارد کنید"></textarea>
         </div>
       </div>
       
@@ -1123,6 +1543,90 @@
           <label for="amenities-old" class="form-label">امکانات</label>
           <textarea id="amenities-old" class="form-control" rows="3" placeholder="امکانات ملک را وارد کنید"></textarea>
         </div>
+        
+        <!-- وضعیت سند -->
+        <div class="mb-4 mt-4">
+          <label class="form-label">وضعیت سند <span class="required-star">*</span></label>
+          <div class="row">
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="document" id="document-old-1" value="سند تک برگ">
+                <label class="form-check-label" for="document-old-1">سند تک برگ</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="document" id="document-old-2" value="سند دفترچه‌ای">
+                <label class="form-check-label" for="document-old-2">سند دفترچه‌ای</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="document" id="document-old-3" value="قولنامه‌ای">
+                <label class="form-check-label" for="document-old-3">قولنامه‌ای</label>
+              </div>
+            </div>
+          </div>
+          
+          <div id="documentError-old" class="error hidden">لطفاً وضعیت سند را انتخاب کنید</div>
+        </div>
+        
+        <!-- قیمت (متری) -->
+        <div class="mb-4">
+          <h3>قیمت</h3>
+          <div class="row">
+            <div class="col-md-6">
+              <label for="pricePerMeter-old" class="form-label">قیمت متری (تومان)</label>
+              <input type="text" id="pricePerMeter-old" class="form-control price-input" placeholder="مثال: 10,000,000">
+            </div>
+            
+            <div class="col-md-6">
+              <label for="totalPrice-old" class="form-label">قیمت کلی (تومان) <span class="required-star">*</span></label>
+              <input type="text" id="totalPrice-old" class="form-control price-input" placeholder="مثال: 1,500,000,000">
+            </div>
+          </div>
+        </div>
+        
+        <!-- شرایط فروش -->
+        <div class="mb-4">
+          <label class="form-label">شرایط فروش <span class="required-star">*</span></label>
+          <div class="row">
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-old-1" value="نقدی">
+                <label class="form-check-label" for="saleConditions-old-1">نقدی</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-old-2" value="قسطی">
+                <label class="form-check-label" for="saleConditions-old-2">قسطی</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-old-3" value="معاوضه">
+                <label class="form-check-label" for="saleConditions-old-3">معاوضه</label>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-2">
+            <input type="text" id="saleConditionDetails-old" class="form-control" placeholder="توضیحات شرایط فروش را وارد کنید">
+          </div>
+          
+          <div id="saleConditionError-old" class="error hidden">لطفاً شرایط فروش را انتخاب کنید</div>
+        </div>
+        
+        <!-- آدرس -->
+        <div class="mb-4">
+          <label for="address-old" class="form-label">آدرس <span class="required-star">*</span></label>
+          <textarea id="address-old" class="form-control" rows="3" placeholder="آدرس دقیق ملک را وارد کنید"></textarea>
+        </div>
       </div>
       
       <!-- جزئیات پیش‌فروش آپارتمان -->
@@ -1153,12 +1657,12 @@
           </div>
           
           <div class="col-md-3">
-            <label for="floorNumber-presale-apartment" class="form-label">طبقه چندم</label>
+            <label for="floorNumber-presale-apartment" class="form-label">طبقه چندم؟</label>
             <input type="text" id="floorNumber-presale-apartment" class="form-control numeric-only">
           </div>
           
           <div class="col-md-3">
-            <label for="unitsPerFloor-presale-apartment" class="form-label">واحد در هر طبقه</label>
+            <label for="unitsPerFloor-presale-apartment" class="form-label">تعداد واحد در هر طبقه</label>
             <input type="text" id="unitsPerFloor-presale-apartment" class="form-control numeric-only">
           </div>
         </div>
@@ -1261,6 +1765,90 @@
           <label for="otherDetails-presale-apartment" class="form-label">سایر توضیحات و امکانات</label>
           <textarea id="otherDetails-presale-apartment" class="form-control" rows="3" placeholder="هر توضیح دیگری که لازم است وارد کنید"></textarea>
         </div>
+        
+        <!-- وضعیت سند -->
+        <div class="mb-4 mt-4">
+          <label class="form-label">وضعیت سند <span class="required-star">*</span></label>
+          <div class="row">
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="document" id="document-presale-apartment-1" value="سند تک برگ">
+                <label class="form-check-label" for="document-presale-apartment-1">سند تک برگ</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="document" id="document-presale-apartment-2" value="سند دفترچه‌ای">
+                <label class="form-check-label" for="document-presale-apartment-2">سند دفترچه‌ای</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="document" id="document-presale-apartment-3" value="قولنامه‌ای">
+                <label class="form-check-label" for="document-presale-apartment-3">قولنامه‌ای</label>
+              </div>
+            </div>
+          </div>
+          
+          <div id="documentError-presale-apartment" class="error hidden">لطفاً وضعیت سند را انتخاب کنید</div>
+        </div>
+        
+        <!-- قیمت (متری) -->
+        <div class="mb-4">
+          <h3>قیمت</h3>
+          <div class="row">
+            <div class="col-md-6">
+              <label for="pricePerMeter-presale-apartment" class="form-label">قیمت متری (تومان)</label>
+              <input type="text" id="pricePerMeter-presale-apartment" class="form-control price-input" placeholder="مثال: 10,000,000">
+            </div>
+            
+            <div class="col-md-6">
+              <label for="totalPrice-presale-apartment" class="form-label">قیمت کلی (تومان) <span class="required-star">*</span></label>
+              <input type="text" id="totalPrice-presale-apartment" class="form-control price-input" placeholder="مثال: 1,500,000,000">
+            </div>
+          </div>
+        </div>
+        
+        <!-- شرایط فروش -->
+        <div class="mb-4">
+          <label class="form-label">شرایط فروش <span class="required-star">*</span></label>
+          <div class="row">
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-presale-apartment-1" value="نقدی">
+                <label class="form-check-label" for="saleConditions-presale-apartment-1">نقدی</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-presale-apartment-2" value="قسطی">
+                <label class="form-check-label" for="saleConditions-presale-apartment-2">قسطی</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-4">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-presale-apartment-3" value="معاوضه">
+                <label class="form-check-label" for="saleConditions-presale-apartment-3">معاوضه</label>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-2">
+            <input type="text" id="saleConditionDetails-presale-apartment" class="form-control" placeholder="توضیحات شرایط فروش را وارد کنید">
+          </div>
+          
+          <div id="saleConditionError-presale-apartment" class="error hidden">لطفاً شرایط فروش را انتخاب کنید</div>
+        </div>
+        
+        <!-- آدرس -->
+        <div class="mb-4">
+          <label for="address-presale-apartment" class="form-label">آدرس <span class="required-star">*</span></label>
+          <textarea id="address-presale-apartment" class="form-control" rows="3" placeholder="آدرس دقیق ملک را وارد کنید"></textarea>
+        </div>
       </div>
       
       <!-- جزئیات پیش‌فروش ویلا -->
@@ -1292,67 +1880,135 @@
         </div>
         
         <div class="mt-3">
+          <label class="form-label">مشخصات آشپزخانه</label>
+          <div class="row">
+            <div class="col-6 col-md-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="kitchen-presale-villa" id="kitchen-presale-villa-1" value="کابینت فلزی">
+                <label class="form-check-label" for="kitchen-presale-villa-1">کابینت فلزی</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="kitchen-presale-villa" id="kitchen-presale-villa-2" value="کابینت MDF">
+                <label class="form-check-label" for="kitchen-presale-villa-2">کابینت MDF</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="kitchen-presale-villa" id="kitchen-presale-villa-3" value="هایگلس">
+                <label class="form-check-label" for="kitchen-presale-villa-3">هایگلس</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="kitchen-presale-villa" id="kitchen-presale-villa-4" value="ممبران">
+                <label class="form-check-label" for="kitchen-presale-villa-4">ممبران</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="kitchen-presale-villa" id="kitchen-presale-villa-5" value="اجاق گاز">
+                <label class="form-check-label" for="kitchen-presale-villa-5">اجاق گاز</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="kitchen-presale-villa" id="kitchen-presale-villa-6" value="هود">
+                <label class="form-check-label" for="kitchen-presale-villa-6">هود</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="kitchen-presale-villa" id="kitchen-presale-villa-7" value="سینک">
+                <label class="form-check-label" for="kitchen-presale-villa-7">سینک</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="kitchen-presale-villa" id="kitchen-presale-villa-8" value="فر">
+                <label class="form-check-label" for="kitchen-presale-villa-8">فر</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="kitchen-presale-villa" id="kitchen-presale-villa-9" value="مطبخ">
+                <label class="form-check-label" for="kitchen-presale-villa-9">مطبخ</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="kitchen-presale-villa" id="kitchen-presale-villa-10" value="لاندری">
+                <label class="form-check-label" for="kitchen-presale-villa-10">لاندری</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="kitchen-presale-villa" id="kitchen-presale-villa-11" value="فول فرنیش">
+                <label class="form-check-label" for="kitchen-presale-villa-11">فول فرنیش</label>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="kitchen-presale-villa" id="kitchen-presale-villa-12" value="اپن">
+                <label class="form-check-label" for="kitchen-presale-villa-12">اپن</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mt-3">
           <label for="otherDetails-presale-villa" class="form-label">سایر توضیحات و امکانات</label>
           <textarea id="otherDetails-presale-villa" class="form-control" rows="3" placeholder="هر توضیح دیگری که لازم است وارد کنید"></textarea>
         </div>
-      </div>
-      
-      <!-- اطلاعات مشترک -->
-      <div id="commonDetails" class="form-section hidden">
-        <h2>اطلاعات مشترک</h2>
         
         <!-- وضعیت سند -->
-        <div class="mb-4">
+        <div class="mb-4 mt-4">
           <label class="form-label">وضعیت سند <span class="required-star">*</span></label>
           <div class="row">
             <div class="col-6 col-md-4">
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="document" id="document-1" value="سند تک برگ">
-                <label class="form-check-label" for="document-1">سند تک برگ</label>
+                <input class="form-check-input" type="radio" name="document" id="document-presale-villa-1" value="سند تک برگ">
+                <label class="form-check-label" for="document-presale-villa-1">سند تک برگ</label>
               </div>
             </div>
             
             <div class="col-6 col-md-4">
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="document" id="document-2" value="سند دفترچه‌ای">
-                <label class="form-check-label" for="document-2">سند دفترچه‌ای</label>
+                <input class="form-check-input" type="radio" name="document" id="document-presale-villa-2" value="سند دفترچه‌ای">
+                <label class="form-check-label" for="document-presale-villa-2">سند دفترچه‌ای</label>
               </div>
             </div>
             
             <div class="col-6 col-md-4">
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="document" id="document-3" value="قولنامه‌ای">
-                <label class="form-check-label" for="document-3">قولنامه‌ای</label>
+                <input class="form-check-input" type="radio" name="document" id="document-presale-villa-3" value="قولنامه‌ای">
+                <label class="form-check-label" for="document-presale-villa-3">قولنامه‌ای</label>
               </div>
             </div>
           </div>
           
-          <div id="documentError" class="error hidden">لطفاً وضعیت سند را انتخاب کنید</div>
-        </div>
-        
-        <!-- قیمت (متری) -->
-        <div id="priceSection-meter" class="mb-4 hidden">
-          <h3>قیمت</h3>
-          <div class="row">
-            <div class="col-md-6">
-              <label for="pricePerMeter" class="form-label">قیمت متری (تومان)</label>
-              <input type="text" id="pricePerMeter" class="form-control price-input" placeholder="مثال: 10,000,000">
-            </div>
-            
-            <div class="col-md-6">
-              <label for="totalPrice" class="form-label">قیمت کلی (تومان) <span class="required-star">*</span></label>
-              <input type="text" id="totalPrice" class="form-control price-input" placeholder="مثال: 1,500,000,000" readonly>
-            </div>
-          </div>
+          <div id="documentError-presale-villa" class="error hidden">لطفاً وضعیت سند را انتخاب کنید</div>
         </div>
         
         <!-- قیمت (کلی) -->
-        <div id="priceSection-normal" class="mb-4 hidden">
+        <div class="mb-4">
           <h3>قیمت</h3>
           <div class="row">
             <div class="col-md-6">
-              <label for="price" class="form-label">قیمت (تومان) <span class="required-star">*</span></label>
-              <input type="text" id="price" class="form-control price-input" placeholder="مثال: 1,500,000,000">
+              <label for="price-presale-villa" class="form-label">قیمت کلی (تومان) <span class="required-star">*</span></label>
+              <input type="text" id="price-presale-villa" class="form-control price-input" placeholder="مثال: 1,500,000,000">
             </div>
           </div>
         </div>
@@ -1363,37 +2019,37 @@
           <div class="row">
             <div class="col-6 col-md-4">
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-1" value="نقدی">
-                <label class="form-check-label" for="saleConditions-1">نقدی</label>
+                <input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-presale-villa-1" value="نقدی">
+                <label class="form-check-label" for="saleConditions-presale-villa-1">نقدی</label>
               </div>
             </div>
             
             <div class="col-6 col-md-4">
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-2" value="قسطی">
-                <label class="form-check-label" for="saleConditions-2">قسطی</label>
+                <input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-presale-villa-2" value="قسطی">
+                <label class="form-check-label" for="saleConditions-presale-villa-2">قسطی</label>
               </div>
             </div>
             
             <div class="col-6 col-md-4">
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-3" value="معاوضه">
-                <label class="form-check-label" for="saleConditions-3">معاوضه</label>
+                <input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-presale-villa-3" value="معاوضه">
+                <label class="form-check-label" for="saleConditions-presale-villa-3">معاوضه</label>
               </div>
             </div>
           </div>
           
           <div class="mt-2">
-            <input type="text" id="saleConditionDetails" class="form-control" placeholder="توضیحات شرایط فروش را وارد کنید">
+            <input type="text" id="saleConditionDetails-presale-villa" class="form-control" placeholder="توضیحات شرایط فروش را وارد کنید">
           </div>
           
-          <div id="saleConditionError" class="error hidden">لطفاً شرایط فروش را انتخاب کنید</div>
+          <div id="saleConditionError-presale-villa" class="error hidden">لطفاً شرایط فروش را انتخاب کنید</div>
         </div>
         
         <!-- آدرس -->
         <div class="mb-4">
-          <label for="address" class="form-label">آدرس <span class="required-star">*</span></label>
-          <textarea id="address" class="form-control" rows="3" placeholder="آدرس دقیق ملک را وارد کنید"></textarea>
+          <label for="address-presale-villa" class="form-label">آدرس <span class="required-star">*</span></label>
+          <textarea id="address-presale-villa" class="form-control" rows="3" placeholder="آدرس دقیق ملک را وارد کنید"></textarea>
         </div>
       </div>
       
@@ -1404,6 +2060,9 @@
           <button class="btn">انتخاب عکس</button>
           <input type="file" id="imageUpload" multiple accept="image/*" />
           <p class="upload-help">فرمت‌های مجاز: JPG و PNG - حداکثر حجم هر عکس: 5 مگابایت</p>
+        </div>
+        <div id="uploadProgress" class="progress hidden">
+          <div class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
         <div id="imagePreview" class="image-preview"></div>
       </div>
@@ -1419,36 +2078,41 @@
   <!-- منوی همبرگری -->
   <div id="menuOverlay" class="menu-overlay">
     <div id="menuClose" class="menu-close">×</div>
-    <div class="menu-items">
-      <a href="tel:09113930981" class="menu-item">
-        ۰۹۱۱۳۹۳۰۹۸۱ (کلیک کنید)
-        <span class="click-animation">👈</span>
-      </a>
-      <a href="tel:09112903932" class="menu-item">
-        ۰۹۱۱۲۹۰۳۹۳۲ (کلیک کنید)
-        <span class="click-animation">👈</span>
-      </a>
-      <a href="https://nshn.ir/rbW89MIxXInd" class="menu-item" target="_blank">
-        لوکیشن دفتر
-        <span class="click-animation">👈</span>
-      </a>
-      <a href="https://t.me/amlakmoein4" class="menu-item" target="_blank">
-        کانال معرفی ملک‌ها
-        <span class="click-animation">👈</span>
-      </a>
-      <a href="https://instagram.com/amlak.moein" class="menu-item" target="_blank">
-        اینستاگرام ما
-        <span class="click-animation">👈</span>
-      </a>
+    <div class="menu-content">
+      <table class="menu-table">
+        <tr>
+          <td>۰۹۱۱۳۹۳۰۹۸۱</td>
+          <td>کلیک کنید <span class="click-animation">👈</span></td>
+        </tr>
+        <tr>
+          <td>۰۹۱۱۲۹۰۳۹۳۲</td>
+          <td>کلیک کنید <span class="click-animation">👈</span></td>
+        </tr>
+        <tr>
+          <td>لوکیشن دفتر</td>
+          <td><span class="click-animation">👈</span></td>
+        </tr>
+        <tr>
+          <td>کانال معرفی ملک‌ها</td>
+          <td><span class="click-animation">👈</span></td>
+        </tr>
+        <tr>
+          <td>اینستاگرام ما</td>
+          <td><span class="click-animation">👈</span></td>
+        </tr>
+      </table>
     </div>
   </div>
   
   <!-- پیام موفقیت -->
   <div id="successOverlay" class="overlay">
     <div class="overlay-content">
-      <h3>اطلاعات با موفقیت ارسال شد</h3>
-      <p>از اینکه ملک خود را با ما به اشتراک گذاشتید، متشکریم.</p>
-      <p>کارشناسان ما در اسرع وقت با شما تماس خواهند گرفت.</p>
+      <div class="success-checkmark">
+        <div class="check-icon"></div>
+      </div>
+      <h3>اطلاعات شما با موفقیت ثبت شده‌اند</h3>
+      <p>در صورت نیاز با شما تماس می‌گیریم.</p>
+      <p class="text-muted small">املاک معین رامسر</p>
       <button id="closeSuccessBtn" class="btn btn-primary">بستن</button>
     </div>
   </div>
@@ -1489,6 +2153,11 @@
   
   <!-- کتابخانه EmailJS -->
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3.2.0/dist/email.min.js"></script>
+  
+  <!-- صدای موفقیت -->
+  <audio id="successSound" preload="auto">
+    <source src="https://assets.mixkit.co/active_storage/sfx/2005/2005-preview.mp3" type="audio/mpeg">
+  </audio>
   
   <!-- کد جاوااسکریپت -->
   <script src="script.js"></script>
