@@ -26,8 +26,8 @@ document.addEventListener('DOMContentLoaded', function() {
   const confirmNoBtn = document.getElementById('confirmNoBtn');
   
   // تنظیمات تلگرام
-  const TELEGRAM_BOT_TOKEN = '6928869739:AAHJBmkpGOQb-YZSRQjf_Hhb2Wy5XoHrLjI';
-  const TELEGRAM_CHAT_ID = '179124746';
+  const TELEGRAM_BOT_TOKEN = '8105224277:AAF0dfXlg3EMCt8L-R4Q1Fe70nb3EtKiFWA';
+  const TELEGRAM_CHAT_ID = '@Mohsenmoein7';
   
   // آرایه‌ای برای نگهداری فایل‌های عکس
   let selectedImages = [];
@@ -43,9 +43,11 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   
   // بستن پیام موفقیت
-  closeSuccessBtn.addEventListener('click', function() {
-    successOverlay.style.display = 'none';
-  });
+  if (closeSuccessBtn) {
+    closeSuccessBtn.addEventListener('click', function() {
+      successOverlay.style.display = 'none';
+    });
+  }
   
   // کلیک بیرون از منو برای بستن منو
   menuOverlay.addEventListener('click', function(e) {
@@ -199,6 +201,104 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
   
+  // محدود کردن ورودی به فقط اعداد برای فیلدهای عددی
+  const numericInputs = document.querySelectorAll('.numeric-only');
+  numericInputs.forEach(input => {
+    input.addEventListener('input', function() {
+      this.value = this.value.replace(/[^0-9]/g, '');
+    });
+  });
+  
+  // محدود کردن ورودی به فقط زبان فارسی برای فیلدهای متنی
+  const persianInputs = document.querySelectorAll('.persian-only');
+  persianInputs.forEach(input => {
+    input.addEventListener('input', function() {
+      const persianPattern = /^[\u0600-\u06FF\s\n.،؛:؟!«»\-_]+$/;
+      let newValue = '';
+      for (let i = 0; i < this.value.length; i++) {
+        const char = this.value.charAt(i);
+        if (char === ' ' || char === '\n' || char === '.' || char === '،' || char === '؛' || 
+            char === ':' || char === '؟' || char === '!' || char === '«' || char === '»' || 
+            char === '-' || char === '_' || persianPattern.test(char)) {
+          newValue += char;
+        }
+      }
+      this.value = newValue;
+    });
+  });
+  
+  // فرمت‌دهی قیمت (سه رقم سه رقم)
+  const priceInputs = document.querySelectorAll('.price-input');
+  
+  priceInputs.forEach(input => {
+    input.addEventListener('input', function() {
+      // فقط اعداد را نگه دار
+      let value = this.value.replace(/[^0-9]/g, '');
+      
+      // فرمت‌دهی سه رقم سه رقم
+      if (value) {
+        value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      }
+      
+      this.value = value;
+    });
+  });
+
+  // محاسبه قیمت کل بر اساس متراژ و قیمت متری
+  const pricePerMeterInput = document.getElementById('pricePerMeter');
+  const totalPriceInput = document.getElementById('totalPrice');
+  const landAreaApartmentInput = document.getElementById('landArea-apartment');
+  const unitAreaApartmentInput = document.getElementById('unitArea-apartment');
+  const landAreaLandInput = document.getElementById('landArea-land');
+  const shopAreaInput = document.getElementById('shopArea');
+
+  // برای آپارتمان
+  if (pricePerMeterInput && totalPriceInput) {
+    pricePerMeterInput.addEventListener('input', function() {
+      const propertyType = document.querySelector('input[name="propertyType"]:checked')?.value;
+      if (propertyType === 'آپارتمان') {
+        calculateTotalPrice(unitAreaApartmentInput);
+      } else if (propertyType === 'زمین') {
+        calculateTotalPrice(landAreaLandInput);
+      } else if (propertyType === 'تجاری') {
+        calculateTotalPrice(shopAreaInput);
+      }
+    });
+
+    // همچنین وقتی متراژ تغییر می‌کند، قیمت کل را محاسبه کن
+    unitAreaApartmentInput?.addEventListener('input', function() {
+      const propertyType = document.querySelector('input[name="propertyType"]:checked')?.value;
+      if (propertyType === 'آپارتمان') {
+        calculateTotalPrice(this);
+      }
+    });
+
+    landAreaLandInput?.addEventListener('input', function() {
+      const propertyType = document.querySelector('input[name="propertyType"]:checked')?.value;
+      if (propertyType === 'زمین') {
+        calculateTotalPrice(this);
+      }
+    });
+
+    shopAreaInput?.addEventListener('input', function() {
+      const propertyType = document.querySelector('input[name="propertyType"]:checked')?.value;
+      if (propertyType === 'تجاری') {
+        calculateTotalPrice(this);
+      }
+    });
+  }
+
+  function calculateTotalPrice(areaInput) {
+    if (pricePerMeterInput.value && areaInput.value) {
+      const pricePerMeter = parseInt(pricePerMeterInput.value.replace(/,/g, ''));
+      const area = parseInt(areaInput.value);
+      if (!isNaN(pricePerMeter) && !isNaN(area)) {
+        const totalPrice = pricePerMeter * area;
+        totalPriceInput.value = totalPrice.toLocaleString('en-US');
+      }
+    }
+  }
+  
   // آپلود عکس
   const imageUpload = document.getElementById('imageUpload');
   const imagePreview = document.getElementById('imagePreview');
@@ -346,6 +446,110 @@ document.addEventListener('DOMContentLoaded', function() {
       isValid = false;
     } else {
       typeError.classList.add('hidden');
+      
+      // اعتبارسنجی فیلدهای اجباری مختص هر نوع ملک
+      if (propertyTypeSelected.value === 'آپارتمان') {
+        if (!document.getElementById('landArea-apartment').value) {
+          document.getElementById('landArea-apartment').classList.add('error-field');
+          isValid = false;
+        }
+        if (!document.getElementById('unitArea-apartment').value) {
+          document.getElementById('unitArea-apartment').classList.add('error-field');
+          isValid = false;
+        }
+        if (!document.getElementById('roomCount-apartment').value) {
+          document.getElementById('roomCount-apartment').classList.add('error-field');
+          isValid = false;
+        }
+        if (!document.getElementById('buildYear-apartment').value) {
+          document.getElementById('buildYear-apartment').classList.add('error-field');
+          isValid = false;
+        }
+      } else if (propertyTypeSelected.value === 'ویلا') {
+        if (!document.getElementById('landArea-villa').value) {
+          document.getElementById('landArea-villa').classList.add('error-field');
+          isValid = false;
+        }
+        if (!document.getElementById('buildingArea-villa').value) {
+          document.getElementById('buildingArea-villa').classList.add('error-field');
+          isValid = false;
+        }
+        if (!document.getElementById('roomCount-villa').value) {
+          document.getElementById('roomCount-villa').classList.add('error-field');
+          isValid = false;
+        }
+        if (!document.getElementById('buildYear-villa').value) {
+          document.getElementById('buildYear-villa').classList.add('error-field');
+          isValid = false;
+        }
+      } else if (propertyTypeSelected.value === 'زمین') {
+        if (!document.getElementById('landArea-land').value) {
+          document.getElementById('landArea-land').classList.add('error-field');
+          isValid = false;
+        }
+        if (!document.getElementById('landUsage').value) {
+          document.getElementById('landUsage').classList.add('error-field');
+          isValid = false;
+        }
+      } else if (propertyTypeSelected.value === 'تجاری') {
+        if (!document.getElementById('shopArea').value) {
+          document.getElementById('shopArea').classList.add('error-field');
+          isValid = false;
+        }
+      } else if (propertyTypeSelected.value === 'کلنگی') {
+        if (!document.getElementById('landArea-old').value) {
+          document.getElementById('landArea-old').classList.add('error-field');
+          isValid = false;
+        }
+        if (!document.getElementById('buildingArea-old').value) {
+          document.getElementById('buildingArea-old').classList.add('error-field');
+          isValid = false;
+        }
+      } else if (propertyTypeSelected.value === 'پیش‌فروش') {
+        if (!document.getElementById('projectProgress').value) {
+          document.getElementById('projectProgress').classList.add('error-field');
+          isValid = false;
+        }
+        
+        const presaleType = document.querySelector('input[name="presaleType"]:checked');
+        if (presaleType) {
+          if (presaleType.value === 'آپارتمان') {
+            if (!document.getElementById('landArea-presale-apartment').value) {
+              document.getElementById('landArea-presale-apartment').classList.add('error-field');
+              isValid = false;
+            }
+            if (!document.getElementById('unitArea-presale-apartment').value) {
+              document.getElementById('unitArea-presale-apartment').classList.add('error-field');
+              isValid = false;
+            }
+            if (!document.getElementById('roomCount-presale-apartment').value) {
+              document.getElementById('roomCount-presale-apartment').classList.add('error-field');
+              isValid = false;
+            }
+          } else if (presaleType.value === 'ویلا') {
+            if (!document.getElementById('landArea-presale-villa').value) {
+              document.getElementById('landArea-presale-villa').classList.add('error-field');
+              isValid = false;
+            }
+            if (!document.getElementById('buildingArea-presale-villa').value) {
+              document.getElementById('buildingArea-presale-villa').classList.add('error-field');
+              isValid = false;
+            }
+            if (!document.getElementById('roomCount-presale-villa').value) {
+              document.getElementById('roomCount-presale-villa').classList.add('error-field');
+              isValid = false;
+            }
+            if (!document.getElementById('floorCount-presale-villa').value) {
+              document.getElementById('floorCount-presale-villa').classList.add('error-field');
+              isValid = false;
+            }
+          }
+        } else {
+          // نوع پیش‌فروش انتخاب نشده
+          isValid = false;
+          alert('لطفاً نوع پیش‌فروش را انتخاب کنید.');
+        }
+      }
     }
     
     // اعتبارسنجی وضعیت سند
@@ -368,6 +572,29 @@ document.addEventListener('DOMContentLoaded', function() {
       } else {
         saleConditionError.classList.add('hidden');
       }
+      
+      // اعتبارسنجی قیمت
+      if (!priceSectionMeter.classList.contains('hidden')) {
+        if (!document.getElementById('totalPrice').value) {
+          document.getElementById('totalPrice').classList.add('error-field');
+          isValid = false;
+        }
+      } else if (!priceSectionNormal.classList.contains('hidden')) {
+        if (!document.getElementById('price').value) {
+          document.getElementById('price').classList.add('error-field');
+          isValid = false;
+        }
+      }
+      
+      // اعتبارسنجی آدرس
+      if (!document.getElementById('address').value) {
+        document.getElementById('address').classList.add('error-field');
+        isValid = false;
+      }
+    }
+    
+    if (!isValid) {
+      alert('لطفاً فیلدهای الزامی را تکمیل کنید.');
     }
     
     return isValid;
@@ -385,7 +612,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // اضافه کردن داده‌های مختص نوع ملک
     if (formData.propertyType === 'آپارتمان') {
-      // اینجا مشکل لوکیشن را اصلاح کردیم
+      // اصلاح مشکل لوکیشن
       const locationRadio = document.querySelector('input[name="location-apartment"]:checked');
       formData.location = locationRadio ? locationRadio.value : '';
       formData.otherLocation = document.getElementById('otherLocation-apartment').value;
@@ -413,12 +640,12 @@ document.addEventListener('DOMContentLoaded', function() {
       // سایر توضیحات
       formData.otherDetails = document.getElementById('otherDetails-apartment').value;
       
-      // قیمت
-      formData.pricePerMeter = document.getElementById('pricePerMeter').value;
-      formData.totalPrice = document.getElementById('totalPrice').value;
+      // قیمت - حذف کاما از قیمت
+      formData.pricePerMeter = document.getElementById('pricePerMeter').value.replace(/[,٬]/g, '');
+      formData.totalPrice = document.getElementById('totalPrice').value.replace(/[,٬]/g, '');
       
     } else if (formData.propertyType === 'ویلا') {
-      // اینجا مشکل لوکیشن را اصلاح کردیم
+      // اصلاح مشکل لوکیشن
       const locationRadio = document.querySelector('input[name="location-villa"]:checked');
       formData.location = locationRadio ? locationRadio.value : '';
       formData.otherLocation = document.getElementById('otherLocation-villa').value;
@@ -442,11 +669,11 @@ document.addEventListener('DOMContentLoaded', function() {
       // سایر توضیحات
       formData.otherDetails = document.getElementById('otherDetails-villa').value;
       
-      // قیمت
-      formData.price = document.getElementById('price').value;
+      // قیمت - حذف کاما از قیمت
+      formData.price = document.getElementById('price').value.replace(/[,٬]/g, '');
       
     } else if (formData.propertyType === 'زمین') {
-      // اینجا مشکل لوکیشن را اصلاح کردیم
+      // اصلاح مشکل لوکیشن
       const locationRadio = document.querySelector('input[name="location-land"]:checked');
       formData.location = locationRadio ? locationRadio.value : '';
       formData.otherLocation = document.getElementById('otherLocation-land').value;
@@ -455,13 +682,20 @@ document.addEventListener('DOMContentLoaded', function() {
       formData.landWidth = document.getElementById('landWidth').value;
       formData.landDepth = document.getElementById('landDepth').value;
       formData.alleyWidth = document.getElementById('alleyWidth').value;
-      formData.enclosed = document.querySelector('input[name="enclosed"]:checked')?.value || '';
-      formData.position = document.querySelector('input[name="position"]:checked')?.value || '';
+      
+      // اصلاح مشکل لوکیشن برای محصور
+      const enclosedRadio = document.querySelector('input[name="enclosed"]:checked');
+      formData.enclosed = enclosedRadio ? enclosedRadio.value : '';
+      
+      // اصلاح مشکل لوکیشن برای موقعیت
+      const positionRadio = document.querySelector('input[name="position"]:checked');
+      formData.position = positionRadio ? positionRadio.value : '';
+      
       formData.otherDetails = document.getElementById('otherDetails-land').value;
       
-      // قیمت
-      formData.pricePerMeter = document.getElementById('pricePerMeter').value;
-      formData.totalPrice = document.getElementById('totalPrice').value;
+      // قیمت - حذف کاما از قیمت
+      formData.pricePerMeter = document.getElementById('pricePerMeter').value.replace(/[,٬]/g, '');
+      formData.totalPrice = document.getElementById('totalPrice').value.replace(/[,٬]/g, '');
       
     } else if (formData.propertyType === 'تجاری') {
       formData.shopArea = document.getElementById('shopArea').value;
@@ -470,32 +704,38 @@ document.addEventListener('DOMContentLoaded', function() {
       formData.shopDetails = document.getElementById('shopDetails').value;
       formData.otherDetails = document.getElementById('otherDetails-commercial').value;
       
-      // قیمت
-      formData.pricePerMeter = document.getElementById('pricePerMeter').value;
-      formData.totalPrice = document.getElementById('totalPrice').value;
+      // قیمت - حذف کاما از قیمت
+      formData.pricePerMeter = document.getElementById('pricePerMeter').value.replace(/[,٬]/g, '');
+      formData.totalPrice = document.getElementById('totalPrice').value.replace(/[,٬]/g, '');
       
     } else if (formData.propertyType === 'کلنگی') {
-      // اینجا مشکل لوکیشن را اصلاح کردیم
+      // اصلاح مشکل لوکیشن
       const locationRadio = document.querySelector('input[name="location-old"]:checked');
       formData.location = locationRadio ? locationRadio.value : '';
       formData.otherLocation = document.getElementById('otherLocation-old').value;
       formData.landArea = document.getElementById('landArea-old').value;
       formData.buildingArea = document.getElementById('buildingArea-old').value;
-      formData.livability = document.querySelector('input[name="livability"]:checked')?.value || '';
+      
+      // اصلاح مشکل لوکیشن برای وضعیت سکونت
+      const livabilityRadio = document.querySelector('input[name="livability"]:checked');
+      formData.livability = livabilityRadio ? livabilityRadio.value : '';
+      
       formData.landWidth = document.getElementById('landWidth-old').value;
       formData.landDepth = document.getElementById('landDepth-old').value;
       formData.utilities = Array.from(document.querySelectorAll('input[name="utilities"]:checked')).map(el => el.value).join(', ');
       formData.amenities = document.getElementById('amenities-old').value;
       
-      // قیمت
-      formData.price = document.getElementById('price').value;
+      // قیمت - حذف کاما از قیمت
+      formData.price = document.getElementById('price').value.replace(/[,٬]/g, '');
       
     } else if (formData.propertyType === 'پیش‌فروش') {
-      formData.presaleType = document.querySelector('input[name="presaleType"]:checked')?.value || '';
+      // اصلاح مشکل لوکیشن
+      const presaleTypeRadio = document.querySelector('input[name="presaleType"]:checked');
+      formData.presaleType = presaleTypeRadio ? presaleTypeRadio.value : '';
       formData.projectProgress = document.getElementById('projectProgress').value;
       
       if (formData.presaleType === 'آپارتمان') {
-        // اینجا مشکل لوکیشن را اصلاح کردیم
+        // اصلاح مشکل لوکیشن
         const locationRadio = document.querySelector('input[name="location-presale-apartment"]:checked');
         formData.location = locationRadio ? locationRadio.value : '';
         formData.otherLocation = document.getElementById('otherLocation-presale-apartment').value;
@@ -510,7 +750,7 @@ document.addEventListener('DOMContentLoaded', function() {
         formData.otherKitchen = document.getElementById('otherKitchen-presale-apartment').value;
         formData.otherDetails = document.getElementById('otherDetails-presale-apartment').value;
       } else if (formData.presaleType === 'ویلا') {
-        // اینجا مشکل لوکیشن را اصلاح کردیم
+        // اصلاح مشکل لوکیشن
         const locationRadio = document.querySelector('input[name="location-presale-villa"]:checked');
         formData.location = locationRadio ? locationRadio.value : '';
         formData.otherLocation = document.getElementById('otherLocation-presale-villa').value;
@@ -521,8 +761,8 @@ document.addEventListener('DOMContentLoaded', function() {
         formData.otherDetails = document.getElementById('otherDetails-presale-villa').value;
       }
       
-      // قیمت
-      formData.price = document.getElementById('price').value;
+      // قیمت - حذف کاما از قیمت
+      formData.price = document.getElementById('price').value.replace(/[,٬]/g, '');
     }
     
     // اضافه کردن داده‌های مشترک
@@ -603,10 +843,10 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       
       if (formData.pricePerMeter) {
-        message += `${formData.pricePerMeter} تومان متری\n`;
+        message += `${parseInt(formData.pricePerMeter).toLocaleString('fa-IR')} تومان متری\n`;
       }
       
-      message += `${formData.totalPrice} تومان کل\n`;
+      message += `${parseInt(formData.totalPrice).toLocaleString('fa-IR')} تومان کل\n`;
       
     } else if (formData.propertyType === 'ویلا') {
       if (formData.location) {
@@ -650,7 +890,7 @@ document.addEventListener('DOMContentLoaded', function() {
         message += `${formData.otherDetails}\n`;
       }
       
-      message += `${formData.price} تومان\n`;
+      message += `${parseInt(formData.price).toLocaleString('fa-IR')} تومان\n`;
       
     } else if (formData.propertyType === 'زمین') {
       if (formData.location) {
@@ -689,10 +929,10 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       
       if (formData.pricePerMeter) {
-        message += `${formData.pricePerMeter} تومان متری\n`;
+        message += `${parseInt(formData.pricePerMeter).toLocaleString('fa-IR')} تومان متری\n`;
       }
       
-      message += `${formData.totalPrice} تومان کل\n`;
+      message += `${parseInt(formData.totalPrice).toLocaleString('fa-IR')} تومان کل\n`;
       
     } else if (formData.propertyType === 'تجاری') {
       message += `${formData.shopArea} متر مغازه\n`;
@@ -714,10 +954,10 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       
       if (formData.pricePerMeter) {
-        message += `${formData.pricePerMeter} تومان متری\n`;
+        message += `${parseInt(formData.pricePerMeter).toLocaleString('fa-IR')} تومان متری\n`;
       }
       
-      message += `${formData.totalPrice} تومان کل\n`;
+      message += `${parseInt(formData.totalPrice).toLocaleString('fa-IR')} تومان کل\n`;
       
     } else if (formData.propertyType === 'کلنگی') {
       if (formData.location) {
@@ -751,7 +991,7 @@ document.addEventListener('DOMContentLoaded', function() {
         message += `امکانات: ${formData.amenities}\n`;
       }
       
-      message += `${formData.price} تومان\n`;
+      message += `${parseInt(formData.price).toLocaleString('fa-IR')} تومان\n`;
       
     } else if (formData.propertyType === 'پیش‌فروش') {
       message += `نوع پیش‌فروش: ${formData.presaleType}\n`;
@@ -817,7 +1057,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       }
       
-      message += `${formData.price} تومان\n`;
+      message += `${parseInt(formData.price).toLocaleString('fa-IR')} تومان\n`;
     }
     
     // اضافه کردن داده‌های مشترک
@@ -876,22 +1116,37 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
-  // ارسال عکس‌ها به تلگرام
+  // ارسال عکس‌ها به تلگرام با نمایش درصد آپلود
   function sendImagesToTelegram() {
     let uploadedCount = 0;
     
     for (let i = 0; i < selectedImages.length; i++) {
+      const file = selectedImages[i];
       const formData = new FormData();
       formData.append('chat_id', TELEGRAM_CHAT_ID);
-      formData.append('photo', selectedImages[i]);
+      formData.append('photo', file);
       
-      fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, {
-        method: 'POST',
-        body: formData,
-      })
-      .then(response => response.json())
-      .then(data => {
+      // ایجاد کانتینر برای نمایش درصد آپلود
+      const imgContainer = imagePreview.children[i];
+      const progressOverlay = document.createElement('div');
+      progressOverlay.className = 'upload-progress';
+      progressOverlay.textContent = '0%';
+      imgContainer.appendChild(progressOverlay);
+      
+      // آپلود با نمایش پیشرفت
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`);
+      
+      xhr.upload.onprogress = function(e) {
+        if (e.lengthComputable) {
+          const percentComplete = Math.round((e.loaded / e.total) * 100);
+          progressOverlay.textContent = percentComplete + '%';
+        }
+      };
+      
+      xhr.onload = function() {
         uploadedCount++;
+        imgContainer.removeChild(progressOverlay);
         
         // اگر همه عکس‌ها آپلود شدند
         if (uploadedCount === selectedImages.length) {
@@ -904,10 +1159,18 @@ document.addEventListener('DOMContentLoaded', function() {
           selectedImages = [];
           hideAllDetails();
         }
-      })
-      .catch(error => {
-        console.error('Error:', error);
+      };
+      
+      xhr.onerror = function() {
         uploadedCount++;
+        imgContainer.removeChild(progressOverlay);
+        
+        // افزودن نشانگر خطا
+        const errorOverlay = document.createElement('div');
+        errorOverlay.className = 'upload-progress';
+        errorOverlay.textContent = 'خطا!';
+        errorOverlay.style.backgroundColor = 'rgba(255, 0, 0, 0.7)';
+        imgContainer.appendChild(errorOverlay);
         
         if (uploadedCount === selectedImages.length) {
           alert('برخی از عکس‌ها آپلود نشدند. اما اطلاعات ثبت شد.');
@@ -921,7 +1184,9 @@ document.addEventListener('DOMContentLoaded', function() {
           selectedImages = [];
           hideAllDetails();
         }
-      });
+      };
+      
+      xhr.send(formData);
     }
   }
   

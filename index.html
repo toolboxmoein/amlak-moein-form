@@ -535,6 +535,10 @@
       font-size: 16px;
       border-radius: 5px;
     }
+
+    .red-text {
+      color: red;
+    }
   </style>
 </head>
 <body>
@@ -562,7 +566,7 @@
           <a href="tel:+989112903932"><i class="fas fa-hand-pointer fa-beat"></i> (کلیک کنید) ۰۹۱۱۲۹۰۳۹۳۲</a>
         </li>
         <li class="location-btn">
-          <a href="https://maps.app.goo.gl/NWXkgHLXBvZQnuKi8" target="_blank"><i class="fas fa-map-marker-alt"></i> لوکیشن دفتر</a>
+          <a href="https://nshn.ir/rbW89pNxXKeG" target="_blank"><i class="fas fa-map-marker-alt"></i> لوکیشن دفتر</a>
         </li>
         <li class="instagram-btn">
           <a href="https://www.instagram.com/amlak.moein/" target="_blank"><i class="fab fa-instagram"></i> اینستاگرام ما</a>
@@ -600,12 +604,12 @@
     <div class="form-row">
       <div>
         <label for="firstName">نام <span style="color: red;">*</span></label>
-        <input type="text" id="firstName" required>
+        <input type="text" id="firstName" required placeholder="به فارسی تایپ کنید" class="persian-only">
         <p class="error hidden" id="firstNameError">لطفاً نام خود را فقط به زبان فارسی وارد کنید.</p>
       </div>
       <div>
         <label for="lastName">نام خانوادگی <span style="color: red;">*</span></label>
-        <input type="text" id="lastName" required>
+        <input type="text" id="lastName" required placeholder="به فارسی تایپ کنید" class="persian-only">
         <p class="error hidden" id="lastNameError">لطفاً نام خانوادگی خود را فقط به زبان فارسی وارد کنید.</p>
       </div>
     </div>
@@ -614,12 +618,12 @@
     <div class="form-row">
       <div>
         <label for="phone">شماره تماس <span style="color: red;">*</span></label>
-        <input type="text" id="phone" required>
+        <input type="text" id="phone" required class="numeric-only">
         <p class="error hidden" id="phoneError">شماره تماس باید ۱۱ رقم باشد.</p>
       </div>
       <div>
         <label for="altPhone">شماره تماس دیگر</label>
-        <input type="text" id="altPhone">
+        <input type="text" id="altPhone" class="numeric-only">
         <p class="error hidden" id="altPhoneError">لطفاً فقط عدد وارد کنید.</p>
       </div>
     </div>
@@ -664,7 +668,7 @@
       
       <div class="important-field">
         <label for="projectProgress">پروژه در حال حاضر در چه مرحله‌ای هست؟ <span style="color: red;">*</span></label>
-        <textarea id="projectProgress" rows="3" required></textarea>
+        <textarea id="projectProgress" rows="3" required class="persian-only"></textarea>
       </div>
     </div>
 
@@ -683,7 +687,7 @@
         </div>
         <div>
           <label for="otherLocation-apartment">سایر:</label>
-          <input type="text" id="otherLocation-apartment" class="short-field">
+          <input type="text" id="otherLocation-apartment" class="short-field persian-only">
         </div>
       </div>
 
@@ -691,11 +695,11 @@
       <div class="form-row">
         <div>
           <label for="landArea-apartment">متراژ زمین <span style="color: red;">*</span></label>
-          <input type="text" id="landArea-apartment" required>
+          <input type="text" id="landArea-apartment" required class="numeric-only">
         </div>
         <div>
           <label for="unitArea-apartment">متراژ واحد <span style="color: red;">*</span></label>
-          <input type="text" id="unitArea-apartment" required>
+          <input type="text" id="unitArea-apartment" required class="numeric-only">
         </div>
       </div>
 
@@ -703,11 +707,11 @@
       <div class="form-row">
         <div>
           <label for="roomCount-apartment">تعداد اتاق‌ها <span style="color: red;">*</span></label>
-          <input type="number" id="roomCount-apartment" required>
+          <input type="text" id="roomCount-apartment" required class="numeric-only">
         </div>
         <div>
           <label for="buildYear-apartment">سال ساخت <span style="color: red;">*</span></label>
-          <input type="number" id="buildYear-apartment" required>
+          <input type="text" id="buildYear-apartment" required class="numeric-only">
         </div>
       </div>
 
@@ -765,7 +769,7 @@
       </div>
       <div>
         <label for="otherKitchen-apartment">سایر موارد آشپزخانه:</label>
-        <input type="text" id="otherKitchen-apartment" class="full-width">
+        <input type="text" id="otherKitchen-apartment" class="full-width persian-only">
       </div>
 
       <!-- تاسیسات -->
@@ -781,7 +785,7 @@
         </div>
         <div>
           <label for="otherFacilities-apartment">سایر:</label>
-          <input type="text" id="otherFacilities-apartment" class="short-field">
+          <input type="text" id="otherFacilities-apartment" class="short-field persian-only">
         </div>
       </div>
 
@@ -815,7 +819,7 @@
       </div>
       <div>
         <label for="otherAmenities-apartment">سایر امکانات:</label>
-        <input type="text" id="otherAmenities-apartment" class="full-width">
+        <input type="text" id="otherAmenities-apartment" class="full-width persian-only">
       </div>
 
       <!-- مشاعات -->
@@ -864,12 +868,12 @@
       </div>
       <div>
         <label for="otherCommonAreas-apartment">سایر مشاعات:</label>
-        <input type="text" id="otherCommonAreas-apartment" class="full-width">
+        <input type="text" id="otherCommonAreas-apartment" class="full-width persian-only">
       </div>
 
       <!-- سایر توضیحات و امکانات -->
       <div class="section-title">سایر توضیحات و امکانات</div>
-      <textarea id="otherDetails-apartment" rows="4"></textarea>
+      <textarea id="otherDetails-apartment" rows="4" class="persian-only"></textarea>
     </div>
 
     <!-- بخش اطلاعات ویلا - در ابتدا مخفی است -->
@@ -887,7 +891,7 @@
         </div>
         <div>
           <label for="otherLocation-villa">سایر:</label>
-          <input type="text" id="otherLocation-villa" class="short-field">
+          <input type="text" id="otherLocation-villa" class="short-field persian-only">
         </div>
       </div>
 
@@ -895,11 +899,11 @@
       <div class="form-row">
         <div>
           <label for="landArea-villa">متراژ زمین <span style="color: red;">*</span></label>
-          <input type="text" id="landArea-villa" required>
+          <input type="text" id="landArea-villa" required class="numeric-only">
         </div>
         <div>
           <label for="buildingArea-villa">متراژ بنا <span style="color: red;">*</span></label>
-          <input type="text" id="buildingArea-villa" required>
+          <input type="text" id="buildingArea-villa" required class="numeric-only">
         </div>
       </div>
 
@@ -907,11 +911,11 @@
       <div class="form-row">
         <div>
           <label for="roomCount-villa">تعداد اتاق‌ها <span style="color: red;">*</span></label>
-          <input type="number" id="roomCount-villa" required>
+          <input type="text" id="roomCount-villa" required class="numeric-only">
         </div>
         <div>
           <label for="buildYear-villa">سال ساخت <span style="color: red;">*</span></label>
-          <input type="number" id="buildYear-villa" required>
+          <input type="text" id="buildYear-villa" required class="numeric-only">
         </div>
       </div>
 
@@ -969,7 +973,7 @@
       </div>
       <div>
         <label for="otherKitchen-villa">سایر موارد آشپزخانه:</label>
-        <input type="text" id="otherKitchen-villa" class="full-width">
+        <input type="text" id="otherKitchen-villa" class="full-width persian-only">
       </div>
 
       <!-- تاسیسات -->
@@ -985,7 +989,7 @@
         </div>
         <div>
           <label for="otherFacilities-villa">سایر:</label>
-          <input type="text" id="otherFacilities-villa" class="short-field">
+          <input type="text" id="otherFacilities-villa" class="short-field persian-only">
         </div>
       </div>
 
@@ -1031,12 +1035,12 @@
       </div>
       <div>
         <label for="otherAmenities-villa">سایر امکانات:</label>
-        <input type="text" id="otherAmenities-villa" class="full-width">
+        <input type="text" id="otherAmenities-villa" class="full-width persian-only">
       </div>
 
       <!-- سایر توضیحات و امکانات -->
       <div class="section-title">سایر توضیحات و امکانات</div>
-      <textarea id="otherDetails-villa" rows="4"></textarea>
+      <textarea id="otherDetails-villa" rows="4" class="persian-only"></textarea>
     </div>
 
     <!-- بخش اطلاعات زمین - در ابتدا مخفی است -->
@@ -1054,7 +1058,7 @@
         </div>
         <div>
           <label for="otherLocation-land">سایر:</label>
-          <input type="text" id="otherLocation-land" class="short-field">
+          <input type="text" id="otherLocation-land" class="short-field persian-only">
         </div>
       </div>
 
@@ -1062,11 +1066,11 @@
       <div class="form-row">
         <div>
           <label for="landArea-land">متراژ زمین <span style="color: red;">*</span></label>
-          <input type="text" id="landArea-land" required>
+          <input type="text" id="landArea-land" required class="numeric-only">
         </div>
         <div>
           <label for="landUsage">کاربری <span style="color: red;">*</span></label>
-          <input type="text" id="landUsage" required>
+          <input type="text" id="landUsage" required class="persian-only">
         </div>
       </div>
 
@@ -1074,11 +1078,11 @@
       <div class="form-row">
         <div>
           <label for="landWidth">بَر زمین</label>
-          <input type="text" id="landWidth">
+          <input type="text" id="landWidth" class="numeric-only">
         </div>
         <div>
           <label for="landDepth">عمق زمین</label>
-          <input type="text" id="landDepth">
+          <input type="text" id="landDepth" class="numeric-only">
         </div>
       </div>
 
@@ -1086,7 +1090,7 @@
       <div class="form-row">
         <div>
           <label for="alleyWidth">عرض کوچه</label>
-          <input type="text" id="alleyWidth">
+          <input type="text" id="alleyWidth" class="numeric-only">
         </div>
         <div class="enclosed-field">
           <label for="enclosed">محصور</label>
@@ -1120,7 +1124,7 @@
 
       <!-- سایر توضیحات -->
       <div class="section-title">سایر توضیحات</div>
-      <textarea id="otherDetails-land" rows="4"></textarea>
+      <textarea id="otherDetails-land" rows="4" class="persian-only"></textarea>
     </div>
 
     <!-- بخش اطلاعات تجاری - در ابتدا مخفی است -->
@@ -1129,25 +1133,25 @@
       <div class="form-row three-columns">
         <div>
           <label for="shopArea">متراژ مغازه <span style="color: red;">*</span></label>
-          <input type="text" id="shopArea" required>
+          <input type="text" id="shopArea" required class="numeric-only">
         </div>
         <div>
           <label for="shopHeight">ارتفاع مغازه</label>
-          <input type="text" id="shopHeight">
+          <input type="text" id="shopHeight" class="numeric-only">
         </div>
         <div>
           <label for="shopWidth">دهنه مغازه</label>
-          <input type="text" id="shopWidth">
+          <input type="text" id="shopWidth" class="numeric-only">
         </div>
       </div>
 
       <!-- اگر به شکل دیگری هست در پایین توضیح دهید -->
       <div class="section-title">اگر به شکل دیگری هست در پایین توضیح دهید</div>
-      <textarea id="shopDetails" rows="3"></textarea>
+      <textarea id="shopDetails" rows="3" class="persian-only"></textarea>
 
       <!-- امکانات، امتیازات و سایر توضیحات -->
       <div class="section-title">امکانات، امتیازات و سایر توضیحات</div>
-      <textarea id="otherDetails-commercial" rows="4"></textarea>
+      <textarea id="otherDetails-commercial" rows="4" class="persian-only"></textarea>
     </div>
 
     <!-- بخش اطلاعات کلنگی - در ابتدا مخفی است -->
@@ -1165,7 +1169,7 @@
         </div>
         <div>
           <label for="otherLocation-old">سایر:</label>
-          <input type="text" id="otherLocation-old" class="short-field">
+          <input type="text" id="otherLocation-old" class="short-field persian-only">
         </div>
       </div>
 
@@ -1173,11 +1177,11 @@
       <div class="form-row">
         <div>
           <label for="landArea-old">متراژ زمین <span style="color: red;">*</span></label>
-          <input type="text" id="landArea-old" required>
+          <input type="text" id="landArea-old" required class="numeric-only">
         </div>
         <div>
           <label for="buildingArea-old">متراژ بنا <span style="color: red;">*</span></label>
-          <input type="text" id="buildingArea-old" required>
+          <input type="text" id="buildingArea-old" required class="numeric-only">
         </div>
       </div>
 
@@ -1198,11 +1202,11 @@
       <div class="form-row">
         <div>
           <label for="landWidth-old">بَر زمین</label>
-          <input type="text" id="landWidth-old">
+          <input type="text" id="landWidth-old" class="numeric-only">
         </div>
         <div>
           <label for="landDepth-old">عمق زمین</label>
-          <input type="text" id="landDepth-old">
+          <input type="text" id="landDepth-old" class="numeric-only">
         </div>
       </div>
 
@@ -1229,7 +1233,7 @@
 
       <!-- امکانات -->
       <div class="section-title">امکانات</div>
-      <textarea id="amenities-old" rows="4" placeholder="امکانات موجود را وارد کنید..."></textarea>
+      <textarea id="amenities-old" rows="4" placeholder="امکانات موجود را وارد کنید..." class="persian-only"></textarea>
     </div>
 
     <!-- بخش اطلاعات پیش فروش آپارتمان - در ابتدا مخفی است -->
@@ -1247,7 +1251,7 @@
         </div>
         <div>
           <label for="otherLocation-presale-apartment">سایر:</label>
-          <input type="text" id="otherLocation-presale-apartment" class="short-field">
+          <input type="text" id="otherLocation-presale-apartment" class="short-field persian-only">
         </div>
       </div>
 
@@ -1255,15 +1259,15 @@
       <div class="form-row three-columns">
         <div>
           <label for="landArea-presale-apartment">متراژ زمین <span style="color: red;">*</span></label>
-          <input type="text" id="landArea-presale-apartment" required>
+          <input type="text" id="landArea-presale-apartment" required class="numeric-only">
         </div>
         <div>
           <label for="unitArea-presale-apartment">متراژ واحد <span style="color: red;">*</span></label>
-          <input type="text" id="unitArea-presale-apartment" required>
+          <input type="text" id="unitArea-presale-apartment" required class="numeric-only">
         </div>
         <div>
           <label for="roomCount-presale-apartment">تعداد اتاق <span style="color: red;">*</span></label>
-          <input type="number" id="roomCount-presale-apartment" required>
+          <input type="text" id="roomCount-presale-apartment" required class="numeric-only">
         </div>
       </div>
 
@@ -1271,22 +1275,22 @@
       <div class="form-row three-columns">
         <div>
           <label for="floorCount-presale-apartment">تعداد طبقه</label>
-          <input type="number" id="floorCount-presale-apartment">
+          <input type="text" id="floorCount-presale-apartment" class="numeric-only">
         </div>
         <div>
           <label for="floorNumber-presale-apartment">طبقه چندم؟</label>
-          <input type="number" id="floorNumber-presale-apartment">
+          <input type="text" id="floorNumber-presale-apartment" class="numeric-only">
         </div>
         <div>
           <label for="unitsPerFloor-presale-apartment">تعداد واحد در هر طبقه</label>
-          <input type="number" id="unitsPerFloor-presale-apartment">
+          <input type="text" id="unitsPerFloor-presale-apartment" class="numeric-only">
         </div>
       </div>
 
       <!-- توضیحات بیشتر -->
       <div>
         <label for="moreDetails-presale-apartment">توضیحات بیشتر را وارد کنید:</label>
-        <textarea id="moreDetails-presale-apartment" rows="3" class="full-width"></textarea>
+        <textarea id="moreDetails-presale-apartment" rows="3" class="full-width persian-only"></textarea>
       </div>
 
       <!-- مشخصات آشپزخانه -->
@@ -1307,12 +1311,12 @@
       </div>
       <div>
         <label for="otherKitchen-presale-apartment">توضیحات آشپزخانه:</label>
-        <textarea id="otherKitchen-presale-apartment" rows="2" class="full-width"></textarea>
+        <textarea id="otherKitchen-presale-apartment" rows="2" class="full-width persian-only"></textarea>
       </div>
 
       <!-- سایر توضیحات و امکانات -->
       <div class="section-title">سایر توضیحات و امکانات</div>
-      <textarea id="otherDetails-presale-apartment" rows="4"></textarea>
+      <textarea id="otherDetails-presale-apartment" rows="4" class="persian-only"></textarea>
     </div>
 
     <!-- بخش اطلاعات پیش فروش ویلا - در ابتدا مخفی است -->
@@ -1330,7 +1334,7 @@
         </div>
         <div>
           <label for="otherLocation-presale-villa">سایر:</label>
-          <input type="text" id="otherLocation-presale-villa" class="short-field">
+          <input type="text" id="otherLocation-presale-villa" class="short-field persian-only">
         </div>
       </div>
 
@@ -1338,11 +1342,11 @@
       <div class="form-row">
         <div>
           <label for="landArea-presale-villa">متراژ زمین <span style="color: red;">*</span></label>
-          <input type="text" id="landArea-presale-villa" required>
+          <input type="text" id="landArea-presale-villa" required class="numeric-only">
         </div>
         <div>
           <label for="buildingArea-presale-villa">متراژ بنا <span style="color: red;">*</span></label>
-          <input type="text" id="buildingArea-presale-villa" required>
+          <input type="text" id="buildingArea-presale-villa" required class="numeric-only">
         </div>
       </div>
 
@@ -1350,17 +1354,17 @@
       <div class="form-row">
         <div>
           <label for="roomCount-presale-villa">تعداد اتاق‌ها <span style="color: red;">*</span></label>
-          <input type="number" id="roomCount-presale-villa" required>
+          <input type="text" id="roomCount-presale-villa" required class="numeric-only">
         </div>
         <div>
           <label for="floorCount-presale-villa">تعداد طبقات <span style="color: red;">*</span></label>
-          <input type="number" id="floorCount-presale-villa" required>
+          <input type="text" id="floorCount-presale-villa" required class="numeric-only">
         </div>
       </div>
 
       <!-- سایر توضیحات و امکانات -->
       <div class="section-title">سایر توضیحات و امکانات</div>
-      <textarea id="otherDetails-presale-villa" rows="4"></textarea>
+      <textarea id="otherDetails-presale-villa" rows="4" class="persian-only"></textarea>
     </div>
 
     <!-- بخش‌های مشترک - در ابتدا مخفی است -->
@@ -1382,7 +1386,7 @@
         </div>
         <div>
           <label for="otherDocument">سایر:</label>
-          <input type="text" id="otherDocument" class="short-field">
+          <input type="text" id="otherDocument" class="short-field persian-only">
         </div>
       </div>
       <p class="error hidden" id="documentError">لطفاً وضعیت سند را مشخص کنید.</p>
@@ -1393,11 +1397,11 @@
         <div class="form-row">
           <div>
             <label for="pricePerMeter">قیمت متری</label>
-            <input type="text" id="pricePerMeter">
+            <input type="text" id="pricePerMeter" class="price-input">
           </div>
           <div>
             <label for="totalPrice">قیمت کلی <span style="color: red;">*</span></label>
-            <input type="text" id="totalPrice" required>
+            <input type="text" id="totalPrice" required class="price-input">
           </div>
         </div>
       </div>
@@ -1405,7 +1409,7 @@
       <!-- قیمت - برای سایر موارد -->
       <div id="priceSection-normal">
         <div class="section-title">قیمت <span style="color: red;">*</span></div>
-        <input type="text" id="price" required placeholder="قیمت به تومان">
+        <input type="text" id="price" required placeholder="قیمت به تومان" class="price-input">
       </div>
 
       <!-- شرایط فروش -->
@@ -1426,13 +1430,13 @@
       </div>
       <p class="error hidden" id="saleConditionError">لطفاً حداقل یک گزینه را انتخاب کنید.</p>
       <div>
-        <label for="saleConditionDetails">توضیحات بیشتر را وارد کنید:</label>
-        <textarea id="saleConditionDetails" rows="2" class="full-width"></textarea>
+        <label for="saleConditionDetails" class="red-text">توضیحات بیشتر را وارد کنید: (شرایط فروش و یا تهاتر/معاوضه را بنویسید)</label>
+        <textarea id="saleConditionDetails" rows="2" class="full-width persian-only"></textarea>
       </div>
 
       <!-- آدرس دقیق -->
       <div class="section-title">آدرس دقیق <span style="color: red;">*</span></div>
-      <textarea id="address" rows="3" required></textarea>
+      <textarea id="address" rows="3" required class="persian-only"></textarea>
     </div>
 
     <!-- آپلود عکس - در ابتدا مخفی است -->
@@ -1442,7 +1446,7 @@
         <div class="upload-btn">
           <span>برای آپلود عکس کلیک کنید یا عکس را اینجا رها کنید</span>
         </div>
-        <input type="file" id="imageUpload" multiple accept="image/*">
+        <input type="file" id="imageUpload" multiple accept="image/*" capture="environment">
       </div>
       <div class="image-preview" id="imagePreview"></div>
     </div>
