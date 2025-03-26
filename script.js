@@ -1,5 +1,8 @@
 // تنظیمات اولیه
 document.addEventListener('DOMContentLoaded', function() {
+  // تنظیمات EmailJS
+  emailjs.init("7zOCMQKI0bRjmv6cn");
+  
   // نمایش بخش‌های مختلف فرم بر اساس نوع ملک
   const propertyTypeRadios = document.querySelectorAll('input[name="propertyType"]');
   const presaleTypeRadios = document.querySelectorAll('input[name="presaleType"]');
@@ -108,6 +111,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // پاک کردن پیش‌نمایش عکس‌ها
     document.getElementById('imagePreview').innerHTML = '';
     uploadedImages = [];
+    
+    // پنهان کردن پیام‌های خطا
+    document.querySelectorAll('.error').forEach(error => {
+      error.classList.add('hidden');
+    });
+    
+    // پنهان کردن لیست خطاها
+    document.getElementById('validationErrors').classList.add('hidden');
+    
+    // حذف کلاس error-field از تمام فیلدها
+    document.querySelectorAll('.error-field').forEach(field => {
+      field.classList.remove('error-field');
+    });
   });
   
   confirmNoBtn.addEventListener('click', function() {
@@ -122,6 +138,11 @@ document.addEventListener('DOMContentLoaded', function() {
   // بستن پیام خطای عکس
   document.getElementById('closeImageErrorBtn').addEventListener('click', function() {
     document.getElementById('imageErrorOverlay').style.display = 'none';
+  });
+  
+  // بستن پیام خطای ارسال
+  document.getElementById('closeErrorBtn').addEventListener('click', function() {
+    document.getElementById('errorOverlay').style.display = 'none';
   });
   
   // آپلود عکس
@@ -182,6 +203,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // اعتبارسنجی فیلدهای فرم
   function validateForm() {
     let isValid = true;
+    let errorsList = [];
     
     // اعتبارسنجی نام و نام خانوادگی
     const firstName = document.getElementById('firstName');
@@ -189,21 +211,37 @@ document.addEventListener('DOMContentLoaded', function() {
     const firstNameError = document.getElementById('firstNameError');
     const lastNameError = document.getElementById('lastNameError');
     
+    // بررسی فارسی بودن نام
     if (!firstName.value.trim()) {
       firstNameError.textContent = 'لطفاً نام خود را وارد کنید';
       firstNameError.classList.remove('hidden');
       firstName.classList.add('error-field');
       isValid = false;
+      errorsList.push('نام');
+    } else if (!/^[\u0600-\u06FF\s]+$/.test(firstName.value.trim())) {
+      firstNameError.textContent = 'لطفاً فارسی تایپ کنید';
+      firstNameError.classList.remove('hidden');
+      firstName.classList.add('error-field');
+      isValid = false;
+      errorsList.push('نام (فارسی تایپ کنید)');
     } else {
       firstNameError.classList.add('hidden');
       firstName.classList.remove('error-field');
     }
     
+    // بررسی فارسی بودن نام خانوادگی
     if (!lastName.value.trim()) {
       lastNameError.textContent = 'لطفاً نام خانوادگی خود را وارد کنید';
       lastNameError.classList.remove('hidden');
       lastName.classList.add('error-field');
       isValid = false;
+      errorsList.push('نام خانوادگی');
+    } else if (!/^[\u0600-\u06FF\s]+$/.test(lastName.value.trim())) {
+      lastNameError.textContent = 'لطفاً فارسی تایپ کنید';
+      lastNameError.classList.remove('hidden');
+      lastName.classList.add('error-field');
+      isValid = false;
+      errorsList.push('نام خانوادگی (فارسی تایپ کنید)');
     } else {
       lastNameError.classList.add('hidden');
       lastName.classList.remove('error-field');
@@ -219,28 +257,10 @@ document.addEventListener('DOMContentLoaded', function() {
       phoneError.classList.remove('hidden');
       phone.classList.add('error-field');
       isValid = false;
+      errorsList.push('شماره تماس');
     } else {
       phoneError.classList.add('hidden');
       phone.classList.remove('error-field');
-    }
-    
-    // اعتبارسنجی شماره تماس دیگر
-    const altPhone = document.getElementById('altPhone');
-    const altPhoneError = document.getElementById('altPhoneError');
-    
-    if (altPhone.value.trim() && !altPhone.value.trim().startsWith('0')) {
-      altPhoneError.textContent = 'شماره تماس باید با صفر شروع شود';
-      altPhoneError.classList.remove('hidden');
-      altPhone.classList.add('error-field');
-      isValid = false;
-    } else if (altPhone.value.trim() && altPhone.value.trim().length !== 11) {
-      altPhoneError.textContent = 'شماره تماس باید 11 رقم باشد';
-      altPhoneError.classList.remove('hidden');
-      altPhone.classList.add('error-field');
-      isValid = false;
-    } else {
-      altPhoneError.classList.add('hidden');
-      altPhone.classList.remove('error-field');
     }
     
     // اعتبارسنجی نوع ملک
@@ -250,6 +270,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!propertyType) {
       typeError.classList.remove('hidden');
       isValid = false;
+      errorsList.push('نوع ملک');
     } else {
       typeError.classList.add('hidden');
       
@@ -260,27 +281,252 @@ document.addEventListener('DOMContentLoaded', function() {
       switch(propertyType.value) {
         case 'آپارتمان':
           documentError = document.getElementById('documentError-apartment');
+          
+          // اعتبارسنجی آدرس
+          const addressApartment = document.getElementById('address-apartment');
+          const addressErrorApartment = document.getElementById('addressError-apartment');
+          
+          if (!addressApartment.value.trim()) {
+            addressErrorApartment.textContent = 'لطفاً آدرس را وارد کنید';
+            addressErrorApartment.classList.remove('hidden');
+            addressApartment.classList.add('error-field');
+            isValid = false;
+            errorsList.push('آدرس آپارتمان');
+          } else if (!/^[\u0600-\u06FF\s.,0-9-]+$/.test(addressApartment.value.trim())) {
+            addressErrorApartment.textContent = 'لطفاً فارسی تایپ کنید';
+            addressErrorApartment.classList.remove('hidden');
+            addressApartment.classList.add('error-field');
+            isValid = false;
+            errorsList.push('آدرس آپارتمان (فارسی تایپ کنید)');
+          } else {
+            addressErrorApartment.classList.add('hidden');
+            addressApartment.classList.remove('error-field');
+          }
+          
+          // اعتبارسنجی قیمت کلی
+          const totalPriceApartment = document.getElementById('totalPrice-apartment');
+          if (!totalPriceApartment.value.trim()) {
+            isValid = false;
+            errorsList.push('قیمت کلی آپارتمان');
+            totalPriceApartment.classList.add('error-field');
+          } else {
+            totalPriceApartment.classList.remove('error-field');
+          }
           break;
+          
         case 'ویلا':
           documentError = document.getElementById('documentError-villa');
+          
+          // اعتبارسنجی آدرس
+          const addressVilla = document.getElementById('address-villa');
+          const addressErrorVilla = document.getElementById('addressError-villa');
+          
+          if (!addressVilla.value.trim()) {
+            addressErrorVilla.textContent = 'لطفاً آدرس را وارد کنید';
+            addressErrorVilla.classList.remove('hidden');
+            addressVilla.classList.add('error-field');
+            isValid = false;
+            errorsList.push('آدرس ویلا');
+          } else if (!/^[\u0600-\u06FF\s.,0-9-]+$/.test(addressVilla.value.trim())) {
+            addressErrorVilla.textContent = 'لطفاً فارسی تایپ کنید';
+            addressErrorVilla.classList.remove('hidden');
+            addressVilla.classList.add('error-field');
+            isValid = false;
+            errorsList.push('آدرس ویلا (فارسی تایپ کنید)');
+          } else {
+            addressErrorVilla.classList.add('hidden');
+            addressVilla.classList.remove('error-field');
+          }
+          
+          // اعتبارسنجی قیمت کلی
+          const priceVilla = document.getElementById('price-villa');
+          if (!priceVilla.value.trim()) {
+            isValid = false;
+            errorsList.push('قیمت کلی ویلا');
+            priceVilla.classList.add('error-field');
+          } else {
+            priceVilla.classList.remove('error-field');
+          }
           break;
+          
         case 'زمین':
           documentError = document.getElementById('documentError-land');
+          
+          // اعتبارسنجی آدرس
+          const addressLand = document.getElementById('address-land');
+          const addressErrorLand = document.getElementById('addressError-land');
+          
+          if (!addressLand.value.trim()) {
+            addressErrorLand.textContent = 'لطفاً آدرس را وارد کنید';
+            addressErrorLand.classList.remove('hidden');
+            addressLand.classList.add('error-field');
+            isValid = false;
+            errorsList.push('آدرس زمین');
+          } else if (!/^[\u0600-\u06FF\s.,0-9-]+$/.test(addressLand.value.trim())) {
+            addressErrorLand.textContent = 'لطفاً فارسی تایپ کنید';
+            addressErrorLand.classList.remove('hidden');
+            addressLand.classList.add('error-field');
+            isValid = false;
+            errorsList.push('آدرس زمین (فارسی تایپ کنید)');
+          } else {
+            addressErrorLand.classList.add('hidden');
+            addressLand.classList.remove('error-field');
+          }
+          
+          // اعتبارسنجی قیمت کلی
+          const totalPriceLand = document.getElementById('totalPrice-land');
+          if (!totalPriceLand.value.trim()) {
+            isValid = false;
+            errorsList.push('قیمت کلی زمین');
+            totalPriceLand.classList.add('error-field');
+          } else {
+            totalPriceLand.classList.remove('error-field');
+          }
           break;
+          
         case 'تجاری':
           documentError = document.getElementById('documentError-commercial');
+          
+          // اعتبارسنجی آدرس
+          const addressCommercial = document.getElementById('address-commercial');
+          const addressErrorCommercial = document.getElementById('addressError-commercial');
+          
+          if (!addressCommercial.value.trim()) {
+            addressErrorCommercial.textContent = 'لطفاً آدرس را وارد کنید';
+            addressErrorCommercial.classList.remove('hidden');
+            addressCommercial.classList.add('error-field');
+            isValid = false;
+            errorsList.push('آدرس تجاری');
+          } else if (!/^[\u0600-\u06FF\s.,0-9-]+$/.test(addressCommercial.value.trim())) {
+            addressErrorCommercial.textContent = 'لطفاً فارسی تایپ کنید';
+            addressErrorCommercial.classList.remove('hidden');
+            addressCommercial.classList.add('error-field');
+            isValid = false;
+            errorsList.push('آدرس تجاری (فارسی تایپ کنید)');
+          } else {
+            addressErrorCommercial.classList.add('hidden');
+            addressCommercial.classList.remove('error-field');
+          }
+          
+          // اعتبارسنجی قیمت کلی
+          const totalPriceCommercial = document.getElementById('totalPrice-commercial');
+          if (!totalPriceCommercial.value.trim()) {
+            isValid = false;
+            errorsList.push('قیمت کلی تجاری');
+            totalPriceCommercial.classList.add('error-field');
+          } else {
+            totalPriceCommercial.classList.remove('error-field');
+          }
           break;
+          
         case 'کلنگی':
           documentError = document.getElementById('documentError-old');
+          
+          // اعتبارسنجی آدرس
+          const addressOld = document.getElementById('address-old');
+          const addressErrorOld = document.getElementById('addressError-old');
+          
+          if (!addressOld.value.trim()) {
+            addressErrorOld.textContent = 'لطفاً آدرس را وارد کنید';
+            addressErrorOld.classList.remove('hidden');
+            addressOld.classList.add('error-field');
+            isValid = false;
+            errorsList.push('آدرس کلنگی');
+          } else if (!/^[\u0600-\u06FF\s.,0-9-]+$/.test(addressOld.value.trim())) {
+            addressErrorOld.textContent = 'لطفاً فارسی تایپ کنید';
+            addressErrorOld.classList.remove('hidden');
+            addressOld.classList.add('error-field');
+            isValid = false;
+            errorsList.push('آدرس کلنگی (فارسی تایپ کنید)');
+          } else {
+            addressErrorOld.classList.add('hidden');
+            addressOld.classList.remove('error-field');
+          }
+          
+          // اعتبارسنجی قیمت کلی
+          const totalPriceOld = document.getElementById('totalPrice-old');
+          if (!totalPriceOld.value.trim()) {
+            isValid = false;
+            errorsList.push('قیمت کلی کلنگی');
+            totalPriceOld.classList.add('error-field');
+          } else {
+            totalPriceOld.classList.remove('error-field');
+          }
           break;
+          
         case 'پیش‌فروش':
           const presaleType = document.querySelector('input[name="presaleType"]:checked');
           if (presaleType) {
             if (presaleType.value === 'آپارتمان') {
               documentError = document.getElementById('documentError-presale-apartment');
+              
+              // اعتبارسنجی آدرس
+              const addressPresaleApartment = document.getElementById('address-presale-apartment');
+              const addressErrorPresaleApartment = document.getElementById('addressError-presale-apartment');
+              
+              if (!addressPresaleApartment.value.trim()) {
+                addressErrorPresaleApartment.textContent = 'لطفاً آدرس را وارد کنید';
+                addressErrorPresaleApartment.classList.remove('hidden');
+                addressPresaleApartment.classList.add('error-field');
+                isValid = false;
+                errorsList.push('آدرس پیش‌فروش آپارتمان');
+              } else if (!/^[\u0600-\u06FF\s.,0-9-]+$/.test(addressPresaleApartment.value.trim())) {
+                addressErrorPresaleApartment.textContent = 'لطفاً فارسی تایپ کنید';
+                addressErrorPresaleApartment.classList.remove('hidden');
+                addressPresaleApartment.classList.add('error-field');
+                isValid = false;
+                errorsList.push('آدرس پیش‌فروش آپارتمان (فارسی تایپ کنید)');
+              } else {
+                addressErrorPresaleApartment.classList.add('hidden');
+                addressPresaleApartment.classList.remove('error-field');
+              }
+              
+              // اعتبارسنجی قیمت کلی
+              const totalPricePresaleApartment = document.getElementById('totalPrice-presale-apartment');
+              if (!totalPricePresaleApartment.value.trim()) {
+                isValid = false;
+                errorsList.push('قیمت کلی پیش‌فروش آپارتمان');
+                totalPricePresaleApartment.classList.add('error-field');
+              } else {
+                totalPricePresaleApartment.classList.remove('error-field');
+              }
             } else {
               documentError = document.getElementById('documentError-presale-villa');
+              
+              // اعتبارسنجی آدرس
+              const addressPresaleVilla = document.getElementById('address-presale-villa');
+              const addressErrorPresaleVilla = document.getElementById('addressError-presale-villa');
+              
+              if (!addressPresaleVilla.value.trim()) {
+                addressErrorPresaleVilla.textContent = 'لطفاً آدرس را وارد کنید';
+                addressErrorPresaleVilla.classList.remove('hidden');
+                addressPresaleVilla.classList.add('error-field');
+                isValid = false;
+                errorsList.push('آدرس پیش‌فروش ویلا');
+              } else if (!/^[\u0600-\u06FF\s.,0-9-]+$/.test(addressPresaleVilla.value.trim())) {
+                addressErrorPresaleVilla.textContent = 'لطفاً فارسی تایپ کنید';
+                addressErrorPresaleVilla.classList.remove('hidden');
+                addressPresaleVilla.classList.add('error-field');
+                isValid = false;
+                errorsList.push('آدرس پیش‌فروش ویلا (فارسی تایپ کنید)');
+              } else {
+                addressErrorPresaleVilla.classList.add('hidden');
+                addressPresaleVilla.classList.remove('error-field');
+              }
+              
+              // اعتبارسنجی قیمت کلی
+              const pricePresaleVilla = document.getElementById('price-presale-villa');
+              if (!pricePresaleVilla.value.trim()) {
+                isValid = false;
+                errorsList.push('قیمت کلی پیش‌فروش ویلا');
+                pricePresaleVilla.classList.add('error-field');
+              } else {
+                pricePresaleVilla.classList.remove('error-field');
+              }
             }
+          } else {
+            isValid = false;
+            errorsList.push('نوع پیش‌فروش');
           }
           break;
       }
@@ -288,6 +534,7 @@ document.addEventListener('DOMContentLoaded', function() {
       if (documentError && !documentChecked) {
         documentError.classList.remove('hidden');
         isValid = false;
+        errorsList.push('وضعیت سند');
       } else if (documentError) {
         documentError.classList.add('hidden');
       }
@@ -334,9 +581,26 @@ document.addEventListener('DOMContentLoaded', function() {
       if (saleConditionError && (!saleConditions || saleConditions.length === 0)) {
         saleConditionError.classList.remove('hidden');
         isValid = false;
+        errorsList.push('شرایط فروش');
       } else if (saleConditionError) {
         saleConditionError.classList.add('hidden');
       }
+    }
+    
+    // نمایش لیست خطاها
+    const validationErrors = document.getElementById('validationErrors');
+    const errorsList_ul = document.getElementById('errorsList');
+    
+    if (!isValid) {
+      errorsList_ul.innerHTML = '';
+      errorsList.forEach(error => {
+        const li = document.createElement('li');
+        li.textContent = error;
+        errorsList_ul.appendChild(li);
+      });
+      validationErrors.classList.remove('hidden');
+    } else {
+      validationErrors.classList.add('hidden');
     }
     
     return isValid;
@@ -462,7 +726,24 @@ document.addEventListener('DOMContentLoaded', function() {
   persianInputs.forEach(input => {
     input.addEventListener('input', function(e) {
       // اجازه به حروف فارسی، فاصله و برخی علائم نگارشی
-      this.value = this.value.replace(/[a-zA-Z0-9`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
+      if (!/^[\u0600-\u06FF\s.,0-9-]*$/.test(this.value)) {
+        // نمایش خطا برای تایپ انگلیسی
+        const errorId = this.id + 'Error';
+        const errorElement = document.getElementById(errorId);
+        if (errorElement) {
+          errorElement.textContent = 'لطفاً فارسی تایپ کنید';
+          errorElement.classList.remove('hidden');
+          this.classList.add('error-field');
+        }
+      } else {
+        // پنهان کردن خطا اگر متن فارسی است
+        const errorId = this.id + 'Error';
+        const errorElement = document.getElementById(errorId);
+        if (errorElement) {
+          errorElement.classList.add('hidden');
+          this.classList.remove('error-field');
+        }
+      }
     });
   });
   
@@ -481,28 +762,32 @@ document.addEventListener('DOMContentLoaded', function() {
     // جمع‌آوری اطلاعات فرم
     const formData = collectFormData();
     
-    // ارسال اطلاعات به تلگرام
-    sendToTelegram(formData)
+    // ارسال اطلاعات با EmailJS
+    sendEmail(formData)
       .then(response => {
         // پنهان کردن پیام در حال ارسال
         document.getElementById('sendingOverlay').style.display = 'none';
         
+        // پخش صدای دینگ
+        document.getElementById('dingSound').play();
+        
         // نمایش پیام موفقیت
         document.getElementById('successOverlay').style.display = 'flex';
-        
-        // پخش صدای موفقیت
-        document.getElementById('successSound').play();
         
         // ریست کردن فرم
         document.getElementById('propertyForm').reset();
         hideAllSections();
         document.getElementById('imagePreview').innerHTML = '';
         uploadedImages = [];
+        
+        // پنهان کردن لیست خطاها
+        document.getElementById('validationErrors').classList.add('hidden');
       })
       .catch(error => {
         console.error('Error:', error);
-        alert('خطا در ارسال اطلاعات. لطفاً دوباره تلاش کنید.');
+        // نمایش پیام خطا
         document.getElementById('sendingOverlay').style.display = 'none';
+        document.getElementById('errorOverlay').style.display = 'flex';
       });
   });
   
@@ -665,23 +950,23 @@ document.addEventListener('DOMContentLoaded', function() {
     return formData;
   }
   
-  // ارسال اطلاعات به تلگرام
-  function sendToTelegram(data) {
-    // تبدیل اطلاعات به متن برای ارسال به تلگرام
-    let message = `🏠 *اطلاعات ملک جدید*\n\n`;
-    message += `👤 *مشخصات مالک*\n`;
+  // ارسال ایمیل با استفاده از EmailJS
+  function sendEmail(data) {
+    // تبدیل اطلاعات به متن برای ارسال به ایمیل
+    let message = `اطلاعات ملک جدید\n\n`;
+    message += `مشخصات مالک\n`;
     message += `نام و نام خانوادگی: ${data.firstName} ${data.lastName}\n`;
     message += `شماره تماس: ${data.phone}\n`;
     if (data.altPhone) {
       message += `شماره تماس دیگر: ${data.altPhone}\n`;
     }
     
-    message += `\n🏢 *نوع ملک*: ${data.propertyType}\n`;
+    message += `\nنوع ملک: ${data.propertyType}\n`;
     
     // اطلاعات مربوط به نوع ملک
     switch(data.propertyType) {
       case 'آپارتمان':
-        message += `\n📋 *مشخصات آپارتمان*\n`;
+        message += `\nمشخصات آپارتمان\n`;
         if (data.landArea) message += `متراژ زمین: ${data.landArea} متر\n`;
         if (data.unitArea) message += `متراژ واحد: ${data.unitArea} متر\n`;
         if (data.roomCount) message += `تعداد اتاق: ${data.roomCount}\n`;
@@ -695,16 +980,16 @@ document.addEventListener('DOMContentLoaded', function() {
         if (data.otherCommonAreas) message += `سایر مشاعات: ${data.otherCommonAreas}\n`;
         if (data.otherDetails) message += `سایر توضیحات: ${data.otherDetails}\n`;
         if (data.document) message += `وضعیت سند: ${data.document}\n`;
-        message += `\n💰 *قیمت*\n`;
+        message += `\nقیمت\n`;
         if (data.pricePerMeter) message += `قیمت متری: ${data.pricePerMeter} تومان\n`;
         if (data.totalPrice) message += `قیمت کلی: ${data.totalPrice} تومان\n`;
         if (data.saleConditions) message += `شرایط فروش: ${data.saleConditions}\n`;
         if (data.saleConditionDetails) message += `توضیحات شرایط فروش: ${data.saleConditionDetails}\n`;
-        if (data.address) message += `\n📍 *آدرس*: ${data.address}\n`;
+        if (data.address) message += `\nآدرس: ${data.address}\n`;
         break;
         
       case 'ویلا':
-        message += `\n📋 *مشخصات ویلا*\n`;
+        message += `\nمشخصات ویلا\n`;
         if (data.landArea) message += `متراژ زمین: ${data.landArea} متر\n`;
         if (data.buildingArea) message += `متراژ بنا: ${data.buildingArea} متر\n`;
         if (data.roomCount) message += `تعداد اتاق: ${data.roomCount}\n`;
@@ -716,15 +1001,15 @@ document.addEventListener('DOMContentLoaded', function() {
         if (data.otherAmenities) message += `سایر امکانات: ${data.otherAmenities}\n`;
         if (data.otherDetails) message += `سایر توضیحات: ${data.otherDetails}\n`;
         if (data.document) message += `وضعیت سند: ${data.document}\n`;
-        message += `\n💰 *قیمت*\n`;
+        message += `\nقیمت\n`;
         if (data.price) message += `قیمت کلی: ${data.price} تومان\n`;
         if (data.saleConditions) message += `شرایط فروش: ${data.saleConditions}\n`;
         if (data.saleConditionDetails) message += `توضیحات شرایط فروش: ${data.saleConditionDetails}\n`;
-        if (data.address) message += `\n📍 *آدرس*: ${data.address}\n`;
+        if (data.address) message += `\nآدرس: ${data.address}\n`;
         break;
         
       case 'زمین':
-        message += `\n📋 *مشخصات زمین*\n`;
+        message += `\nمشخصات زمین\n`;
         if (data.landArea) message += `متراژ زمین: ${data.landArea} متر\n`;
         if (data.landUsage) message += `کاربری: ${data.landUsage}\n`;
         if (data.landWidth) message += `بَر زمین: ${data.landWidth} متر\n`;
@@ -733,32 +1018,32 @@ document.addEventListener('DOMContentLoaded', function() {
         if (data.enclosed) message += `محصور: ${data.enclosed}\n`;
         if (data.otherDetails) message += `سایر توضیحات: ${data.otherDetails}\n`;
         if (data.document) message += `وضعیت سند: ${data.document}\n`;
-        message += `\n💰 *قیمت*\n`;
+        message += `\nقیمت\n`;
         if (data.pricePerMeter) message += `قیمت متری: ${data.pricePerMeter} تومان\n`;
         if (data.totalPrice) message += `قیمت کلی: ${data.totalPrice} تومان\n`;
         if (data.saleConditions) message += `شرایط فروش: ${data.saleConditions}\n`;
         if (data.saleConditionDetails) message += `توضیحات شرایط فروش: ${data.saleConditionDetails}\n`;
-        if (data.address) message += `\n📍 *آدرس*: ${data.address}\n`;
+        if (data.address) message += `\nآدرس: ${data.address}\n`;
         break;
         
       case 'تجاری':
-        message += `\n📋 *مشخصات تجاری / مغازه*\n`;
+        message += `\nمشخصات تجاری / مغازه\n`;
         if (data.shopArea) message += `متراژ مغازه: ${data.shopArea} متر\n`;
         if (data.shopHeight) message += `ارتفاع مغازه: ${data.shopHeight} متر\n`;
         if (data.shopWidth) message += `دهنه مغازه: ${data.shopWidth} متر\n`;
         if (data.shopDetails) message += `توضیحات شکل مغازه: ${data.shopDetails}\n`;
         if (data.otherDetails) message += `امکانات: ${data.otherDetails}\n`;
         if (data.document) message += `وضعیت سند: ${data.document}\n`;
-        message += `\n💰 *قیمت*\n`;
+        message += `\nقیمت\n`;
         if (data.pricePerMeter) message += `قیمت متری: ${data.pricePerMeter} تومان\n`;
         if (data.totalPrice) message += `قیمت کلی: ${data.totalPrice} تومان\n`;
         if (data.saleConditions) message += `شرایط فروش: ${data.saleConditions}\n`;
         if (data.saleConditionDetails) message += `توضیحات شرایط فروش: ${data.saleConditionDetails}\n`;
-        if (data.address) message += `\n📍 *آدرس*: ${data.address}\n`;
+        if (data.address) message += `\nآدرس: ${data.address}\n`;
         break;
         
       case 'کلنگی':
-        message += `\n📋 *مشخصات کلنگی*\n`;
+        message += `\nمشخصات کلنگی\n`;
         if (data.landArea) message += `متراژ زمین: ${data.landArea} متر\n`;
         if (data.buildingArea) message += `متراژ بنا: ${data.buildingArea} متر\n`;
         if (data.landWidth) message += `بَر زمین: ${data.landWidth} متر\n`;
@@ -767,16 +1052,16 @@ document.addEventListener('DOMContentLoaded', function() {
         if (data.utilities) message += `امتیازات: ${data.utilities}\n`;
         if (data.amenities) message += `امکانات: ${data.amenities}\n`;
         if (data.document) message += `وضعیت سند: ${data.document}\n`;
-        message += `\n💰 *قیمت*\n`;
+        message += `\nقیمت\n`;
         if (data.pricePerMeter) message += `قیمت متری: ${data.pricePerMeter} تومان\n`;
         if (data.totalPrice) message += `قیمت کلی: ${data.totalPrice} تومان\n`;
         if (data.saleConditions) message += `شرایط فروش: ${data.saleConditions}\n`;
         if (data.saleConditionDetails) message += `توضیحات شرایط فروش: ${data.saleConditionDetails}\n`;
-        if (data.address) message += `\n📍 *آدرس*: ${data.address}\n`;
+        if (data.address) message += `\nآدرس: ${data.address}\n`;
         break;
         
       case 'پیش‌فروش':
-        message += `\n📋 *مشخصات پیش‌فروش ${data.presaleType}*\n`;
+        message += `\nمشخصات پیش‌فروش ${data.presaleType}\n`;
         if (data.projectProgress) message += `مرحله پروژه: ${data.projectProgress}\n`;
         
         if (data.presaleType === 'آپارتمان') {
@@ -790,7 +1075,7 @@ document.addEventListener('DOMContentLoaded', function() {
           if (data.kitchen) message += `مشخصات آشپزخانه: ${data.kitchen}\n`;
           if (data.otherDetails) message += `سایر توضیحات و امکانات: ${data.otherDetails}\n`;
           if (data.document) message += `وضعیت سند: ${data.document}\n`;
-          message += `\n💰 *قیمت*\n`;
+          message += `\nقیمت\n`;
           if (data.pricePerMeter) message += `قیمت متری: ${data.pricePerMeter} تومان\n`;
           if (data.totalPrice) message += `قیمت کلی: ${data.totalPrice} تومان\n`;
         } else if (data.presaleType === 'ویلا') {
@@ -801,35 +1086,24 @@ document.addEventListener('DOMContentLoaded', function() {
           if (data.kitchen) message += `مشخصات آشپزخانه: ${data.kitchen}\n`;
           if (data.otherDetails) message += `سایر توضیحات و امکانات: ${data.otherDetails}\n`;
           if (data.document) message += `وضعیت سند: ${data.document}\n`;
-          message += `\n💰 *قیمت*\n`;
+          message += `\nقیمت\n`;
           if (data.price) message += `قیمت کلی: ${data.price} تومان\n`;
         }
         
         if (data.saleConditions) message += `شرایط فروش: ${data.saleConditions}\n`;
         if (data.saleConditionDetails) message += `توضیحات شرایط فروش: ${data.saleConditionDetails}\n`;
-        if (data.address) message += `\n📍 *آدرس*: ${data.address}\n`;
+        if (data.address) message += `\nآدرس: ${data.address}\n`;
         break;
     }
     
-    // تنظیمات ارسال به تلگرام
-    const botToken = '6915900612:AAFxQrOXdWXrYzaIaUdHvbXXXXXXXXXXXXX'; // توکن بات را وارد کنید
-    const chatId = '-1001977618987'; // آیدی چت را وارد کنید
-    
-    // ارسال پیام به تلگرام
-    const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
-    const params = {
-      chat_id: chatId,
-      text: message,
-      parse_mode: 'Markdown'
+    // تنظیمات ارسال ایمیل
+    const templateParams = {
+      to_name: "املاک معین رامسر",
+      from_name: `${data.firstName} ${data.lastName}`,
+      message: message
     };
     
-    return fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(params),
-    })
-    .then(response => response.json());
+    // ارسال ایمیل با استفاده از EmailJS
+    return emailjs.send("service_rds9l25", "template_5do0c0n", templateParams);
   }
 });

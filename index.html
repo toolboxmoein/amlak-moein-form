@@ -243,13 +243,13 @@
       cursor: pointer;
       background-color: #FFD700;
       color: #000;
-      width: 40px;
-      height: 40px;
+      width: 35px;
+      height: 35px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
+      font-size: 18px;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     }
     
@@ -269,19 +269,19 @@
     
     .menu-close {
       position: absolute;
-      top: 20px;
-      right: 20px;
+      top: 15px;
+      right: 15px;
       color: white;
-      font-size: 30px;
+      font-size: 24px;
       cursor: pointer;
     }
     
     .menu-content {
       background-color: white;
-      border-radius: 10px;
-      padding: 20px;
-      width: 80%;
-      max-width: 500px;
+      border-radius: 8px;
+      padding: 15px;
+      width: 70%;
+      max-width: 350px;
     }
     
     .menu-table {
@@ -298,30 +298,12 @@
     }
     
     .menu-table td {
-      padding: 12px 15px;
+      padding: 10px 12px;
       text-align: right;
     }
     
     .menu-table td:last-child {
       text-align: left;
-    }
-    
-    .click-animation {
-      display: inline-block;
-      animation: pulse 1.5s infinite;
-      color: #FFD700;
-    }
-    
-    @keyframes pulse {
-      0% {
-        transform: scale(1);
-      }
-      50% {
-        transform: scale(1.2);
-      }
-      100% {
-        transform: scale(1);
-      }
     }
     
     .menu-social {
@@ -362,7 +344,6 @@
       height: 80px;
       margin: 0 auto;
       position: relative;
-      animation: checkmark 0.5s cubic-bezier(0.65, 0, 0.45, 1) forwards;
     }
     
     .success-checkmark .check-icon {
@@ -383,7 +364,6 @@
       content: "";
       height: 4px;
       background-color: #4CAF50;
-      animation: checkmark-check-1 0.25s ease-in-out forwards;
     }
     
     .success-checkmark .check-icon::after {
@@ -395,7 +375,6 @@
       content: "";
       height: 4px;
       background-color: #4CAF50;
-      animation: checkmark-check-2 0.25s ease-in-out forwards;
     }
     
     @keyframes checkmark {
@@ -454,6 +433,57 @@
         width: 95%;
       }
     }
+    
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background-color: #4CAF50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      animation: scale-up 0.5s ease-in-out;
+    }
+    
+    .success-icon i {
+      color: white;
+      font-size: 40px;
+    }
+    
+    @keyframes scale-up {
+      0% {
+        transform: scale(0);
+      }
+      70% {
+        transform: scale(1.1);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    
+    .validation-errors {
+      color: #dc3545;
+      background-color: #f8d7da;
+      border: 1px solid #f5c6cb;
+      border-radius: 5px;
+      padding: 10px 15px;
+      margin-top: 20px;
+      margin-bottom: 10px;
+      font-family: Vazir, Tahoma, Arial, sans-serif !important;
+    }
+    
+    .validation-errors h4 {
+      margin-top: 0;
+      font-size: 1rem;
+      font-weight: bold;
+    }
+    
+    .validation-errors ul {
+      margin-bottom: 0;
+      padding-right: 20px;
+    }
   </style>
 </head>
 <body>
@@ -492,9 +522,8 @@
           </div>
           
           <div class="col-md-6">
-            <label for="altPhone" class="form-label">شماره تماس دیگر <span class="required-star">*</span></label>
-            <input type="tel" id="altPhone" class="form-control numeric-only" placeholder="شماره باید با صفر شروع شود" required>
-            <div id="altPhoneError" class="error hidden">لطفاً یک شماره تماس معتبر 11 رقمی که با صفر شروع می‌شود وارد کنید</div>
+            <label for="altPhone" class="form-label">شماره تماس دیگر</label>
+            <input type="tel" id="altPhone" class="form-control numeric-only" placeholder="09123456789">
           </div>
         </div>
       </div>
@@ -817,7 +846,8 @@
         
         <div class="mt-3">
           <label for="otherDetails-apartment" class="form-label">سایر توضیحات</label>
-          <textarea id="otherDetails-apartment" class="form-control" rows="3" placeholder="هر توضیح دیگری که لازم است وارد کنید"></textarea>
+          <textarea id="otherDetails-apartment" class="form-control persian-only" rows="3" placeholder="هر توضیح دیگری که لازم است وارد کنید"></textarea>
+          <div id="otherDetailsError-apartment" class="error hidden">لطفاً فارسی تایپ کنید</div>
         </div>
         
         <!-- وضعیت سند -->
@@ -892,7 +922,8 @@
           </div>
           
           <div class="mt-2">
-            <input type="text" id="saleConditionDetails-apartment" class="form-control" placeholder="توضیحات شرایط فروش را وارد کنید">
+            <input type="text" id="saleConditionDetails-apartment" class="form-control persian-only" placeholder="توضیحات شرایط فروش را وارد کنید">
+            <div id="saleConditionDetailsError-apartment" class="error hidden">لطفاً فارسی تایپ کنید</div>
           </div>
           
           <div id="saleConditionError-apartment" class="error hidden">لطفاً شرایط فروش را انتخاب کنید</div>
@@ -901,7 +932,8 @@
         <!-- آدرس -->
         <div class="mb-4">
           <label for="address-apartment" class="form-label">آدرس <span class="required-star">*</span></label>
-          <textarea id="address-apartment" class="form-control" rows="3" placeholder="آدرس دقیق ملک را وارد کنید"></textarea>
+          <textarea id="address-apartment" class="form-control persian-only" rows="3" placeholder="آدرس دقیق ملک را وارد کنید"></textarea>
+          <div id="addressError-apartment" class="error hidden">لطفاً فارسی تایپ کنید</div>
         </div>
       </div>
       
@@ -1062,7 +1094,8 @@
           </div>
           
           <div class="mt-2">
-            <input type="text" id="otherFacilities-villa" class="form-control" placeholder="در صورت انتخاب سایر، تاسیسات را وارد کنید">
+            <input type="text" id="otherFacilities-villa" class="form-control persian-only" placeholder="در صورت انتخاب سایر، تاسیسات را وارد کنید">
+            <div id="otherFacilitiesError-villa" class="error hidden">لطفاً فارسی تایپ کنید</div>
           </div>
         </div>
         
@@ -1113,13 +1146,15 @@
           </div>
           
           <div class="mt-2">
-            <input type="text" id="otherAmenities-villa" class="form-control" placeholder="در صورت انتخاب سایر، امکانات را وارد کنید">
+            <input type="text" id="otherAmenities-villa" class="form-control persian-only" placeholder="در صورت انتخاب سایر، امکانات را وارد کنید">
+            <div id="otherAmenitiesError-villa" class="error hidden">لطفاً فارسی تایپ کنید</div>
           </div>
         </div>
         
         <div class="mt-3">
           <label for="otherDetails-villa" class="form-label">سایر توضیحات</label>
-          <textarea id="otherDetails-villa" class="form-control" rows="3" placeholder="هر توضیح دیگری که لازم است وارد کنید"></textarea>
+          <textarea id="otherDetails-villa" class="form-control persian-only" rows="3" placeholder="هر توضیح دیگری که لازم است وارد کنید"></textarea>
+          <div id="otherDetailsError-villa" class="error hidden">لطفاً فارسی تایپ کنید</div>
         </div>
         
         <!-- وضعیت سند -->
@@ -1188,7 +1223,8 @@
           </div>
           
           <div class="mt-2">
-            <input type="text" id="saleConditionDetails-villa" class="form-control" placeholder="توضیحات شرایط فروش را وارد کنید">
+            <input type="text" id="saleConditionDetails-villa" class="form-control persian-only" placeholder="توضیحات شرایط فروش را وارد کنید">
+            <div id="saleConditionDetailsError-villa" class="error hidden">لطفاً فارسی تایپ کنید</div>
           </div>
           
           <div id="saleConditionError-villa" class="error hidden">لطفاً شرایط فروش را انتخاب کنید</div>
@@ -1197,7 +1233,8 @@
         <!-- آدرس -->
         <div class="mb-4">
           <label for="address-villa" class="form-label">آدرس <span class="required-star">*</span></label>
-          <textarea id="address-villa" class="form-control" rows="3" placeholder="آدرس دقیق ملک را وارد کنید"></textarea>
+          <textarea id="address-villa" class="form-control persian-only" rows="3" placeholder="آدرس دقیق ملک را وارد کنید"></textarea>
+          <div id="addressError-villa" class="error hidden">لطفاً فارسی تایپ کنید</div>
         </div>
       </div>
       
@@ -1213,7 +1250,8 @@
           
           <div class="col-md-6">
             <label for="landUsage" class="form-label">کاربری <span class="required-star">*</span></label>
-            <input type="text" id="landUsage" class="form-control" placeholder="مسکونی، تجاری، کشاورزی و...">
+            <input type="text" id="landUsage" class="form-control persian-only" placeholder="مسکونی، تجاری، کشاورزی و...">
+            <div id="landUsageError" class="error hidden">لطفاً فارسی تایپ کنید</div>
           </div>
         </div>
         
@@ -1255,7 +1293,8 @@
         
         <div class="mt-3">
           <label for="otherDetails-land" class="form-label">سایر توضیحات</label>
-          <textarea id="otherDetails-land" class="form-control" rows="3" placeholder="هر توضیح دیگری که لازم است وارد کنید"></textarea>
+          <textarea id="otherDetails-land" class="form-control persian-only" rows="3" placeholder="هر توضیح دیگری که لازم است وارد کنید"></textarea>
+          <div id="otherDetailsError-land" class="error hidden">لطفاً فارسی تایپ کنید</div>
         </div>
         
         <!-- وضعیت سند -->
@@ -1330,7 +1369,8 @@
           </div>
           
           <div class="mt-2">
-            <input type="text" id="saleConditionDetails-land" class="form-control" placeholder="توضیحات شرایط فروش را وارد کنید">
+            <input type="text" id="saleConditionDetails-land" class="form-control persian-only" placeholder="توضیحات شرایط فروش را وارد کنید">
+            <div id="saleConditionDetailsError-land" class="error hidden">لطفاً فارسی تایپ کنید</div>
           </div>
           
           <div id="saleConditionError-land" class="error hidden">لطفاً شرایط فروش را انتخاب کنید</div>
@@ -1339,7 +1379,8 @@
         <!-- آدرس -->
         <div class="mb-4">
           <label for="address-land" class="form-label">آدرس <span class="required-star">*</span></label>
-          <textarea id="address-land" class="form-control" rows="3" placeholder="آدرس دقیق ملک را وارد کنید"></textarea>
+          <textarea id="address-land" class="form-control persian-only" rows="3" placeholder="آدرس دقیق ملک را وارد کنید"></textarea>
+          <div id="addressError-land" class="error hidden">لطفاً فارسی تایپ کنید</div>
         </div>
       </div>
       
@@ -1366,12 +1407,14 @@
         
         <div class="mt-3">
           <label for="shopDetails" class="form-label">توضیحات شکل مغازه</label>
-          <textarea id="shopDetails" class="form-control" rows="2" placeholder="اگر توضیحات بیشتری دارید اینجا وارد کنید"></textarea>
+          <textarea id="shopDetails" class="form-control persian-only" rows="2" placeholder="اگر توضیحات بیشتری دارید اینجا وارد کنید"></textarea>
+          <div id="shopDetailsError" class="error hidden">لطفاً فارسی تایپ کنید</div>
         </div>
         
         <div class="mt-3">
           <label for="otherDetails-commercial" class="form-label">چه امکاناتی دارد</label>
-          <textarea id="otherDetails-commercial" class="form-control" rows="3" placeholder="امکانات مغازه را وارد کنید"></textarea>
+          <textarea id="otherDetails-commercial" class="form-control persian-only" rows="3" placeholder="امکانات مغازه را وارد کنید"></textarea>
+          <div id="otherDetailsError-commercial" class="error hidden">لطفاً فارسی تایپ کنید</div>
         </div>
         
         <!-- وضعیت سند -->
@@ -1446,7 +1489,8 @@
           </div>
           
           <div class="mt-2">
-            <input type="text" id="saleConditionDetails-commercial" class="form-control" placeholder="توضیحات شرایط فروش را وارد کنید">
+            <input type="text" id="saleConditionDetails-commercial" class="form-control persian-only" placeholder="توضیحات شرایط فروش را وارد کنید">
+            <div id="saleConditionDetailsError-commercial" class="error hidden">لطفاً فارسی تایپ کنید</div>
           </div>
           
           <div id="saleConditionError-commercial" class="error hidden">لطفاً شرایط فروش را انتخاب کنید</div>
@@ -1455,7 +1499,8 @@
         <!-- آدرس -->
         <div class="mb-4">
           <label for="address-commercial" class="form-label">آدرس <span class="required-star">*</span></label>
-          <textarea id="address-commercial" class="form-control" rows="3" placeholder="آدرس دقیق ملک را وارد کنید"></textarea>
+          <textarea id="address-commercial" class="form-control persian-only" rows="3" placeholder="آدرس دقیق ملک را وارد کنید"></textarea>
+          <div id="addressError-commercial" class="error hidden">لطفاً فارسی تایپ کنید</div>
         </div>
       </div>
       
@@ -1541,7 +1586,8 @@
         
         <div class="mt-3">
           <label for="amenities-old" class="form-label">امکانات</label>
-          <textarea id="amenities-old" class="form-control" rows="3" placeholder="امکانات ملک را وارد کنید"></textarea>
+          <textarea id="amenities-old" class="form-control persian-only" rows="3" placeholder="امکانات ملک را وارد کنید"></textarea>
+          <div id="amenitiesError-old" class="error hidden">لطفاً فارسی تایپ کنید</div>
         </div>
         
         <!-- وضعیت سند -->
@@ -1616,7 +1662,8 @@
           </div>
           
           <div class="mt-2">
-            <input type="text" id="saleConditionDetails-old" class="form-control" placeholder="توضیحات شرایط فروش را وارد کنید">
+            <input type="text" id="saleConditionDetails-old" class="form-control persian-only" placeholder="توضیحات شرایط فروش را وارد کنید">
+            <div id="saleConditionDetailsError-old" class="error hidden">لطفاً فارسی تایپ کنید</div>
           </div>
           
           <div id="saleConditionError-old" class="error hidden">لطفاً شرایط فروش را انتخاب کنید</div>
@@ -1625,7 +1672,8 @@
         <!-- آدرس -->
         <div class="mb-4">
           <label for="address-old" class="form-label">آدرس <span class="required-star">*</span></label>
-          <textarea id="address-old" class="form-control" rows="3" placeholder="آدرس دقیق ملک را وارد کنید"></textarea>
+          <textarea id="address-old" class="form-control persian-only" rows="3" placeholder="آدرس دقیق ملک را وارد کنید"></textarea>
+          <div id="addressError-old" class="error hidden">لطفاً فارسی تایپ کنید</div>
         </div>
       </div>
       
@@ -1669,7 +1717,8 @@
         
         <div class="mt-3">
           <label for="moreDetails-presale-apartment" class="form-label">توضیحات بیشتر</label>
-          <textarea id="moreDetails-presale-apartment" class="form-control" rows="2" placeholder="جزئیات بیشتر درباره پروژه"></textarea>
+          <textarea id="moreDetails-presale-apartment" class="form-control persian-only" rows="2" placeholder="جزئیات بیشتر درباره پروژه"></textarea>
+          <div id="moreDetailsError-presale-apartment" class="error hidden">لطفاً فارسی تایپ کنید</div>
         </div>
         
         <div class="mt-3">
@@ -1763,7 +1812,8 @@
         
         <div class="mt-3">
           <label for="otherDetails-presale-apartment" class="form-label">سایر توضیحات و امکانات</label>
-          <textarea id="otherDetails-presale-apartment" class="form-control" rows="3" placeholder="هر توضیح دیگری که لازم است وارد کنید"></textarea>
+          <textarea id="otherDetails-presale-apartment" class="form-control persian-only" rows="3" placeholder="هر توضیح دیگری که لازم است وارد کنید"></textarea>
+          <div id="otherDetailsError-presale-apartment" class="error hidden">لطفاً فارسی تایپ کنید</div>
         </div>
         
         <!-- وضعیت سند -->
@@ -1838,7 +1888,8 @@
           </div>
           
           <div class="mt-2">
-            <input type="text" id="saleConditionDetails-presale-apartment" class="form-control" placeholder="توضیحات شرایط فروش را وارد کنید">
+            <input type="text" id="saleConditionDetails-presale-apartment" class="form-control persian-only" placeholder="توضیحات شرایط فروش را وارد کنید">
+            <div id="saleConditionDetailsError-presale-apartment" class="error hidden">لطفاً فارسی تایپ کنید</div>
           </div>
           
           <div id="saleConditionError-presale-apartment" class="error hidden">لطفاً شرایط فروش را انتخاب کنید</div>
@@ -1847,7 +1898,8 @@
         <!-- آدرس -->
         <div class="mb-4">
           <label for="address-presale-apartment" class="form-label">آدرس <span class="required-star">*</span></label>
-          <textarea id="address-presale-apartment" class="form-control" rows="3" placeholder="آدرس دقیق ملک را وارد کنید"></textarea>
+          <textarea id="address-presale-apartment" class="form-control persian-only" rows="3" placeholder="آدرس دقیق ملک را وارد کنید"></textarea>
+          <div id="addressError-presale-apartment" class="error hidden">لطفاً فارسی تایپ کنید</div>
         </div>
       </div>
       
@@ -1970,7 +2022,8 @@
         
         <div class="mt-3">
           <label for="otherDetails-presale-villa" class="form-label">سایر توضیحات و امکانات</label>
-          <textarea id="otherDetails-presale-villa" class="form-control" rows="3" placeholder="هر توضیح دیگری که لازم است وارد کنید"></textarea>
+          <textarea id="otherDetails-presale-villa" class="form-control persian-only" rows="3" placeholder="هر توضیح دیگری که لازم است وارد کنید"></textarea>
+          <div id="otherDetailsError-presale-villa" class="error hidden">لطفاً فارسی تایپ کنید</div>
         </div>
         
         <!-- وضعیت سند -->
@@ -2040,7 +2093,8 @@
           </div>
           
           <div class="mt-2">
-            <input type="text" id="saleConditionDetails-presale-villa" class="form-control" placeholder="توضیحات شرایط فروش را وارد کنید">
+            <input type="text" id="saleConditionDetails-presale-villa" class="form-control persian-only" placeholder="توضیحات شرایط فروش را وارد کنید">
+            <div id="saleConditionDetailsError-presale-villa" class="error hidden">لطفاً فارسی تایپ کنید</div>
           </div>
           
           <div id="saleConditionError-presale-villa" class="error hidden">لطفاً شرایط فروش را انتخاب کنید</div>
@@ -2049,7 +2103,8 @@
         <!-- آدرس -->
         <div class="mb-4">
           <label for="address-presale-villa" class="form-label">آدرس <span class="required-star">*</span></label>
-          <textarea id="address-presale-villa" class="form-control" rows="3" placeholder="آدرس دقیق ملک را وارد کنید"></textarea>
+          <textarea id="address-presale-villa" class="form-control persian-only" rows="3" placeholder="آدرس دقیق ملک را وارد کنید"></textarea>
+          <div id="addressError-presale-villa" class="error hidden">لطفاً فارسی تایپ کنید</div>
         </div>
       </div>
       
@@ -2067,6 +2122,12 @@
         <div id="imagePreview" class="image-preview"></div>
       </div>
       
+      <!-- خطاهای اعتبارسنجی -->
+      <div id="validationErrors" class="validation-errors hidden">
+        <h4>لطفاً موارد زیر را تکمیل کنید:</h4>
+        <ul id="errorsList"></ul>
+      </div>
+      
       <!-- دکمه‌های فرم -->
       <div class="button-group">
         <button type="submit" class="btn btn-primary">ارسال اطلاعات</button>
@@ -2081,24 +2142,24 @@
     <div class="menu-content">
       <table class="menu-table">
         <tr>
-          <td>۰۹۱۱۳۹۳۰۹۸۱</td>
-          <td>کلیک کنید <span class="click-animation">👈</span></td>
+          <td><a href="tel:09113930981" class="text-dark text-decoration-none">۰۹۱۱۳۹۳۰۹۸۱</a></td>
+          <td>(کلیک کنید)</td>
         </tr>
         <tr>
-          <td>۰۹۱۱۲۹۰۳۹۳۲</td>
-          <td>کلیک کنید <span class="click-animation">👈</span></td>
+          <td><a href="tel:09112903932" class="text-dark text-decoration-none">۰۹۱۱۲۹۰۳۹۳۲</a></td>
+          <td>(کلیک کنید)</td>
         </tr>
         <tr>
-          <td>لوکیشن دفتر</td>
-          <td><span class="click-animation">👈</span></td>
+          <td><a href="https://nshn.ir/rbW89MIxXInd" target="_blank" class="text-dark text-decoration-none">لوکیشن</a></td>
+          <td></td>
         </tr>
         <tr>
-          <td>کانال معرفی ملک‌ها</td>
-          <td><span class="click-animation">👈</span></td>
+          <td><a href="https://t.me/amlakmoein4" target="_blank" class="text-dark text-decoration-none">کانال معرفی ملک‌ها</a></td>
+          <td></td>
         </tr>
         <tr>
-          <td>اینستاگرام ما</td>
-          <td><span class="click-animation">👈</span></td>
+          <td><a href="https://www.instagram.com/Amlak.moein" target="_blank" class="text-dark text-decoration-none">اینستاگرام ما</a></td>
+          <td></td>
         </tr>
       </table>
     </div>
@@ -2107,8 +2168,8 @@
   <!-- پیام موفقیت -->
   <div id="successOverlay" class="overlay">
     <div class="overlay-content">
-      <div class="success-checkmark">
-        <div class="check-icon"></div>
+      <div class="success-icon">
+        <i>✓</i>
       </div>
       <h3>اطلاعات شما با موفقیت ثبت شده‌اند</h3>
       <p>در صورت نیاز با شما تماس می‌گیریم.</p>
@@ -2151,12 +2212,28 @@
     </div>
   </div>
   
+  <!-- پیام خطا در ارسال اطلاعات -->
+  <div id="errorOverlay" class="overlay">
+    <div class="overlay-content">
+      <h3>خطا در ارسال اطلاعات</h3>
+      <p>لطفاً دوباره تلاش کنید.</p>
+      <div class="button-group">
+        <button id="closeErrorBtn" class="btn btn-primary">متوجه شدم</button>
+      </div>
+    </div>
+  </div>
+  
   <!-- کتابخانه EmailJS -->
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3.2.0/dist/email.min.js"></script>
   
   <!-- صدای موفقیت -->
   <audio id="successSound" preload="auto">
     <source src="https://assets.mixkit.co/active_storage/sfx/2005/2005-preview.mp3" type="audio/mpeg">
+  </audio>
+  
+  <!-- صدای دینگ -->
+  <audio id="dingSound" preload="auto">
+    <source src="https://assets.mixkit.co/active_storage/sfx/1862/1862-preview.mp3" type="audio/mpeg">
   </audio>
   
   <!-- کد جاوااسکریپت -->
