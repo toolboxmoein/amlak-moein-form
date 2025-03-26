@@ -1,933 +1,840 @@
-// تنظیمات Firebase (مطمئن شوید این مقادیر صحیح هستند)
-const firebaseConfig = {
-  apiKey: "AIzaSyBIcS9FeIQF0g0Hm_oYQgcGQHQy_HZKwjk", // از کد admin-panel.js شما گرفته شده
-  authDomain: "amlak-form-app.firebaseapp.com",
-  databaseURL: "https://amlak-form-app-default-rtdb.firebaseio.com",
-  projectId: "amlak-form-app",
-  storageBucket: "amlak-form-app.appspot.com",
-  messagingSenderId: "657326173887",  
-  appId: "1:657326173887:web:d7c3a9b3e4d4c7c1b0a5a0"
-};
-
-// مقداردهی اولیه Firebase
-firebase.initializeApp(firebaseConfig);
-const database = firebase.database();
-// Firebase Storage دیگر استفاده نمی‌شود، از Cloudinary استفاده می‌کنیم
-
-// --- اطلاعات Cloudinary ---
-const cloudName = 'docdtecgc'; // Cloud Name شما
-const uploadPreset = 'amlak_form_upload'; // نام Upload Preset شما
-const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
-
-// --- متغیرهای سراسری ---
-let uploadedFiles = []; // آرایه‌ای برای نگهداری File object ها
-
 document.addEventListener('DOMContentLoaded', function() {
-  console.log("DOM fully loaded and parsed"); // Debug log
+  // تنظیمات EmailJS
+  (function() {
+    emailjs.init({
+      publicKey: "7zOCMQKI0bRjmv6cn", // کلید عمومی اصلاح شده
+    });
+  })();
 
-  // --- انتخاب عناصر DOM ---
+  // متغیرهای سراسری
+  let uniqueId = generateUniqueId();
+
+  // نمایش و مخفی کردن بخش‌های مختلف فرم بر اساس نوع ملک
   const propertyTypeRadios = document.querySelectorAll('input[name="propertyType"]');
   const presaleTypeRadios = document.querySelectorAll('input[name="presaleType"]');
-  const formSections = {
-    apartment: document.getElementById('apartmentDetails'),    
-    villa: document.getElementById('villaDetails'),
-    land: document.getElementById('landDetails'),
-    commercial: document.getElementById('commercialDetails'),
-    old: document.getElementById('oldDetails'),
-    presaleType: document.getElementById('presaleTypeSection'),
-    presaleApartment: document.getElementById('presaleApartmentDetails'),
-    presaleVilla: document.getElementById('presaleVillaDetails'),
-    imageUpload: document.getElementById('imageUploadSection')
+  const detailSections = {
+    'آپارتمان': document.getElementById('apartmentDetails'),
+    'ویلا': document.getElementById('villaDetails'),
+    'زمین': document.getElementById('landDetails'),
+    'تجاری / مغازه': document.getElementById('commercialDetails'),
+    'کلنگی': document.getElementById('oldDetails'),
+    'پیش‌فروش': document.getElementById('presaleTypeSection')
   };
-  const typeErrorDiv = document.getElementById('typeError');
-  const hamburgerMenu = document.getElementById('hamburgerMenu');
-  const menuOverlay = document.getElementById('menuOverlay');
-  const menuClose = document.getElementById('menuClose');
-  const resetBtn = document.getElementById('resetBtn');
-  const confirmOverlay = document.getElementById('confirmOverlay');
-  const confirmYesBtn = document.getElementById('confirmYesBtn');
-  const confirmNoBtn = document.getElementById('confirmNoBtn');
-  const successOverlay = document.getElementById('successOverlay');
-  const errorOverlay = document.getElementById('errorOverlay');
-  const sendingOverlay = document.getElementById('sendingOverlay');
-  const closeSuccessBtn = document.getElementById('closeSuccessBtn');
-  const closeErrorBtn = document.getElementById('closeErrorBtn');
-  const imageUploadInput = document.getElementById('imageUpload');
-  const imagePreviewContainer = document.getElementById('imagePreview');
-  const uploadProgressContainer = document.getElementById('uploadProgressContainer');
-  const propertyForm = document.getElementById('propertyForm');
-  const validationErrorsDiv = document.getElementById('validationErrors');
-  const errorsListUl = document.getElementById('errorsList');
-  const dingSound = document.getElementById('dingSound');
-  // const successSound = document.getElementById('successSound'); // successSound is not used
+  const presaleDetailSections = {
+    'آپارتمان': document.getElementById('presaleApartmentDetails'),
+    'ویلا': document.getElementById('presaleVillaDetails')
+  };
 
-  // --- توابع ---
+  // تنظیم رویدادها
+  setupEventListeners();
 
-  // پنهان کردن همه بخش‌های جزئیات ملک
-  function hideAllSections() {
-    console.log("Hiding all sections..."); // Debug log
-    for (const key in formSections) {
-      if (formSections[key]) { // Check if element exists
-        formSections[key].classList.add('hidden');
-      } else {
-          console.warn(`Section element not found: ${key}`);
-      }
-    }
-    // همچنین بخش‌های داخلی پیش‌فروش را پنهان کن
-    if (formSections.presaleApartment) formSections.presaleApartment.classList.add('hidden');
-    if (formSections.presaleVilla) formSections.presaleVilla.classList.add('hidden');
-    // پنهان کردن خطاهای احتمالی در بخش‌های مخفی
-     document.querySelectorAll('.form-section.hidden .error').forEach(err => err.classList.add('hidden'));
-     document.querySelectorAll('.form-section.hidden .error-field').forEach(field => field.classList.remove('error-field'));  
-  }
-
-  // نمایش بخش مربوط به نوع ملک
-  function showPropertySection(type) {
-    hideAllSections();
-    typeErrorDiv.classList.add('hidden'); // Hide general type error
-    if (formSections.imageUpload) formSections.imageUpload.classList.remove('hidden'); // Show image upload
-
-    console.log("Showing section for type:", type); // Debug log
-
-    switch(type) {
-      case 'آپارتمان':
-        if (formSections.apartment) formSections.apartment.classList.remove('hidden');
-        break;
-      case 'ویلا':        
-        if (formSections.villa) formSections.villa.classList.remove('hidden');
-        break;
-      case 'زمین':
-        if (formSections.land) formSections.land.classList.remove('hidden');
-        break;
-      case 'تجاری':
-        if (formSections.commercial) formSections.commercial.classList.remove('hidden');
-        break;
-      case 'کلنگی':
-        if (formSections.old) formSections.old.classList.remove('hidden');
-        break;
-      case 'پیش‌فروش':
-        if (formSections.presaleType) formSections.presaleType.classList.remove('hidden');
-        // Don't show apartment/villa details yet
-        break;
-      default:
-          console.warn("Unknown property type selected:", type);
-    }
-  }
-
-  // نمایش بخش مربوط به نوع پیش‌فروش
-  function showPresaleSubType(subType) {
-      if (formSections.presaleApartment) formSections.presaleApartment.classList.add('hidden');
-      if (formSections.presaleVilla) formSections.presaleVilla.classList.add('hidden');
-
-      console.log("Showing presale sub-type:", subType); // Debug log
-
-      switch(subType) {
-          case 'آپارتمان':
-              if (formSections.presaleApartment) formSections.presaleApartment.classList.remove('hidden');
-              break;
-          case 'ویلا':
-              if (formSections.presaleVilla) formSections.presaleVilla.classList.remove('hidden');
-              break;
-          default:
-              console.warn("Unknown presale sub-type selected:", subType);
-      }
-  }
-
-  // ریست کردن فرم
-  function resetForm() {
-    propertyForm.reset();
-    hideAllSections();
-    imagePreviewContainer.innerHTML = '';
-    uploadProgressContainer.innerHTML = '';
-    uploadedFiles = [];
-    document.querySelectorAll('.error').forEach(error => error.classList.add('hidden'));
-    validationErrorsDiv.classList.add('hidden');
-    document.querySelectorAll('.error-field').forEach(field => field.classList.remove('error-field'));
-    console.log("Form reset."); // Debug log
-  }
-
-  // --- مدیریت رویدادها ---
-
-  // انتخاب نوع ملک
-  propertyTypeRadios.forEach(radio => {
-    radio.addEventListener('change', function() {
-      console.log("Property type changed:", this.value); // Debug log
-      showPropertySection(this.value);
-      // Reset presale sub-type if main type changed away from presale
-      if (this.value !== 'پیش‌فروش') {
-         presaleTypeRadios.forEach(r => r.checked = false);
-      }
+  // تنظیم رویدادهای فرم
+  function setupEventListeners() {
+    // انتخاب نوع ملک
+    propertyTypeRadios.forEach(radio => {
+      radio.addEventListener('change', handlePropertyTypeChange);
     });
-  });
 
-  // انتخاب نوع پیش‌فروش
-  presaleTypeRadios.forEach(radio => {
-    radio.addEventListener('change', function() {
-      console.log("Presale type changed:", this.value); // Debug log
-      showPresaleSubType(this.value);
+    // انتخاب نوع پیش‌فروش
+    presaleTypeRadios.forEach(radio => {
+      radio.addEventListener('change', handlePresaleTypeChange);
     });
-  });
 
-  // منوی همبرگری
-  if (hamburgerMenu && menuOverlay && menuClose) {
-      hamburgerMenu.addEventListener('click', () => menuOverlay.style.display = 'flex');
-      menuClose.addEventListener('click', () => menuOverlay.style.display = 'none');
-  }
-
-  // دکمه پاک کردن و تأیید
-  if (resetBtn && confirmOverlay && confirmYesBtn && confirmNoBtn) {
-      resetBtn.addEventListener('click', () => confirmOverlay.style.display = 'flex');
-      confirmYesBtn.addEventListener('click', () => {
-          resetForm();
-          confirmOverlay.style.display = 'none';
+    // فقط اعداد در فیلدهای عددی
+    document.querySelectorAll('.numeric-only').forEach(input => {
+      input.addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '');
       });
-      confirmNoBtn.addEventListener('click', () => confirmOverlay.style.display = 'none');
+    });
+
+    // فقط حروف فارسی در فیلدهای متنی فارسی
+    document.querySelectorAll('.persian-letters-only').forEach(input => {
+      input.addEventListener('input', function() {
+        this.value = this.value.replace(/[^آ-یءچحجژ\s]/g, '');
+      });
+    });
+
+    // حروف فارسی و اعداد در فیلدهای ترکیبی
+    document.querySelectorAll('.persian-and-numbers-only').forEach(input => {
+      input.addEventListener('input', function() {
+        this.value = this.value.replace(/[^آ-یءچحجژ0-9\s.,()-]/g, '');
+      });
+    });
+
+    // فرمت قیمت با جدا کننده هزارگان - اصلاح شده برای فقط اعداد
+    document.querySelectorAll('.price-input').forEach(input => {
+      input.addEventListener('input', function() {
+        // حذف همه کاراکترهای غیر عددی
+        let value = this.value.replace(/[^0-9]/g, '');
+        
+        // اگر مقدار خالی نیست، آن را فرمت کنیم
+        if (value) {
+          // تبدیل به عدد و سپس فرمت با جداکننده هزارگان
+          this.value = Number(value).toLocaleString();
+        } else {
+          this.value = '';
+        }
+      });
+    });
+
+    // رویدادهای دکمه‌ها
+    document.getElementById('resetBtn').addEventListener('click', showConfirmOverlay);
+    document.getElementById('confirmYesBtn').addEventListener('click', resetForm);
+    document.getElementById('confirmNoBtn').addEventListener('click', hideConfirmOverlay);
+    document.getElementById('closeSuccessBtn').addEventListener('click', hideSuccessOverlay);
+    document.getElementById('closeErrorBtn').addEventListener('click', hideErrorOverlay);
+
+    // رویدادهای منوی همبرگری
+    document.getElementById('hamburgerMenu').addEventListener('click', showMenuOverlay);
+    document.getElementById('menuClose').addEventListener('click', hideMenuOverlay);
+
+    // ارسال فرم
+    document.getElementById('propertyForm').addEventListener('submit', handleFormSubmit);
   }
 
-  // بستن پیام‌های Overlay
-  if (closeSuccessBtn && successOverlay) closeSuccessBtn.addEventListener('click', () => successOverlay.style.display = 'none');  
-  if (closeErrorBtn && errorOverlay) closeErrorBtn.addEventListener('click', () => errorOverlay.style.display = 'none');
-
-  // انتخاب عکس
- if (imageUploadInput && imagePreviewContainer) {
-    imageUploadInput.addEventListener('change', function(e) {
-        const files = Array.from(e.target.files);
-        console.log(`Files selected: ${files.length}`); // Debug log
-
-        files.forEach(file => {
-            if (file.type.match('image.*') && file.size <= 5 * 1024 * 1024) {
-                const fileIndex = uploadedFiles.length; // Get index before pushing
-                uploadedFiles.push(file); // Add file to array
-
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const previewItem = document.createElement('div');                    
-                    previewItem.classList.add('image-preview-item');
-                    previewItem.dataset.fileIndex = fileIndex; // Store the original index
-
-                    const img = document.createElement('img');
-                    img.src = event.target.result;
-                    img.alt = file.name;
-
-                    const removeBtn = document.createElement('button');
-                    removeBtn.type = 'button';
-                    removeBtn.classList.add('remove-image-btn');
-                    removeBtn.innerHTML = '&times;';
-                    removeBtn.addEventListener('click', function() {
-                        const itemToRemove = this.parentElement;
-                        const indexToRemove = parseInt(itemToRemove.dataset.fileIndex);
-                        console.log(`Removing image at index: ${indexToRemove}`); // Debug log
-
-                        if (indexToRemove >= 0 && indexToRemove < uploadedFiles.length) {
-                            // Mark file as null instead of splicing to preserve indices
-                            uploadedFiles[indexToRemove] = null;
-                            console.log("File marked as null:", uploadedFiles); // Debug log
-                        }
-                        itemToRemove.remove(); // Remove preview from DOM
-                        // Optionally remove progress bar if exists
-                        const progressId = `progress-${indexToRemove}`;
-                        const progressDiv = document.getElementById(progressId);
-                        if (progressDiv) progressDiv.remove();
-                    });
-
-                    previewItem.appendChild(img);
-                    previewItem.appendChild(removeBtn);
-                    imagePreviewContainer.appendChild(previewItem);
-                };
-                reader.readAsDataURL(file);
-            } else {
-                console.warn(`Invalid file skipped: ${file.name} (Type: ${file.type}, Size: ${file.size})`);
-                alert(`فایل "${file.name}" معتبر نیست یا حجم آن بیش از 5 مگابایت است.`);
-            }
-        });
-        e.target.value = null; // Clear input value
+  // تغییر نوع ملک
+  function handlePropertyTypeChange() {
+    const selectedType = document.querySelector('input[name="propertyType"]:checked').value;
+    
+    // مخفی کردن همه بخش‌های جزئیات
+    Object.values(detailSections).forEach(section => {
+      section.classList.add('hidden');
     });
-}
+    Object.values(presaleDetailSections).forEach(section => {
+      section.classList.add('hidden');
+    });
+    
+    // نمایش بخش جزئیات مربوط به نوع انتخاب شده
+    if (detailSections[selectedType]) {
+      detailSections[selectedType].classList.remove('hidden');
+    }
+    
+    // پاک کردن خطاها
+    document.getElementById('typeError').classList.add('hidden');
+    
+    // پخش صدای دینگ
+    playSound('dingSound');
+  }
 
+  // تغییر نوع پیش‌فروش
+  function handlePresaleTypeChange() {
+    const selectedType = document.querySelector('input[name="presaleType"]:checked').value;
+    
+    // مخفی کردن همه بخش‌های جزئیات پیش‌فروش
+    Object.values(presaleDetailSections).forEach(section => {
+      section.classList.add('hidden');
+    });
+    
+    // نمایش بخش جزئیات مربوط به نوع پیش‌فروش انتخاب شده
+    if (presaleDetailSections[selectedType]) {
+      presaleDetailSections[selectedType].classList.remove('hidden');
+    }
+    
+    // پاک کردن خطاها
+    document.getElementById('presaleTypeError').classList.add('hidden');
+    
+    // پخش صدای دینگ
+    playSound('dingSound');
+  }
 
-  // --- اعتبارسنجی و ارسال فرم ---
-  if (propertyForm) {
-    propertyForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-      console.log("Form submission initiated."); // Debug log
-
-      if (!validateForm()) {
-        console.log("Form validation failed."); // Debug log
-        // Optionally scroll to first error
-        const firstError = document.querySelector('.error-field, .error:not(.hidden)');
-        if (firstError) {
-            firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        return;
-      }
-
-      console.log("Form validation passed."); // Debug log
-      sendingOverlay.style.display = 'flex';
-
+  // ارسال فرم
+  async function handleFormSubmit(e) {
+    e.preventDefault();
+    
+    // اعتبارسنجی فرم
+    if (!validateForm()) {
+      return;
+    }
+    
+    // نمایش پیام در حال ارسال
+    showSendingOverlay();
+    
+    try {
+      // جمع‌آوری اطلاعات فرم
       const formData = collectFormData();
-      console.log("Collected Form Data:", formData); // Debug log
-
-      // Filter out null files (removed ones)
-      const filesToUpload = uploadedFiles.filter(file => file !== null);
-      console.log(`Files to upload: ${filesToUpload.length}`); // Debug log
-
-      // بخش تغییر یافته: استفاده از Cloudinary به جای Firebase Storage
-      uploadImagesToCloudinary(filesToUpload)
-        .then(imageUrls => {
-          console.log("Image URLs received:", imageUrls); // Debug log
-          formData.images = imageUrls || []; // Ensure images is always an array
-          formData.dateTime = new Date().toISOString(); // Add submission timestamp
-
-          console.log("Final data to save:", formData); // Debug log
-          return saveDataToFirebase(formData);
-        })
-        .then(() => {
-          console.log("Data saved successfully."); // Debug log
-          sendingOverlay.style.display = 'none';
-          if (dingSound) dingSound.play().catch(e => console.error("Error playing sound:", e)); // Play sound
-          successOverlay.style.display = 'flex';
-          resetForm(); // Reset form after success
-        })        
-        .catch(error => {
-          console.error('Error during submission process:', error); // Log detailed error
-          sendingOverlay.style.display = 'none';
-          errorOverlay.style.display = 'flex';
-        });
-    });
-  } else {
-      console.error("Property form not found!");
+      
+      // ارسال ایمیل با EmailJS
+      await sendEmail(formData);
+      
+      // نمایش پیام موفقیت
+      hideOverlay('sendingOverlay');
+      showSuccessOverlay();
+      
+      // پخش صدای موفقیت
+      playSound('successSound');
+      
+    } catch (error) {
+      console.error("Error sending email:", error);
+      
+      // نمایش پیام خطا
+      hideOverlay('sendingOverlay');
+      showErrorOverlay();
+    }
   }
 
-  // --- توابع کمکی اعتبارسنجی ---
-  function validateRequired(inputId, errorId, listName) {
-      const input = document.getElementById(inputId);
-      const errorDiv = document.getElementById(errorId);
-      if (!input || !errorDiv) { console.warn(`Missing element for ${inputId}`); return true; } // Skip if elements missing
-      if (!input.value.trim()) {
-          errorDiv.textContent = `لطفاً ${listName} را وارد کنید`;
-          errorDiv.classList.remove('hidden');
-          input.classList.add('error-field');
-          return false;
-      }
-      errorDiv.classList.add('hidden');
-      input.classList.remove('error-field');
-      return true;
-  }
-
-  function validatePersian(inputId, errorId, listName, isRequired = true) {
-      const input = document.getElementById(inputId);
-      const errorDiv = document.getElementById(errorId);
-      if (!input || !errorDiv) { console.warn(`Missing element for ${inputId}`); return true; }
-
-      if (isRequired && !validateRequired(inputId, errorId, listName)) {
-          return false; // Failed required check
-      }
-
-      if (input.value.trim() && !/^[\u0600-\u06FF\s.,،؛:؟!0-9۰-۹-]+$/.test(input.value.trim())) {
-          errorDiv.textContent = 'لطفاً فقط از حروف فارسی، اعداد و علائم مجاز استفاده کنید';
-          errorDiv.classList.remove('hidden');
-          input.classList.add('error-field');
-          return false;
-      }
-      // If not required or passes regex, hide error (redundant if validateRequired handled it)
-      if (!isRequired || /^[\u0600-\u06FF\s.,،؛:؟!0-9۰-۹-]+$/.test(input.value.trim())) {
-          errorDiv.classList.add('hidden');
-          input.classList.remove('error-field');
-      }
-      return true;
-  }
-
-  function validateNumeric(inputId, errorId, listName, isRequired = true) {
-      const input = document.getElementById(inputId);
-      const errorDiv = document.getElementById(errorId);
-       if (!input || !errorDiv) { console.warn(`Missing element for ${inputId}`); return true; }
-
-      if (isRequired && !validateRequired(inputId, errorId, listName)) {
-          return false; // Failed required check
-      }
-
-      // Allow empty if not required
-      if (!isRequired && !input.value.trim()) {
-           errorDiv.classList.add('hidden');
-           input.classList.remove('error-field');
-           return true;
-      }
-
-      // Check for non-digits (allow comma for display, but validation logic ignores it)
-      if (/\D/.test(input.value.replace(/,/g, '').replace(/٬/g, ''))) {
-          errorDiv.textContent = "لطفاً فقط عدد وارد کنید.";
-          errorDiv.classList.remove('hidden');
-          input.classList.add('error-field');
-          return false;
-      }
-      errorDiv.classList.add('hidden');
-      input.classList.remove('error-field');
-      return true;
-  }
-
-   function validatePhone(inputId, errorId, listName) {
-        const input = document.getElementById(inputId);
-        const errorDiv = document.getElementById(errorId);
-        if (!input || !errorDiv) { console.warn(`Missing element for ${inputId}`); return true; }
-
-        if (!validateRequired(inputId, errorId, listName)) return false;
-
-        const phoneRegex = /^09\d{9}$/;
-        if (!phoneRegex.test(input.value.trim())) {
-            errorDiv.textContent = 'شماره موبایل 11 رقمی معتبر وارد کنید (مثال: 09123456789)';
-            errorDiv.classList.remove('hidden');
-            input.classList.add('error-field');
-            return false;
-        }
-        errorDiv.classList.add('hidden');
-        input.classList.remove('error-field');
-        return true;
-   }
-
-  function validateRadioGroup(groupName, errorId, listName, sectionId) {
-      const section = document.getElementById(sectionId);
-      if (!section || section.classList.contains('hidden')) return true; // Skip validation if section is hidden
-
-      const errorDiv = document.getElementById(errorId);
-      if (!errorDiv) { console.warn(`Missing error element for ${errorId}`); return true; }
-
-      // Find radio buttons *within the specific section*
-      const checkedRadio = section.querySelector(`input[name="${groupName}"]:checked`);
-
-      if (!checkedRadio) {
-          errorDiv.textContent = `لطفاً ${listName} را انتخاب کنید`;
-          errorDiv.classList.remove('hidden');
-          // Optionally add error class to the group container if available
-          return false;
-      }
-      errorDiv.classList.add('hidden');
-      return true;
-  }  
-  
-  function validateCheckboxGroup(groupName, errorId, listName, sectionId) {
-      const section = document.getElementById(sectionId);
-      if (!section || section.classList.contains('hidden')) return true; // Skip validation if section is hidden
-
-      const errorDiv = document.getElementById(errorId);
-       if (!errorDiv) { console.warn(`Missing error element for ${errorId}`); return true; }
-
-      // Find checkboxes *within the specific section*
-      const checkedBoxes = section.querySelectorAll(`input[name="${groupName}"]:checked`);
-
-      if (checkedBoxes.length === 0) {
-          errorDiv.textContent = `لطفاً حداقل یک ${listName} انتخاب کنید`;
-          errorDiv.classList.remove('hidden');
-          // Optionally add error class to the group container
-          return false;
-      }
-      errorDiv.classList.add('hidden');
-      return true;
-  }
-
-
-  // --- تابع اصلی اعتبارسنجی ---
+  // اعتبارسنجی فرم
   function validateForm() {
     let isValid = true;
-    const errors = []; // Use an array to collect error messages if needed
-
-    // --- General Fields ---
-    if (!validatePersian('firstName', 'firstNameError', 'نام')) isValid = false;
-    if (!validatePersian('lastName', 'lastNameError', 'نام خانوادگی')) isValid = false;
-    if (!validatePhone('phone', 'phoneError', 'شماره تماس')) isValid = false;    // altPhone is optional
-
-    // --- Property Type ---
-    const propertyTypeRadio = document.querySelector('input[name="propertyType"]:checked');
-    if (!propertyTypeRadio) {
-      typeErrorDiv.classList.remove('hidden');
+    const errors = [];
+    
+    // پاک کردن همه خطاها
+    document.querySelectorAll('.error').forEach(el => {
+      el.classList.add('hidden');
+      el.textContent = '';
+    });
+    document.querySelectorAll('.error-field').forEach(el => {
+      el.classList.remove('error-field');
+    });
+    
+    // اعتبارسنجی اطلاعات شخصی
+    if (!validateField('firstName', 'نام را وارد کنید')) {
+      isValid = false;
+      errors.push('نام');
+    }
+    
+    if (!validateField('lastName', 'نام خانوادگی را وارد کنید')) {
+      isValid = false;
+      errors.push('نام خانوادگی');
+    }
+    
+    if (!validateField('phone', 'شماره تماس را وارد کنید')) {
+      isValid = false;
+      errors.push('شماره تماس');
+    } else if (!validatePhone('phone')) {
+      isValid = false;
+      errors.push('شماره تماس (فرمت صحیح نیست)');
+    }
+    
+    // اعتبارسنجی نوع ملک
+    const selectedType = document.querySelector('input[name="propertyType"]:checked');
+    if (!selectedType) {
+      document.getElementById('typeError').classList.remove('hidden');
+      document.getElementById('typeError').textContent = 'لطفاً نوع ملک را انتخاب کنید';
       isValid = false;
       errors.push('نوع ملک');
     } else {
-      typeErrorDiv.classList.add('hidden');
-      const propertyType = propertyTypeRadio.value;
-      let sectionId = ''; // ID of the currently visible section div
-
-      // --- Validate fields within the *active* section ---
-      switch (propertyType) {
+      // اعتبارسنجی بر اساس نوع ملک انتخاب شده
+      switch (selectedType.value) {
         case 'آپارتمان':
-          sectionId = 'apartmentDetails';
-          if (!validateNumeric('unitArea-apartment', 'unitArea-apartmentError', 'متراژ واحد')) isValid = false;
-          if (!validateNumeric('roomCount-apartment', 'roomCount-apartmentError', 'تعداد اتاق‌ها')) isValid = false;
-          if (!validateNumeric('buildYear-apartment', 'buildYear-apartmentError', 'سال ساخت')) isValid = false;
-          if (!validateRadioGroup('document', 'document-apartmentError', 'وضعیت سند', sectionId)) isValid = false; // Use shared name, unique error ID
-          if (!validateNumeric('totalPrice-apartment', 'totalPrice-apartmentError', 'قیمت کلی')) isValid = false;
-          if (!validateCheckboxGroup('saleConditions', 'saleConditions-apartmentError', 'شرط فروش', sectionId)) isValid = false; // Use shared name, unique error ID
-          if (!validatePersian('address-apartment', 'address-apartmentError', 'آدرس')) isValid = false;
-          // Optional fields don't need 'isValid = false' but can still show format errors
-          validateNumeric('landArea-apartment', 'landArea-apartmentError', 'متراژ زمین', false); // false = not required
-          validatePersian('otherDetails-apartment', 'otherDetails-apartmentError', 'سایر توضیحات', false);
-          validatePersian('saleConditionDetails-apartment', 'saleConditionDetails-apartmentError', 'توضیحات شرایط فروش', false);
+          if (!validatePropertyType('apartment')) {
+            isValid = false;
+          }
           break;
-
         case 'ویلا':
-          sectionId = 'villaDetails';
-          if (!validateNumeric('landArea-villa', 'landArea-villaError', 'متراژ زمین')) isValid = false;
-          if (!validateNumeric('buildingArea-villa', 'buildingArea-villaError', 'متراژ بنا')) isValid = false;
-          if (!validateNumeric('roomCount-villa', 'roomCount-villaError', 'تعداد اتاق‌ها')) isValid = false;
-          if (!validateNumeric('buildYear-villa', 'buildYear-villaError', 'سال ساخت')) isValid = false;
-          if (!validateRadioGroup('document', 'document-villaError', 'وضعیت سند', sectionId)) isValid = false;
-          if (!validateNumeric('price-villa', 'price-villaError', 'قیمت کلی')) isValid = false;
-          if (!validateCheckboxGroup('saleConditions', 'saleConditions-villaError', 'شرط فروش', sectionId)) isValid = false;
-          if (!validatePersian('address-villa', 'address-villaError', 'آدرس')) isValid = false;
-          validatePersian('otherDetails-villa', 'otherDetails-villaError', 'سایر توضیحات', false);
-          validatePersian('saleConditionDetails-villa', 'saleConditionDetails-villaError', 'توضیحات شرایط فروش', false);
-          validatePersian('otherFacilities-villa', 'otherFacilities-villaError', 'سایر تاسیسات', false);
-          validatePersian('otherAmenities-villa', 'otherAmenities-villaError', 'سایر امکانات', false);
+          if (!validatePropertyType('villa')) {
+            isValid = false;
+          }
           break;
-
         case 'زمین':
-           sectionId = 'landDetails';
-           if (!validateNumeric('landArea-land', 'landArea-landError', 'متراژ زمین')) isValid = false;
-           if (!validatePersian('landUsage', 'landUsageError', 'کاربری')) isValid = false;
-           if (!validateRadioGroup('document', 'document-landError', 'وضعیت سند', sectionId)) isValid = false;
-           if (!validateNumeric('totalPrice-land', 'totalPrice-landError', 'قیمت کلی')) isValid = false;
-           if (!validateCheckboxGroup('saleConditions', 'saleConditions-landError', 'شرط فروش', sectionId)) isValid = false;
-           if (!validatePersian('address-land', 'address-landError', 'آدرس')) isValid = false;
-           validateNumeric('landWidth', 'landWidthError', 'بر زمین', false); // Assuming error IDs exist or are added
-           validateNumeric('landDepth', 'landDepthError', 'عمق زمین', false);
-           validateNumeric('alleyWidth', 'alleyWidthError', 'عرض کوچه', false);
-           validatePersian('otherDetails-land', 'otherDetails-landError', 'سایر توضیحات', false);
-           validatePersian('saleConditionDetails-land', 'saleConditionDetails-landError', 'توضیحات شرایط فروش', false);
-           break;
-
-        case 'تجاری':
-            sectionId = 'commercialDetails';
-            if (!validateNumeric('shopArea', 'shopAreaError', 'متراژ مغازه')) isValid = false;
-            if (!validateRadioGroup('document', 'document-commercialError', 'وضعیت سند', sectionId)) isValid = false;
-            if (!validateNumeric('totalPrice-commercial', 'totalPrice-commercialError', 'قیمت کلی')) isValid = false;
-            if (!validateCheckboxGroup('saleConditions', 'saleConditions-commercialError', 'شرط فروش', sectionId)) isValid = false;
-            if (!validatePersian('address-commercial', 'address-commercialError', 'آدرس')) isValid = false;
-            validateNumeric('shopHeight', 'shopHeightError', 'ارتفاع مغازه', false);
-            validateNumeric('shopWidth', 'shopWidthError', 'دهنه مغازه', false);
-            validatePersian('shopDetails', 'shopDetailsError', 'توضیحات شکل مغازه', false);
-            validatePersian('otherDetails-commercial', 'otherDetails-commercialError', 'امکانات', false);
-            validatePersian('saleConditionDetails-commercial', 'saleConditionDetails-commercialError', 'توضیحات شرایط فروش', false);
-            break;
-
+          if (!validatePropertyType('land')) {
+            isValid = false;
+          }
+          break;
+        case 'تجاری / مغازه':
+          if (!validatePropertyType('commercial')) {
+            isValid = false;
+          }
+          break;
         case 'کلنگی':
-            sectionId = 'oldDetails';
-            if (!validateNumeric('landArea-old', 'landArea-oldError', 'متراژ زمین')) isValid = false;
-            if (!validateNumeric('buildingArea-old', 'buildingArea-oldError', 'متراژ بنا')) isValid = false;
-            if (!validateRadioGroup('document', 'document-oldError', 'وضعیت سند', sectionId)) isValid = false;
-            if (!validateNumeric('totalPrice-old', 'totalPrice-oldError', 'قیمت کلی')) isValid = false;
-            if (!validateCheckboxGroup('saleConditions', 'saleConditions-oldError', 'شرط فروش', sectionId)) isValid = false;
-            if (!validatePersian('address-old', 'address-oldError', 'آدرس')) isValid = false;
-            validateNumeric('landWidth-old', 'landWidth-oldError', 'بر زمین', false);
-            validateNumeric('landDepth-old', 'landDepth-oldError', 'عمق زمین', false);
-            validatePersian('amenities-old', 'amenities-oldError', 'امکانات', false);
-            validatePersian('saleConditionDetails-old', 'saleConditionDetails-oldError', 'توضیحات شرایط فروش', false);
-            break;
-
+          if (!validatePropertyType('old')) {
+            isValid = false;
+          }
+          break;
         case 'پیش‌فروش':
-            const presaleTypeRadio = document.querySelector('input[name="presaleType"]:checked');
-            const presaleTypeErrorDiv = document.getElementById('presaleTypeError'); // Assuming this ID exists
-            if (!presaleTypeRadio) {
-                isValid = false;
-                if(presaleTypeErrorDiv) presaleTypeErrorDiv.classList.remove('hidden');
-                errors.push('نوع پیش‌فروش');
-            } else {
-                 if(presaleTypeErrorDiv) presaleTypeErrorDiv.classList.add('hidden');
-                 const presaleType = presaleTypeRadio.value;
-
-                 // Validate Project Progress (always required for presale)
-                 if (!validateRequired('projectProgress', 'projectProgressError', 'مرحله پروژه')) isValid = false;
-
-
-                 if (presaleType === 'آپارتمان') {
-                     sectionId = 'presaleApartmentDetails';
-                     if (!validateNumeric('unitArea-presale-apartment', 'unitArea-presale-apartmentError', 'متراژ واحد')) isValid = false;
-                     if (!validateNumeric('roomCount-presale-apartment', 'roomCount-presale-apartmentError', 'تعداد اتاق')) isValid = false;
-                     if (!validateRadioGroup('document', 'document-presale-apartmentError', 'وضعیت سند', sectionId)) isValid = false;
-                     if (!validateNumeric('totalPrice-presale-apartment', 'totalPrice-presale-apartmentError', 'قیمت کلی')) isValid = false;
-                     if (!validateCheckboxGroup('saleConditions', 'saleConditions-presale-apartmentError', 'شرط فروش', sectionId)) isValid = false;
-                     if (!validatePersian('address-presale-apartment', 'address-presale-apartmentError', 'آدرس')) isValid = false;
-                     validateNumeric('landArea-presale-apartment', 'landArea-presale-apartmentError', 'متراژ زمین', false);
-                     validateNumeric('floorCount-presale-apartment', 'floorCount-presale-apartmentError', 'تعداد طبقه', false);
-                     validateNumeric('floorNumber-presale-apartment', 'floorNumber-presale-apartmentError', 'طبقه چندم', false);
-                     validateNumeric('unitsPerFloor-presale-apartment', 'unitsPerFloor-presale-apartmentError', 'واحد در طبقه', false);
-                     validatePersian('moreDetails-presale-apartment', 'moreDetails-presale-apartmentError', 'توضیحات بیشتر', false);
-                     validatePersian('otherDetails-presale-apartment', 'otherDetails-presale-apartmentError', 'سایر توضیحات', false);
-                     validatePersian('saleConditionDetails-presale-apartment', 'saleConditionDetails-presale-apartmentError', 'توضیحات شرایط فروش', false);
-
-                 } else { // ویلا
-                     sectionId = 'presaleVillaDetails';
-                     if (!validateNumeric('landArea-presale-villa', 'landArea-presale-villaError', 'متراژ زمین')) isValid = false;
-                     if (!validateNumeric('buildingArea-presale-villa', 'buildingArea-presale-villaError', 'متراژ بنا')) isValid = false;
-                     if (!validateNumeric('roomCount-presale-villa', 'roomCount-presale-villaError', 'تعداد اتاق')) isValid = false;
-                     if (!validateNumeric('floorCount-presale-villa', 'floorCount-presale-villaError', 'تعداد طبقات')) isValid = false;
-                     if (!validateRadioGroup('document', 'document-presale-villaError', 'وضعیت سند', sectionId)) isValid = false;
-                     if (!validateNumeric('price-presale-villa', 'price-presale-villaError', 'قیمت کلی')) isValid = false;
-                     if (!validateCheckboxGroup('saleConditions', 'saleConditions-presale-villaError', 'شرط فروش', sectionId)) isValid = false;
-                     if (!validatePersian('address-presale-villa', 'address-presale-villaError', 'آدرس')) isValid = false;
-                     validatePersian('otherDetails-presale-villa', 'otherDetails-presale-villaError', 'سایر توضیحات', false);
-                     validatePersian('saleConditionDetails-presale-villa', 'saleConditionDetails-presale-villaError', 'توضیحات شرایط فروش', false);
-                 }
+          // اعتبارسنجی نوع پیش‌فروش
+          const selectedPresaleType = document.querySelector('input[name="presaleType"]:checked');
+          if (!selectedPresaleType) {
+            document.getElementById('presaleTypeError').classList.remove('hidden');
+            isValid = false;
+            errors.push('نوع پیش‌فروش');
+          } else {
+            // اعتبارسنجی پروژه در چه مرحله‌ای است
+            if (!validateField('projectProgress', 'مرحله پروژه را وارد کنید')) {
+              isValid = false;
+              errors.push('مرحله پروژه');
             }
-            break;
+            
+            // اعتبارسنجی بر اساس نوع پیش‌فروش
+            switch (selectedPresaleType.value) {
+              case 'آپارتمان':
+                if (!validatePropertyType('presale-apartment')) {
+                  isValid = false;
+                }
+                break;
+              case 'ویلا':
+                if (!validatePropertyType('presale-villa')) {
+                  isValid = false;
+                }
+                break;
+            }
+          }
+          break;
       }
     }
-
-    // --- نمایش خطاهای کلی ---
+    
+    // نمایش خطاها
     if (!isValid) {
-      errorsListUl.innerHTML = ''; // Clear previous errors
-      // Use Set to remove duplicates if errors array was populated
-      [...new Set(errors)].forEach(errMsg => {
-          const li = document.createElement('li');
-          li.textContent = errMsg;
-          errorsListUl.appendChild(li);
+      const errorsList = document.getElementById('errorsList');
+      errorsList.innerHTML = '';
+      errors.forEach(error => {
+        const li = document.createElement('li');
+        li.textContent = error;
+        errorsList.appendChild(li);
       });
-      // Add general message if specific field errors are shown inline
-      if (errorsListUl.children.length === 0 && document.querySelector('.error-field')) {
-           const li = document.createElement('li');
-           li.textContent = "لطفاً فیلدهای مشخص شده را اصلاح کنید.";
-           errorsListUl.appendChild(li);
-      }      
-      validationErrorsDiv.classList.remove('hidden');
+      document.getElementById('validationErrors').classList.remove('hidden');
+      
+      // اسکرول به بالای فرم
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-      validationErrorsDiv.classList.add('hidden');
+      document.getElementById('validationErrors').classList.add('hidden');
     }
-
+    
     return isValid;
   }
 
-
-  // --- تابع جدید: آپلود عکس‌ها به Cloudinary ---
-  function uploadImagesToCloudinary(files) {
-    if (!files || files.length === 0) {
-        console.log("No files to upload."); // Debug log
-        return Promise.resolve([]); // Resolve with empty array if no files
+  // اعتبارسنجی فیلدهای مختلف بر اساس نوع ملک
+  function validatePropertyType(type) {
+    let isValid = true;
+    
+    // فیلدهای مشترک
+    if (!validateDocumentType()) {
+      isValid = false;
     }
-
-    const uploadPromises = files.map((file, index) => {
-        const timestamp = Date.now();
-        // ساخت نام امن برای فایل
-        const safeFileName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
-        const fileName = `${timestamp}_${safeFileName}`;
-
-        // --- مدیریت نمایش پیشرفت ---
-        const progressId = `progress-${index}`; // Use original index for ID
-        let progressDiv = document.getElementById(progressId);
-        // یافتن آیتم پیش‌نمایش مرتبط
-        const previewItem = document.querySelector(`.image-preview-item[data-file-index="${index}"]`);
-
-        if (!progressDiv && previewItem) {
-            progressDiv = document.createElement('div');
-            progressDiv.id = progressId;
-            progressDiv.className = 'progress mt-1 mb-1'; // Smaller margins
-            progressDiv.style.height = '5px'; // Make it thinner
-            progressDiv.innerHTML = `<div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" style="width: 0%; font-size: 8px; line-height: 5px;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>`;
-            previewItem.appendChild(progressDiv); // Append to the preview item
-        }
-        const progressBar = progressDiv ? progressDiv.querySelector('.progress-bar') : null;
+    
+    // فیلدهای مخصوص هر نوع
+    switch (type) {
+      case 'apartment':
+        if (!validateField('unitArea-apartment', 'متراژ واحد را وارد کنید')) isValid = false;
+        if (!validateField('roomCount-apartment', 'تعداد اتاق‌ها را وارد کنید')) isValid = false;
+        if (!validateField('buildYear-apartment', 'سال ساخت را وارد کنید')) isValid = false;
+        if (!validateField('totalPrice-apartment', 'قیمت کلی را وارد کنید')) isValid = false;
+        if (!validateSaleConditions('apartment')) isValid = false;
+        if (!validateField('address-apartment', 'آدرس را وارد کنید')) isValid = false;
+        break;
         
-        // نمایش حالت در حال آپلود
-        if (progressBar) {
-            progressBar.style.width = '50%'; // نمایش 50% برای شروع آپلود
-            progressBar.setAttribute('aria-valuenow', 50);
-        }
-
-        // ساخت FormData برای ارسال به Cloudinary
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('upload_preset', uploadPreset);
-        // می‌توانید پارامترهای دیگری مثل folder را هم اینجا اضافه کنید
-        // formData.append('folder', 'property_images');
-
-        return fetch(cloudinaryUrl, {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => {
-            if (!response.ok) {
-                // اگر پاسخ HTTP موفقیت‌آمیز نبود، خطا را پردازش کنید
-                return response.json().then(errData => {
-                    throw new Error(`Cloudinary upload failed: ${errData.error?.message || response.statusText}`);
-                });
-            }
-            return response.json();
-        })
-        .then(data => {
-            // آپلود موفق - URL تصویر را برگردانید
-            console.log(`File ${file.name} uploaded to Cloudinary: ${data.secure_url}`);
-            
-            // به‌روزرسانی نوار پیشرفت به حالت موفقیت
-            if (progressBar) {
-                progressBar.classList.remove('progress-bar-animated', 'bg-info');
-                progressBar.classList.add('bg-success');
-                progressBar.style.width = '100%';
-                progressBar.setAttribute('aria-valuenow', 100);
-            }
-            
-            return data.secure_url;
-        })
-        .catch(error => {
-            console.error(`Error uploading ${file.name} to Cloudinary:`, error);
-            
-            // به‌روزرسانی نوار پیشرفت به حالت خطا
-            if (progressBar) {
-                progressBar.classList.remove('progress-bar-animated', 'bg-info');
-                progressBar.classList.add('bg-danger');
-                progressBar.style.width = '100%';
-                progressBar.setAttribute('aria-valuenow', 100);
-            }
-            
-            // انتشار مجدد خطا برای مدیریت در بخش then/catch اصلی
-            throw error;
-        });
-    });
-
-    // منتظر ماندن برای همه آپلودها
-    return Promise.all(uploadPromises);
+      case 'villa':
+        if (!validateField('landArea-villa', 'متراژ زمین را وارد کنید')) isValid = false;
+        if (!validateField('buildingArea-villa', 'متراژ بنا را وارد کنید')) isValid = false;
+        if (!validateField('roomCount-villa', 'تعداد اتاق‌ها را وارد کنید')) isValid = false;
+        if (!validateField('buildYear-villa', 'سال ساخت را وارد کنید')) isValid = false;
+        if (!validateField('price-villa', 'قیمت کلی را وارد کنید')) isValid = false;
+        if (!validateSaleConditions('villa')) isValid = false;
+        if (!validateField('address-villa', 'آدرس را وارد کنید')) isValid = false;
+        break;
+        
+      case 'land':
+        if (!validateField('landArea-land', 'متراژ زمین را وارد کنید')) isValid = false;
+        if (!validateField('landUsage', 'کاربری را وارد کنید')) isValid = false;
+        if (!validateField('totalPrice-land', 'قیمت کلی را وارد کنید')) isValid = false;
+        if (!validateSaleConditions('land')) isValid = false;
+        if (!validateField('address-land', 'آدرس را وارد کنید')) isValid = false;
+        break;
+        
+      case 'commercial':
+        if (!validateField('shopArea', 'متراژ مغازه را وارد کنید')) isValid = false;
+        if (!validateField('totalPrice-commercial', 'قیمت کلی را وارد کنید')) isValid = false;
+        if (!validateSaleConditions('commercial')) isValid = false;
+        if (!validateField('address-commercial', 'آدرس را وارد کنید')) isValid = false;
+        break;
+        
+      case 'old':
+        if (!validateField('landArea-old', 'متراژ زمین را وارد کنید')) isValid = false;
+        if (!validateField('buildingArea-old', 'متراژ بنا را وارد کنید')) isValid = false;
+        if (!validateField('totalPrice-old', 'قیمت کلی را وارد کنید')) isValid = false;
+        if (!validateSaleConditions('old')) isValid = false;
+        if (!validateField('address-old', 'آدرس را وارد کنید')) isValid = false;
+        break;
+        
+      case 'presale-apartment':
+        if (!validateField('unitArea-presale-apartment', 'متراژ واحد را وارد کنید')) isValid = false;
+        if (!validateField('roomCount-presale-apartment', 'تعداد اتاق‌ها را وارد کنید')) isValid = false;
+        if (!validateField('totalPrice-presale-apartment', 'قیمت کلی را وارد کنید')) isValid = false;
+        if (!validateSaleConditions('presale-apartment')) isValid = false;
+        if (!validateField('address-presale-apartment', 'آدرس را وارد کنید')) isValid = false;
+        break;
+        
+      case 'presale-villa':
+        if (!validateField('landArea-presale-villa', 'متراژ زمین را وارد کنید')) isValid = false;
+        if (!validateField('buildingArea-presale-villa', 'متراژ بنا را وارد کنید')) isValid = false;
+        if (!validateField('roomCount-presale-villa', 'تعداد اتاق‌ها را وارد کنید')) isValid = false;
+        if (!validateField('floorCount-presale-villa', 'تعداد طبقات را وارد کنید')) isValid = false;
+        if (!validateField('price-presale-villa', 'قیمت کلی را وارد کنید')) isValid = false;
+        if (!validateSaleConditions('presale-villa')) isValid = false;
+        if (!validateField('address-presale-villa', 'آدرس را وارد کنید')) isValid = false;
+        break;
+    }
+    
+    return isValid;
   }
 
-  // --- تابع ذخیره اطلاعات در Firebase ---
-  function saveDataToFirebase(data) {
-    const newPropertyRef = database.ref('properties').push();
-    return newPropertyRef.set(data);
+  // اعتبارسنجی فیلد
+  function validateField(id, errorMessage) {
+    const field = document.getElementById(id);
+    if (!field) return true; // اگر فیلد وجود نداشت، اعتبارسنجی را رد کن
+    
+    if (!field.value.trim()) {
+      const errorElement = document.getElementById(`${id}Error`);
+      if (errorElement) {
+        errorElement.textContent = errorMessage;
+        errorElement.classList.remove('hidden');
+      }
+      field.classList.add('error-field');
+      return false;
+    }
+    return true;
   }
 
-  // --- تابع جمع‌آوری داده‌ها (اصلاح شده برای کار با name مشترک) ---
+  // اعتبارسنجی شماره تلفن
+  function validatePhone(id) {
+    const phoneField = document.getElementById(id);
+    const phoneRegex = /^09\d{9}$/;
+    
+    if (!phoneRegex.test(phoneField.value)) {
+      const errorElement = document.getElementById(`${id}Error`);
+      if (errorElement) {
+        errorElement.textContent = 'شماره تلفن باید با ۰۹ شروع شده و ۱۱ رقم باشد';
+        errorElement.classList.remove('hidden');
+      }
+      phoneField.classList.add('error-field');
+      return false;
+    }
+    return true;
+  }
+
+  // اعتبارسنجی وضعیت سند
+  function validateDocumentType() {
+    const selectedType = document.querySelector('input[name="propertyType"]:checked');
+    if (!selectedType) return false;
+    
+    const documentChecked = document.querySelector('input[name="document"]:checked');
+    if (!documentChecked) {
+      let errorId;
+      
+      // تعیین ID المان خطا بر اساس نوع ملک
+      switch (selectedType.value) {
+        case 'آپارتمان':
+          errorId = 'document-apartmentError';
+          break;
+        case 'ویلا':
+          errorId = 'document-villaError';
+          break;
+        case 'زمین':
+          errorId = 'document-landError';
+          break;
+        case 'تجاری / مغازه':
+          errorId = 'document-commercialError';
+          break;
+        case 'کلنگی':
+          errorId = 'document-oldError';
+          break;
+        case 'پیش‌فروش':
+          const presaleType = document.querySelector('input[name="presaleType"]:checked');
+          if (presaleType) {
+            if (presaleType.value === 'آپارتمان') {
+              errorId = 'document-presale-apartmentError';
+            } else {
+              errorId = 'document-presale-villaError';
+            }
+          }
+          break;
+      }
+      
+      if (errorId) {
+        document.getElementById(errorId).classList.remove('hidden');
+      }
+      
+      return false;
+    }
+    
+    return true;
+  }
+
+  // اعتبارسنجی شرایط فروش
+  function validateSaleConditions(type) {
+    const saleConditionsChecked = document.querySelectorAll(`input[name="saleConditions"]:checked`);
+    
+    if (saleConditionsChecked.length === 0) {
+      document.getElementById(`saleConditions-${type}Error`).classList.remove('hidden');
+      return false;
+    }
+    
+    return true;
+  }
+
+  // جمع‌آوری اطلاعات فرم
   function collectFormData() {
-      const propertyTypeRadio = document.querySelector('input[name="propertyType"]:checked');
-      if (!propertyTypeRadio) return null; // Should not happen if validation passed
-
-      const propertyType = propertyTypeRadio.value;
-      let activeSection; // The div element of the active section
-      let formData = {
-          firstName: document.getElementById('firstName').value.trim(),
-          lastName: document.getElementById('lastName').value.trim(),
-          phone: document.getElementById('phone').value.trim(),
-          altPhone: document.getElementById('altPhone').value.trim() || null, // Use null for empty optional
-          propertyType: propertyType,
-          // dateTime and images will be added later
-      };
-
-      // Helper to get value from input within the active section
-      function getValue(selector) {
-          const element = activeSection ? activeSection.querySelector(selector) : null;
-          return element ? element.value.trim() : null;
-      }
-
-      // Helper to get checked radio value within the active section
-      function getRadioValue(name) {
-          const element = activeSection ? activeSection.querySelector(`input[name="${name}"]:checked`) : null;
-          return element ? element.value : null;
-      }
-
-      // Helper to get checked checkbox values within the active section
-      function getCheckboxValues(name) {
-          const elements = activeSection ? activeSection.querySelectorAll(`input[name="${name}"]:checked`) : [];
-          return Array.from(elements).map(el => el.value);
-      }
-
-      switch (propertyType) {
-          case 'آپارتمان': activeSection = formSections.apartment; break;
-          case 'ویلا': activeSection = formSections.villa; break;
-          case 'زمین': activeSection = formSections.land; break;
-          case 'تجاری': activeSection = formSections.commercial; break;
-          case 'کلنگی': activeSection = formSections.old; break;
-          case 'پیش‌فروش':
-              const presaleTypeRadio = document.querySelector('input[name="presaleType"]:checked');
-              if (presaleTypeRadio) {
-                  formData.presaleType = presaleTypeRadio.value;
-                  formData.projectProgress = document.getElementById('projectProgress').value.trim();
-                  if (formData.presaleType === 'آپارتمان') {
-                      activeSection = formSections.presaleApartment;
-                  } else {
-                      activeSection = formSections.presaleVilla;
-                  }
-              }
-              break;
-      }
-
-      if (!activeSection) {
-          console.error("Could not determine active section for data collection.");
-          return formData; // Return basic data at least
-      }
-
-      // Collect data based on property type using helpers and activeSection
-      if (propertyType === 'آپارتمان') {
-          formData.landArea = getValue('#landArea-apartment');
-          formData.unitArea = getValue('#unitArea-apartment');
-          formData.roomCount = getValue('#roomCount-apartment');
-          formData.buildYear = getValue('#buildYear-apartment');
-          formData.kitchen = getCheckboxValues('kitchen-apartment');
-          formData.facilities = getCheckboxValues('facilities-apartment');
-          formData.otherFacilities = getValue('#otherFacilities-apartment');
-          formData.amenities = getCheckboxValues('amenities-apartment');
-          formData.otherAmenities = getValue('#otherAmenities-apartment');
-          formData.commonAreas = getCheckboxValues('commonAreas-apartment');
-          formData.otherCommonAreas = getValue('#otherCommonAreas-apartment');
-          formData.otherDetails = getValue('#otherDetails-apartment');
-          formData.document = getRadioValue('document'); // Shared name
-          formData.pricePerMeter = getValue('#pricePerMeter-apartment');
-          formData.totalPrice = getValue('#totalPrice-apartment');
-          formData.saleConditions = getCheckboxValues('saleConditions'); // Shared name
-          formData.saleConditionDetails = getValue('#saleConditionDetails-apartment');
-          formData.address = getValue('#address-apartment');
-      } else if (propertyType === 'ویلا') {
-          formData.landArea = getValue('#landArea-villa');
-          formData.buildingArea = getValue('#buildingArea-villa');
-          formData.roomCount = getValue('#roomCount-villa');
-          formData.buildYear = getValue('#buildYear-villa');
-          formData.kitchen = getCheckboxValues('kitchen-villa');
-          formData.facilities = getCheckboxValues('facilities-villa');
-          formData.otherFacilities = getValue('#otherFacilities-villa');
-          formData.amenities = getCheckboxValues('amenities-villa');
-          formData.otherAmenities = getValue('#otherAmenities-villa');
-          formData.otherDetails = getValue('#otherDetails-villa');
-          formData.document = getRadioValue('document'); // Shared name
-          formData.price = getValue('#price-villa'); // Villa has 'price' not 'totalPrice'
-          formData.saleConditions = getCheckboxValues('saleConditions'); // Shared name
-          formData.saleConditionDetails = getValue('#saleConditionDetails-villa');
-          formData.address = getValue('#address-villa');
-      } else if (propertyType === 'زمین') {
-          formData.landArea = getValue('#landArea-land');
-          formData.landUsage = getValue('#landUsage');
-          formData.landWidth = getValue('#landWidth');
-          formData.landDepth = getValue('#landDepth');
-          formData.alleyWidth = getValue('#alleyWidth');
-          formData.enclosed = activeSection.querySelector('input[name="enclosed"]:checked')?.value || null; // Specific name
-          formData.otherDetails = getValue('#otherDetails-land');
-          formData.document = getRadioValue('document'); // Shared name
-          formData.pricePerMeter = getValue('#pricePerMeter-land');
-          formData.totalPrice = getValue('#totalPrice-land');
-          formData.saleConditions = getCheckboxValues('saleConditions'); // Shared name
-          formData.saleConditionDetails = getValue('#saleConditionDetails-land');
-          formData.address = getValue('#address-land');
-      } else if (propertyType === 'تجاری') {
-          formData.shopArea = getValue('#shopArea');
-          formData.shopHeight = getValue('#shopHeight');
-          formData.shopWidth = getValue('#shopWidth');
-          formData.shopDetails = getValue('#shopDetails');
-          formData.otherDetails = getValue('#otherDetails-commercial'); // Used for 'امکانات'
-          formData.document = getRadioValue('document'); // Shared name
-          formData.pricePerMeter = getValue('#pricePerMeter-commercial');
-          formData.totalPrice = getValue('#totalPrice-commercial');
-          formData.saleConditions = getCheckboxValues('saleConditions'); // Shared name
-          formData.saleConditionDetails = getValue('#saleConditionDetails-commercial');
-          formData.address = getValue('#address-commercial');
-      } else if (propertyType === 'کلنگی') {
-          formData.landArea = getValue('#landArea-old');
-          formData.buildingArea = getValue('#buildingArea-old');
-          formData.landWidth = getValue('#landWidth-old');
-          formData.landDepth = getValue('#landDepth-old');
-          formData.livability = activeSection.querySelector('input[name="livability"]:checked')?.value || null; // Specific name
-          formData.utilities = getCheckboxValues('utilities'); // Specific name
-          formData.amenities = getValue('#amenities-old'); // Used for 'امکانات'
-          formData.document = getRadioValue('document'); // Shared name
-          formData.pricePerMeter = getValue('#pricePerMeter-old');
-          formData.totalPrice = getValue('#totalPrice-old');
-          formData.saleConditions = getCheckboxValues('saleConditions'); // Shared name
-          formData.saleConditionDetails = getValue('#saleConditionDetails-old');
-          formData.address = getValue('#address-old');
-      } else if (propertyType === 'پیش‌فروش' && activeSection) {
-          // presaleType and projectProgress already added
+    const formData = {
+      uniqueId: uniqueId,
+      personal: {
+        firstName: document.getElementById('firstName').value,
+        lastName: document.getElementById('lastName').value,
+        phone: document.getElementById('phone').value,
+        altPhone: document.getElementById('altPhone').value
+      },
+      propertyType: document.querySelector('input[name="propertyType"]:checked')?.value || ''
+    };
+    
+    // اضافه کردن اطلاعات بر اساس نوع ملک
+    if (formData.propertyType) {
+      switch (formData.propertyType) {
+        case 'آپارتمان':
+          formData.details = collectPropertyDetails('apartment');
+          break;
+        case 'ویلا':
+          formData.details = collectPropertyDetails('villa');
+          break;
+        case 'زمین':
+          formData.details = collectPropertyDetails('land');
+          break;
+        case 'تجاری / مغازه':
+          formData.details = collectPropertyDetails('commercial');
+          break;
+        case 'کلنگی':
+          formData.details = collectPropertyDetails('old');
+          break;
+        case 'پیش‌فروش':
+          formData.presaleType = document.querySelector('input[name="presaleType"]:checked')?.value || '';
+          formData.projectProgress = document.getElementById('projectProgress').value;
+          
           if (formData.presaleType === 'آپارتمان') {
-              formData.landArea = getValue('#landArea-presale-apartment');
-              formData.unitArea = getValue('#unitArea-presale-apartment');
-              formData.roomCount = getValue('#roomCount-presale-apartment');
-              formData.floorCount = getValue('#floorCount-presale-apartment');
-              formData.floorNumber = getValue('#floorNumber-presale-apartment');
-              formData.unitsPerFloor = getValue('#unitsPerFloor-presale-apartment');
-              formData.moreDetails = getValue('#moreDetails-presale-apartment');
-              formData.kitchen = getCheckboxValues('kitchen-presale-apartment'); // Specific name
-              formData.otherDetails = getValue('#otherDetails-presale-apartment');
-              formData.document = getRadioValue('document'); // Shared name
-              formData.pricePerMeter = getValue('#pricePerMeter-presale-apartment');
-              formData.totalPrice = getValue('#totalPrice-presale-apartment');
-              formData.saleConditions = getCheckboxValues('saleConditions'); // Shared name
-              formData.saleConditionDetails = getValue('#saleConditionDetails-presale-apartment');
-              formData.address = getValue('#address-presale-apartment');
-          } else { // Villa
-              formData.landArea = getValue('#landArea-presale-villa');
-              formData.buildingArea = getValue('#buildingArea-presale-villa');
-              formData.roomCount = getValue('#roomCount-presale-villa');
-              formData.floorCount = getValue('#floorCount-presale-villa');
-              formData.kitchen = getCheckboxValues('kitchen-presale-villa'); // Specific name
-              formData.otherDetails = getValue('#otherDetails-presale-villa');
-              formData.document = getRadioValue('document'); // Shared name
-              formData.price = getValue('#price-presale-villa'); // Presale Villa has 'price'
-              formData.saleConditions = getCheckboxValues('saleConditions'); // Shared name
-              formData.saleConditionDetails = getValue('#saleConditionDetails-presale-villa');
-              formData.address = getValue('#address-presale-villa');
+            formData.details = collectPropertyDetails('presale-apartment');
+          } else if (formData.presaleType === 'ویلا') {
+            formData.details = collectPropertyDetails('presale-villa');
           }
+          break;
       }
-
-       // Clean up empty/null values before returning (optional)
-       Object.keys(formData).forEach(key => {
-           if (formData[key] === "" || formData[key] === null || (Array.isArray(formData[key]) && formData[key].length === 0)) {
-               delete formData[key]; // Remove empty/null/empty arrays
-           }
-       });
-
-
-      return formData;
+    }
+    
+    return formData;
   }
 
-
-  // --- محاسبات قیمت (بدون تغییر عمده، فقط بررسی وجود عناصر) ---
-  function setupPriceCalculation(areaInputId, pricePerMeterInputId, totalPriceInputId) {
-      const areaInput = document.getElementById(areaInputId);
-      const pricePerMeterInput = document.getElementById(pricePerMeterInputId);
-      const totalPriceInput = document.getElementById(totalPriceInputId);
-
-      if (!areaInput || !pricePerMeterInput || !totalPriceInput) return; // Skip if any element is missing
-
-      function calculate() {
-          const area = parseFloat(areaInput.value.replace(/,/g, '').replace(/٬/g, '')) || 0;
-          const pricePerMeter = parseFloat(pricePerMeterInput.value.replace(/,/g, '').replace(/٬/g, '')) || 0;
-          if (area > 0 && pricePerMeter > 0) {
-              totalPriceInput.value = (area * pricePerMeter).toLocaleString('fa-IR');
-          } else if (!pricePerMeterInput.value.trim()) {
-              // Keep total price if price per meter is cleared, or clear it too:
-              // totalPriceInput.value = '';
-          }
-      }
-
-      areaInput.addEventListener('input', calculate);
-      pricePerMeterInput.addEventListener('input', calculate);      
-      // Recalculate on blur from price per meter for better UX
-      pricePerMeterInput.addEventListener('blur', calculate);
+  // جمع‌آوری اطلاعات هر نوع ملک
+  function collectPropertyDetails(type) {
+    const details = {};
+    
+    // جمع‌آوری فیلدهای مختلف بر اساس نوع ملک
+    switch (type) {
+      case 'apartment':
+        details.landArea = document.getElementById('landArea-apartment').value;
+        details.unitArea = document.getElementById('unitArea-apartment').value;
+        details.roomCount = document.getElementById('roomCount-apartment').value;
+        details.buildYear = document.getElementById('buildYear-apartment').value;
+        details.kitchen = collectCheckboxValues('kitchen-apartment');
+        details.facilities = collectCheckboxValues('facilities-apartment');
+        details.otherFacilities = document.getElementById('otherFacilities-apartment').value;
+        details.amenities = collectCheckboxValues('amenities-apartment');
+        details.otherAmenities = document.getElementById('otherAmenities-apartment').value;
+        details.commonAreas = collectCheckboxValues('commonAreas-apartment');
+        details.otherCommonAreas = document.getElementById('otherCommonAreas-apartment').value;
+        details.otherDetails = document.getElementById('otherDetails-apartment').value;
+        details.document = document.querySelector('input[name="document"]:checked')?.value || '';
+        details.pricePerMeter = document.getElementById('pricePerMeter-apartment').value;
+        details.totalPrice = document.getElementById('totalPrice-apartment').value;
+        details.saleConditions = collectCheckboxValues('saleConditions');
+        details.saleConditionDetails = document.getElementById('saleConditionDetails-apartment').value;
+        details.address = document.getElementById('address-apartment').value;
+        break;
+        
+      case 'villa':
+        details.landArea = document.getElementById('landArea-villa').value;
+        details.buildingArea = document.getElementById('buildingArea-villa').value;
+        details.roomCount = document.getElementById('roomCount-villa').value;
+        details.buildYear = document.getElementById('buildYear-villa').value;
+        details.kitchen = collectCheckboxValues('kitchen-villa');
+        details.facilities = collectCheckboxValues('facilities-villa');
+        details.otherFacilities = document.getElementById('otherFacilities-villa').value;
+        details.amenities = collectCheckboxValues('amenities-villa');
+        details.otherAmenities = document.getElementById('otherAmenities-villa').value;
+        details.otherDetails = document.getElementById('otherDetails-villa').value;
+        details.document = document.querySelector('input[name="document"]:checked')?.value || '';
+        details.price = document.getElementById('price-villa').value;
+        details.saleConditions = collectCheckboxValues('saleConditions');
+        details.saleConditionDetails = document.getElementById('saleConditionDetails-villa').value;
+        details.address = document.getElementById('address-villa').value;
+        break;
+        
+      case 'land':
+        details.landArea = document.getElementById('landArea-land').value;
+        details.landUsage = document.getElementById('landUsage').value;
+        details.landWidth = document.getElementById('landWidth').value;
+        details.landDepth = document.getElementById('landDepth').value;
+        details.alleyWidth = document.getElementById('alleyWidth').value;
+        details.enclosed = document.querySelector('input[name="enclosed"]:checked')?.value || '';
+        details.otherDetails = document.getElementById('otherDetails-land').value;
+        details.document = document.querySelector('input[name="document"]:checked')?.value || '';
+        details.pricePerMeter = document.getElementById('pricePerMeter-land').value;
+        details.totalPrice = document.getElementById('totalPrice-land').value;
+        details.saleConditions = collectCheckboxValues('saleConditions');
+        details.saleConditionDetails = document.getElementById('saleConditionDetails-land').value;
+        details.address = document.getElementById('address-land').value;
+        break;
+        
+      case 'commercial':
+        details.shopArea = document.getElementById('shopArea').value;
+        details.shopHeight = document.getElementById('shopHeight').value;
+        details.shopWidth = document.getElementById('shopWidth').value;
+        details.shopDetails = document.getElementById('shopDetails').value;
+        details.otherDetails = document.getElementById('otherDetails-commercial').value;
+        details.document = document.querySelector('input[name="document"]:checked')?.value || '';
+        details.pricePerMeter = document.getElementById('pricePerMeter-commercial').value;
+        details.totalPrice = document.getElementById('totalPrice-commercial').value;
+        details.saleConditions = collectCheckboxValues('saleConditions');
+        details.saleConditionDetails = document.getElementById('saleConditionDetails-commercial').value;
+        details.address = document.getElementById('address-commercial').value;
+        break;
+        
+      case 'old':
+        details.landArea = document.getElementById('landArea-old').value;
+        details.buildingArea = document.getElementById('buildingArea-old').value;
+        details.landWidth = document.getElementById('landWidth-old').value;
+        details.landDepth = document.getElementById('landDepth-old').value;
+        details.livability = document.querySelector('input[name="livability"]:checked')?.value || '';
+        details.utilities = collectCheckboxValues('utilities');
+        details.amenities = document.getElementById('amenities-old').value;
+        details.document = document.querySelector('input[name="document"]:checked')?.value || '';
+        details.pricePerMeter = document.getElementById('pricePerMeter-old').value;
+        details.totalPrice = document.getElementById('totalPrice-old').value;
+        details.saleConditions = collectCheckboxValues('saleConditions');
+        details.saleConditionDetails = document.getElementById('saleConditionDetails-old').value;
+        details.address = document.getElementById('address-old').value;
+        break;
+        
+      case 'presale-apartment':
+        details.landArea = document.getElementById('landArea-presale-apartment').value;
+        details.unitArea = document.getElementById('unitArea-presale-apartment').value;
+        details.roomCount = document.getElementById('roomCount-presale-apartment').value;
+        details.floorCount = document.getElementById('floorCount-presale-apartment').value;
+        details.floorNumber = document.getElementById('floorNumber-presale-apartment').value;
+        details.unitsPerFloor = document.getElementById('unitsPerFloor-presale-apartment').value;
+        details.moreDetails = document.getElementById('moreDetails-presale-apartment').value;
+        details.kitchen = collectCheckboxValues('kitchen-presale-apartment');
+        details.otherDetails = document.getElementById('otherDetails-presale-apartment').value;
+        details.document = document.querySelector('input[name="document"]:checked')?.value || '';
+        details.pricePerMeter = document.getElementById('pricePerMeter-presale-apartment').value;
+        details.totalPrice = document.getElementById('totalPrice-presale-apartment').value;
+        details.saleConditions = collectCheckboxValues('saleConditions');
+        details.saleConditionDetails = document.getElementById('saleConditionDetails-presale-apartment').value;
+        details.address = document.getElementById('address-presale-apartment').value;
+        break;
+        
+      case 'presale-villa':
+        details.landArea = document.getElementById('landArea-presale-villa').value;
+        details.buildingArea = document.getElementById('buildingArea-presale-villa').value;
+        details.roomCount = document.getElementById('roomCount-presale-villa').value;
+        details.floorCount = document.getElementById('floorCount-presale-villa').value;
+        details.kitchen = collectCheckboxValues('kitchen-presale-villa');
+        details.otherDetails = document.getElementById('otherDetails-presale-villa').value;
+        details.document = document.querySelector('input[name="document"]:checked')?.value || '';
+        details.price = document.getElementById('price-presale-villa').value;
+        details.saleConditions = collectCheckboxValues('saleConditions');
+        details.saleConditionDetails = document.getElementById('saleConditionDetails-presale-villa').value;
+        details.address = document.getElementById('address-presale-villa').value;
+        break;
+    }
+    
+    return details;
   }
 
-  setupPriceCalculation('unitArea-apartment', 'pricePerMeter-apartment', 'totalPrice-apartment');
-  setupPriceCalculation('landArea-land', 'pricePerMeter-land', 'totalPrice-land');
-  setupPriceCalculation('shopArea', 'pricePerMeter-commercial', 'totalPrice-commercial');
-  setupPriceCalculation('landArea-old', 'pricePerMeter-old', 'totalPrice-old');
-  setupPriceCalculation('unitArea-presale-apartment', 'pricePerMeter-presale-apartment', 'totalPrice-presale-apartment');
-  // Note: Villa and Presale Villa only have total price, no calculation needed here.
+  // جمع‌آوری مقادیر چک باکس‌ها
+  function collectCheckboxValues(name) {
+    const checkboxes = document.querySelectorAll(`input[name="${name}"]:checked`);
+    return Array.from(checkboxes).map(cb => cb.value);
+  }
 
+  // ارسال ایمیل با استفاده از EmailJS
+  async function sendEmail(formData) {
+    // تبدیل اطلاعات فرم به متن برای ارسال در ایمیل
+    const emailText = formatFormDataForEmail(formData);
+    
+    const templateParams = {
+      to_email: 'amlak.moein.form@gmail.com', // ایمیل دریافت کننده اصلاح شده
+      subject: `ثبت ملک جدید - ${formData.uniqueId}`,
+      message: emailText,
+      from_name: `${formData.personal.firstName} ${formData.personal.lastName}`,
+      reply_to: 'no-reply@example.com'
+    };
 
-  // --- فرمت‌دهی ورودی‌ها (بدون تغییر عمده) ---  
-  const priceInputs = document.querySelectorAll('.price-input');
-  priceInputs.forEach(input => {
-      function formatPrice() {
-          let value = input.value.replace(/\D/g, '');
-          if (value) {
-              input.value = parseInt(value).toLocaleString('fa-IR');
+    return emailjs.send('service_rds9l25', 'template_5do0c0n', templateParams); // شناسه سرویس و قالب اصلاح شده
+  }
+
+  // فرمت کردن اطلاعات فرم برای ایمیل
+  function formatFormDataForEmail(formData) {
+    let emailText = `شناسه ملک: ${formData.uniqueId}\n\n`;
+    emailText += `اطلاعات شخصی:\n`;
+    emailText += `نام و نام خانوادگی: ${formData.personal.firstName} ${formData.personal.lastName}\n`;
+    emailText += `شماره تماس: ${formData.personal.phone}\n`;
+    
+    if (formData.personal.altPhone) {
+      emailText += `شماره تماس دیگر: ${formData.personal.altPhone}\n`;
+    }
+    
+    emailText += `\nنوع ملک: ${formData.propertyType}\n`;
+    
+    if (formData.propertyType === 'پیش‌فروش') {
+      emailText += `نوع پیش‌فروش: ${formData.presaleType}\n`;
+      emailText += `مرحله پروژه: ${formData.projectProgress}\n\n`;
+    }
+    
+    emailText += `\nجزئیات ملک:\n`;
+    
+    // اضافه کردن جزئیات مختلف بر اساس نوع ملک
+    const details = formData.details;
+    if (details) {
+      Object.keys(details).forEach(key => {
+        if (details[key] && details[key].length > 0) {
+          if (Array.isArray(details[key])) {
+            emailText += `${translatePropertyKey(key)}: ${details[key].join(', ')}\n`;
           } else {
-              input.value = '';
+            emailText += `${translatePropertyKey(key)}: ${details[key]}\n`;
           }
-      }
-      input.addEventListener('input', formatPrice);
-      input.addEventListener('blur', formatPrice); // Format on blur too
-      formatPrice(); // Format on load
-  });
+        }
+      });
+    }
+    
+    return emailText;
+  }
 
-  const numericInputs = document.querySelectorAll('.numeric-only');
-  numericInputs.forEach(input => {
-    input.addEventListener('input', function() {
-      this.value = this.value.replace(/\D/g, '');
+  // ترجمه کلیدهای انگلیسی به فارسی برای نمایش در ایمیل
+  function translatePropertyKey(key) {
+    const translations = {
+      'landArea': 'متراژ زمین',
+      'unitArea': 'متراژ واحد',
+      'buildingArea': 'متراژ بنا',
+      'roomCount': 'تعداد اتاق‌ها',
+      'buildYear': 'سال ساخت',
+      'kitchen': 'آشپزخانه',
+      'facilities': 'تاسیسات',
+      'otherFacilities': 'سایر تاسیسات',
+      'amenities': 'امکانات',
+      'otherAmenities': 'سایر امکانات',
+      'commonAreas': 'مشاعات',
+      'otherCommonAreas': 'سایر مشاعات',
+      'otherDetails': 'سایر توضیحات',
+      'document': 'وضعیت سند',
+      'pricePerMeter': 'قیمت متری',
+      'totalPrice': 'قیمت کلی',
+      'price': 'قیمت',
+      'saleConditions': 'شرایط فروش',
+      'saleConditionDetails': 'جزئیات شرایط فروش',
+      'address': 'آدرس',
+      'landUsage': 'کاربری زمین',
+      'landWidth': 'بر زمین',
+      'landDepth': 'عمق زمین',
+      'alleyWidth': 'عرض کوچه',
+      'enclosed': 'محصور',
+      'shopArea': 'متراژ مغازه',
+      'shopHeight': 'ارتفاع مغازه',
+      'shopWidth': 'دهنه مغازه',
+      'shopDetails': 'توضیحات شکل مغازه',
+      'livability': 'وضعیت سکونت',
+      'utilities': 'امتیازات',
+      'floorCount': 'تعداد طبقات',
+      'floorNumber': 'طبقه',
+      'unitsPerFloor': 'واحد در هر طبقه',
+      'moreDetails': 'توضیحات بیشتر'
+    };
+    
+    return translations[key] || key;
+  }
+
+  // تولید شناسه منحصر به فرد
+  function generateUniqueId() {
+    const timestamp = new Date().getTime().toString().slice(-5);
+    const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+    return `ME-${timestamp}${random}`;
+  }
+
+  // نمایش منوی همبرگری
+  function showMenuOverlay() {
+    document.getElementById('menuOverlay').style.display = 'flex';
+  }
+
+  // مخفی کردن منوی همبرگری
+  function hideMenuOverlay() {
+    document.getElementById('menuOverlay').style.display = 'none';
+  }
+
+  // نمایش پیام تأیید
+  function showConfirmOverlay() {
+    document.getElementById('confirmOverlay').style.display = 'flex';
+  }
+
+  // مخفی کردن پیام تأیید
+  function hideConfirmOverlay() {
+    document.getElementById('confirmOverlay').style.display = 'none';
+  }
+
+  // نمایش پیام در حال ارسال
+  function showSendingOverlay() {
+    document.getElementById('sendingOverlay').style.display = 'flex';
+  }
+
+  // نمایش پیام موفقیت
+  function showSuccessOverlay() {
+    document.getElementById('uniqueIdDisplay').textContent = uniqueId;
+    document.getElementById('successOverlay').style.display = 'flex';
+  }
+
+  // مخفی کردن پیام موفقیت
+  function hideSuccessOverlay() {
+    document.getElementById('successOverlay').style.display = 'none';
+  }
+
+  // نمایش پیام خطا
+  function showErrorOverlay() {
+    document.getElementById('errorOverlay').style.display = 'flex';
+  }
+
+  // مخفی کردن پیام خطا
+  function hideErrorOverlay() {
+    document.getElementById('errorOverlay').style.display = 'none';
+  }
+
+  // مخفی کردن همه پیام‌ها
+  function hideOverlay(id) {
+    document.getElementById(id).style.display = 'none';
+  }
+
+  // پخش صدا
+  function playSound(id) {
+    const sound = document.getElementById(id);
+    if (sound) {
+      sound.currentTime = 0;
+      sound.play().catch(e => console.log('Error playing sound:', e));
+    }
+  }
+
+  // پاک کردن فرم
+  function resetForm() {
+    document.getElementById('propertyForm').reset();
+    
+    // مخفی کردن همه بخش‌های جزئیات
+    Object.values(detailSections).forEach(section => {
+      section.classList.add('hidden');
     });
-  });
-
-  // Initial call to hide sections on load
-  hideAllSections();
-  console.log("Initial setup complete."); // Debug log
-
-}); // End DOMContentLoaded
+    Object.values(presaleDetailSections).forEach(section => {
+      section.classList.add('hidden');
+    });
+    
+    // پاک کردن همه خطاها
+    document.querySelectorAll('.error').forEach(el => {
+      el.classList.add('hidden');
+      el.textContent = '';
+    });
+    document.querySelectorAll('.error-field').forEach(el => {
+      el.classList.remove('error-field');
+    });
+    
+    // مخفی کردن پیام خطاهای اعتبارسنجی
+    document.getElementById('validationErrors').classList.add('hidden');
+    
+    // مخفی کردن پیام تأیید
+    hideConfirmOverlay();
+    
+    // تولید شناسه جدید
+    uniqueId = generateUniqueId();
+    
+    // اسکرول به بالای فرم
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+});
