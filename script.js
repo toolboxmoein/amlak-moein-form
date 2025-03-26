@@ -5,13 +5,19 @@ const firebaseConfig = {
   databaseURL: "https://amlak-form-app-default-rtdb.firebaseio.com",
   projectId: "amlak-form-app",
   storageBucket: "amlak-form-app.appspot.com",
-  messagingSenderId: "657326173887",  appId: "1:657326173887:web:d7c3a9b3e4d4c7c1b0a5a0"
+  messagingSenderId: "657326173887",  
+  appId: "1:657326173887:web:d7c3a9b3e4d4c7c1b0a5a0"
 };
 
 // مقداردهی اولیه Firebase
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
-const storage = firebase.storage();
+// Firebase Storage دیگر استفاده نمی‌شود، از Cloudinary استفاده می‌کنیم
+
+// --- اطلاعات Cloudinary ---
+const cloudName = 'docdtecgc'; // Cloud Name شما
+const uploadPreset = 'amlak_form_upload'; // نام Upload Preset شما
+const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
 
 // --- متغیرهای سراسری ---
 let uploadedFiles = []; // آرایه‌ای برای نگهداری File object ها
@@ -23,7 +29,8 @@ document.addEventListener('DOMContentLoaded', function() {
   const propertyTypeRadios = document.querySelectorAll('input[name="propertyType"]');
   const presaleTypeRadios = document.querySelectorAll('input[name="presaleType"]');
   const formSections = {
-    apartment: document.getElementById('apartmentDetails'),    villa: document.getElementById('villaDetails'),
+    apartment: document.getElementById('apartmentDetails'),    
+    villa: document.getElementById('villaDetails'),
     land: document.getElementById('landDetails'),
     commercial: document.getElementById('commercialDetails'),
     old: document.getElementById('oldDetails'),
@@ -71,7 +78,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (formSections.presaleVilla) formSections.presaleVilla.classList.add('hidden');
     // پنهان کردن خطاهای احتمالی در بخش‌های مخفی
      document.querySelectorAll('.form-section.hidden .error').forEach(err => err.classList.add('hidden'));
-     document.querySelectorAll('.form-section.hidden .error-field').forEach(field => field.classList.remove('error-field'));  }
+     document.querySelectorAll('.form-section.hidden .error-field').forEach(field => field.classList.remove('error-field'));  
+  }
 
   // نمایش بخش مربوط به نوع ملک
   function showPropertySection(type) {
@@ -85,7 +93,8 @@ document.addEventListener('DOMContentLoaded', function() {
       case 'آپارتمان':
         if (formSections.apartment) formSections.apartment.classList.remove('hidden');
         break;
-      case 'ویلا':        if (formSections.villa) formSections.villa.classList.remove('hidden');
+      case 'ویلا':        
+        if (formSections.villa) formSections.villa.classList.remove('hidden');
         break;
       case 'زمین':
         if (formSections.land) formSections.land.classList.remove('hidden');
@@ -176,7 +185,8 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // بستن پیام‌های Overlay
-  if (closeSuccessBtn && successOverlay) closeSuccessBtn.addEventListener('click', () => successOverlay.style.display = 'none');  if (closeErrorBtn && errorOverlay) closeErrorBtn.addEventListener('click', () => errorOverlay.style.display = 'none');
+  if (closeSuccessBtn && successOverlay) closeSuccessBtn.addEventListener('click', () => successOverlay.style.display = 'none');  
+  if (closeErrorBtn && errorOverlay) closeErrorBtn.addEventListener('click', () => errorOverlay.style.display = 'none');
 
   // انتخاب عکس
  if (imageUploadInput && imagePreviewContainer) {
@@ -191,7 +201,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const reader = new FileReader();
                 reader.onload = function(event) {
-                    const previewItem = document.createElement('div');                    previewItem.classList.add('image-preview-item');
+                    const previewItem = document.createElement('div');                    
+                    previewItem.classList.add('image-preview-item');
                     previewItem.dataset.fileIndex = fileIndex; // Store the original index
 
                     const img = document.createElement('img');
@@ -260,7 +271,8 @@ document.addEventListener('DOMContentLoaded', function() {
       const filesToUpload = uploadedFiles.filter(file => file !== null);
       console.log(`Files to upload: ${filesToUpload.length}`); // Debug log
 
-      uploadImagesToFirebase(filesToUpload)
+      // بخش تغییر یافته: استفاده از Cloudinary به جای Firebase Storage
+      uploadImagesToCloudinary(filesToUpload)
         .then(imageUrls => {
           console.log("Image URLs received:", imageUrls); // Debug log
           formData.images = imageUrls || []; // Ensure images is always an array
@@ -275,7 +287,8 @@ document.addEventListener('DOMContentLoaded', function() {
           if (dingSound) dingSound.play().catch(e => console.error("Error playing sound:", e)); // Play sound
           successOverlay.style.display = 'flex';
           resetForm(); // Reset form after success
-        })        .catch(error => {
+        })        
+        .catch(error => {
           console.error('Error during submission process:', error); // Log detailed error
           sendingOverlay.style.display = 'none';
           errorOverlay.style.display = 'flex';
@@ -389,7 +402,9 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       errorDiv.classList.add('hidden');
       return true;
-  }  function validateCheckboxGroup(groupName, errorId, listName, sectionId) {
+  }  
+  
+  function validateCheckboxGroup(groupName, errorId, listName, sectionId) {
       const section = document.getElementById(sectionId);
       if (!section || section.classList.contains('hidden')) return true; // Skip validation if section is hidden
 
@@ -570,7 +585,8 @@ document.addEventListener('DOMContentLoaded', function() {
            const li = document.createElement('li');
            li.textContent = "لطفاً فیلدهای مشخص شده را اصلاح کنید.";
            errorsListUl.appendChild(li);
-      }      validationErrorsDiv.classList.remove('hidden');
+      }      
+      validationErrorsDiv.classList.remove('hidden');
     } else {
       validationErrorsDiv.classList.add('hidden');
     }
@@ -579,8 +595,8 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
 
-  // --- توابع Firebase ---
-  function uploadImagesToFirebase(files) {
+  // --- تابع جدید: آپلود عکس‌ها به Cloudinary ---
+  function uploadImagesToCloudinary(files) {
     if (!files || files.length === 0) {
         console.log("No files to upload."); // Debug log
         return Promise.resolve([]); // Resolve with empty array if no files
@@ -588,19 +604,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const uploadPromises = files.map((file, index) => {
         const timestamp = Date.now();
-        // Sanitize filename (replace spaces, special chars)
+        // ساخت نام امن برای فایل
         const safeFileName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
         const fileName = `${timestamp}_${safeFileName}`;
-        const storageRef = storage.ref(`property_images/${fileName}`);
-        const uploadTask = storageRef.put(file);
 
-        // --- Progress Bar Handling (Optional but recommended) ---
+        // --- مدیریت نمایش پیشرفت ---
         const progressId = `progress-${index}`; // Use original index for ID
         let progressDiv = document.getElementById(progressId);
-        // Find the corresponding preview item using data-file-index
+        // یافتن آیتم پیش‌نمایش مرتبط
         const previewItem = document.querySelector(`.image-preview-item[data-file-index="${index}"]`);
 
-        if (!progressDiv && previewItem) { // Create progress bar only if preview exists
+        if (!progressDiv && previewItem) {
             progressDiv = document.createElement('div');
             progressDiv.id = progressId;
             progressDiv.className = 'progress mt-1 mb-1'; // Smaller margins
@@ -609,53 +623,68 @@ document.addEventListener('DOMContentLoaded', function() {
             previewItem.appendChild(progressDiv); // Append to the preview item
         }
         const progressBar = progressDiv ? progressDiv.querySelector('.progress-bar') : null;
-        // --- End Progress Bar Handling ---
+        
+        // نمایش حالت در حال آپلود
+        if (progressBar) {
+            progressBar.style.width = '50%'; // نمایش 50% برای شروع آپلود
+            progressBar.setAttribute('aria-valuenow', 50);
+        }
 
+        // ساخت FormData برای ارسال به Cloudinary
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', uploadPreset);
+        // می‌توانید پارامترهای دیگری مثل folder را هم اینجا اضافه کنید
+        // formData.append('folder', 'property_images');
 
-        return new Promise((resolve, reject) => {
-            uploadTask.on('state_changed',
-                (snapshot) => {
-                    if (progressBar) {
-                        const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                        progressBar.style.width = progress + '%';
-                        progressBar.setAttribute('aria-valuenow', progress);
-                        // progressBar.textContent = progress + '%'; // Remove text for thin bar
-                    }
-                },
-                (error) => {
-                    console.error(`Upload failed for ${fileName}:`, error);
-                    if (progressBar) {
-                        progressBar.classList.remove('progress-bar-animated', 'bg-info');
-                        progressBar.classList.add('bg-danger');
-                        progressBar.style.width = '100%';
-                        // progressBar.textContent = 'خطا';
-                    }
-                    reject(error); // Reject the promise for this file
-                },
-                () => {
-                    // Upload completed successfully
-                     if (progressBar) {
-                        progressBar.classList.remove('progress-bar-animated', 'bg-info');
-                        progressBar.classList.add('bg-success');
-                        // progressBar.textContent = '✓'; // Checkmark or nothing
-                    }
-                    uploadTask.snapshot.ref.getDownloadURL()
-                        .then(downloadURL => {
-                            console.log(`File ${fileName} uploaded: ${downloadURL}`); // Debug log
-                            resolve(downloadURL); // Resolve with the URL
-                        })
-                        .catch(reject); // Handle errors getting URL
-                }            );
+        return fetch(cloudinaryUrl, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                // اگر پاسخ HTTP موفقیت‌آمیز نبود، خطا را پردازش کنید
+                return response.json().then(errData => {
+                    throw new Error(`Cloudinary upload failed: ${errData.error?.message || response.statusText}`);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            // آپلود موفق - URL تصویر را برگردانید
+            console.log(`File ${file.name} uploaded to Cloudinary: ${data.secure_url}`);
+            
+            // به‌روزرسانی نوار پیشرفت به حالت موفقیت
+            if (progressBar) {
+                progressBar.classList.remove('progress-bar-animated', 'bg-info');
+                progressBar.classList.add('bg-success');
+                progressBar.style.width = '100%';
+                progressBar.setAttribute('aria-valuenow', 100);
+            }
+            
+            return data.secure_url;
+        })
+        .catch(error => {
+            console.error(`Error uploading ${file.name} to Cloudinary:`, error);
+            
+            // به‌روزرسانی نوار پیشرفت به حالت خطا
+            if (progressBar) {
+                progressBar.classList.remove('progress-bar-animated', 'bg-info');
+                progressBar.classList.add('bg-danger');
+                progressBar.style.width = '100%';
+                progressBar.setAttribute('aria-valuenow', 100);
+            }
+            
+            // انتشار مجدد خطا برای مدیریت در بخش then/catch اصلی
+            throw error;
         });
     });
 
-    // Wait for all uploads to settle (either complete or fail)
-    // Use Promise.allSettled if you want to proceed even if some uploads fail
-    // Use Promise.all if you want to fail the whole process if any upload fails
+    // منتظر ماندن برای همه آپلودها
     return Promise.all(uploadPromises);
-}
+  }
 
-
+  // --- تابع ذخیره اطلاعات در Firebase ---
   function saveDataToFirebase(data) {
     const newPropertyRef = database.ref('properties').push();
     return newPropertyRef.set(data);
@@ -861,7 +890,8 @@ document.addEventListener('DOMContentLoaded', function() {
       }
 
       areaInput.addEventListener('input', calculate);
-      pricePerMeterInput.addEventListener('input', calculate);      // Recalculate on blur from price per meter for better UX
+      pricePerMeterInput.addEventListener('input', calculate);      
+      // Recalculate on blur from price per meter for better UX
       pricePerMeterInput.addEventListener('blur', calculate);
   }
 
@@ -873,7 +903,8 @@ document.addEventListener('DOMContentLoaded', function() {
   // Note: Villa and Presale Villa only have total price, no calculation needed here.
 
 
-  // --- فرمت‌دهی ورودی‌ها (بدون تغییر عمده) ---  const priceInputs = document.querySelectorAll('.price-input');
+  // --- فرمت‌دهی ورودی‌ها (بدون تغییر عمده) ---  
+  const priceInputs = document.querySelectorAll('.price-input');
   priceInputs.forEach(input => {
       function formatPrice() {
           let value = input.value.replace(/\D/g, '');
