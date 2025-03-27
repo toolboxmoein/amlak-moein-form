@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
   <meta charset="UTF-8">
@@ -23,26 +22,12 @@
       max-width: 800px;
       margin: 20px auto;
       background-color: #fff;
-      padding: 20px;
+      padding: 20px; /* حفظ پدینگ برای فاصله کلی */
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
 
-    h1 {
-      text-align: center;
-      color: #000;
-      margin-bottom: 10px;
-      font-weight: bold;
-      font-family: Vazir, Tahoma, Arial, sans-serif !important;
-    }
-
-    h2 {
-      text-align: center;
-      color: #000;
-      margin-bottom: 30px;
-      font-size: 1.5rem;
-      font-family: Vazir, Tahoma, Arial, sans-serif !important;
-    }
+    /* استایل‌های h1 و h2 حذف شدند چون تگ‌ها حذف شدند */
 
     h3 {
       color: #000;
@@ -52,6 +37,41 @@
       font-family: Vazir, Tahoma, Arial, sans-serif !important;
     }
 
+    /* --- استایل برای عکس بنر --- */
+    .header-banner {
+        width: 100%; /* عرض کامل نسبت به کانتینر */
+        display: block; /* جلوگیری از ایجاد فضای خالی زیر عکس */
+        margin-bottom: 20px; /* ایجاد کمی فاصله زیر بنر */
+        border-radius: 5px; /* اختیاری: گرد کردن گوشه‌ها مثل کانتینر */
+    }
+
+    /* --- استایل برای کانتینر هدر --- */
+    .header-container {
+      position: relative; /* لازم برای موقعیت‌دهی مطلق منوی همبرگری */
+      /* padding-top: 20px; <-- حذف یا تنظیم در صورت نیاز */
+    }
+
+    /* --- استایل اصلاح شده منوی همبرگری --- */
+    .hamburger-menu {
+      position: absolute;      top: 50%; /* قرار دادن لبه بالایی در وسط عمودی */
+      right: 20px; /* انتقال به سمت راست */
+      /* left: 20px; <-- حذف شد */
+      transform: translateY(-50%); /* جابجایی به بالا به اندازه نصف ارتفاع خودش برای وسط‌چینی دقیق */
+      z-index: 100;
+      cursor: pointer;
+      background-color: #FFD700;
+      color: #000;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    /* --- بقیه استایل‌های موجود شما --- */
     .form-section {
       margin-bottom: 30px;
       padding: 15px;
@@ -170,8 +190,7 @@
     .overlay {
       display: none;
       position: fixed;
-      top: 0;
-      left: 0;
+      top: 0;      left: 0;
       right: 0;
       bottom: 0;
       background-color: rgba(0, 0, 0, 0.5);
@@ -185,27 +204,8 @@
       padding: 20px;
       border-radius: 10px;
       max-width: 90%;
-      width: 400px;
-      text-align: center;
+      width: 400px;      text-align: center;
       font-family: Vazir, Tahoma, Arial, sans-serif !important;
-    }
-
-    .hamburger-menu {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      z-index: 100;
-      cursor: pointer;
-      background-color: #FFD700;
-      color: #000;
-      width: 35px;
-      height: 35px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     }
 
     .menu-overlay {
@@ -281,11 +281,6 @@
       padding: 10px;
     }
 
-    .header-container {
-      position: relative;
-      padding-top: 20px;
-    }
-
     .progress {
       height: 20px;
       margin-top: 10px;
@@ -330,18 +325,18 @@
       background-color: #4CAF50;
     }
 
-    @keyframes checkmark { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-    @keyframes checkmark-check-1 { 0% { width: 0; opacity: 0; } 100% { width: 14px; opacity: 1; } }
+    @keyframes checkmark { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }    @keyframes checkmark-check-1 { 0% { width: 0; opacity: 0; } 100% { width: 14px; opacity: 1; } }
     @keyframes checkmark-check-2 { 0% { width: 0; opacity: 0; } 100% { width: 28px; opacity: 1; } }
 
     @media (max-width: 576px) {
-      .container { padding: 15px; margin: 10px; }
-      h1 { font-size: 1.5rem; }
+      .container { padding: 15px; margin: 10px; }      /* h1 { font-size: 1.5rem; } <-- No longer needed */
       .button-group { flex-direction: column; }
       .btn { width: 100%; margin-bottom: 10px; }
       .menu-content { width: 95%; }
       .social-buttons-container { flex-direction: column; }
       .social-buttons-container .btn { width: 100%; margin: 5px 0 !important; }
+      /* Adjust hamburger position for smaller screens if needed */
+      .hamburger-menu { right: 15px; /* Slightly less padding on mobile */ }
     }
 
     .success-icon {
@@ -354,8 +349,7 @@
       justify-content: center;
       margin: 0 auto 20px;
       animation: scale-up 0.5s ease-in-out;
-    }
-    .success-icon i { color: white; font-size: 40px; }
+    }    .success-icon i { color: white; font-size: 40px; }
     @keyframes scale-up { 0% { transform: scale(0); } 70% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
     .validation-errors {
@@ -379,19 +373,25 @@
         margin-bottom: 15px;
     }
     .social-buttons-container .btn { flex: 1; display: flex; align-items: center; justify-content: center; padding: 10px 15px; font-size: 0.9rem; }
-    .social-buttons-container .btn-telegram { background-color: #0088CC; color: white; border-color: #0077B5; }
-    .social-buttons-container .btn-telegram:hover { background-color: #0077B5; color: white; }
+    .social-buttons-container .btn-telegram { background-color: #0088CC; color: white; border-color: #0077B5; }    .social-buttons-container .btn-telegram:hover { background-color: #0077B5; color: white; }
     .social-buttons-container .btn-whatsapp { background-color: #25D366; color: white; border-color: #1DA851; }
     .social-buttons-container .btn-whatsapp:hover { background-color: #1DA851; color: white; }
   </style>
 </head>
 <body>
   <div class="container">
+    <!-- ===== بخش هدر اصلاح شده ===== -->
     <div class="header-container">
+      <!-- عکس بنر با استفاده از مسیر فایل محلی -->
+      <!-- مهم: مطمئن شوید فایل عکسی به نام header-banner.png کنار این فایل HTML در همان پوشه وجود دارد -->
+      <img src="header-banner.png"
+           alt="بنر فرم ثبت ملک املاک معین رامسر"
+           class="img-fluid header-banner">
+      <!-- منوی همبرگری (موقعیت با CSS تغییر کرد) -->
       <div id="hamburgerMenu" class="hamburger-menu">☰</div>
-      <h1>فرم ثبت ملک</h1>
-      <h2>املاک معین رامسر</h2>
+      <!-- تگ‌های h1 و h2 حذف شدند -->
     </div>
+    <!-- ===== پایان بخش هدر اصلاح شده ===== -->
 
     <form id="propertyForm">
       <!-- اطلاعات شخصی -->
@@ -416,8 +416,7 @@
             <div id="phoneError" class="error hidden"></div>
           </div>
           <div class="col-md-6">
-            <label for="altPhone" class="form-label">شماره تماس دیگر</label>
-            <input type="tel" id="altPhone" class="form-control numeric-only" placeholder="09123456789">
+            <label for="altPhone" class="form-label">شماره تماس دیگر</label>            <input type="tel" id="altPhone" class="form-control numeric-only" placeholder="09123456789">
           </div>
         </div>
       </div>
@@ -435,8 +434,7 @@
           <div class="col-6 col-md-4 col-lg-3">
             <div class="form-check">
               <input class="form-check-input" type="radio" name="propertyType" id="villa" value="ویلا">
-              <label class="form-check-label" for="villa">ویلا</label>
-            </div>
+              <label class="form-check-label" for="villa">ویلا</label>            </div>
           </div>
           <div class="col-6 col-md-4 col-lg-3">
             <div class="form-check">
@@ -469,8 +467,7 @@
       <!-- جزئیات پیش‌فروش -->
       <div id="presaleTypeSection" class="form-section hidden">
         <h3>نوع پیش‌فروش <span class="required-star">*</span></h3>
-        <div class="row">
-          <div class="col-6">
+        <div class="row">          <div class="col-6">
             <div class="form-check">
               <input class="form-check-input" type="radio" name="presaleType" id="presaleApartment" value="آپارتمان">
               <label class="form-check-label" for="presaleApartment">آپارتمان</label>
@@ -491,9 +488,10 @@
         </div>
       </div>
 
-      <!-- جزئیات آپارتمان -->
+      <!-- === محتوای کامل بخش‌های جزئیات ملک (آپارتمان، ویلا، زمین و ...) بدون تغییر در اینجا قرار می‌گیرد === -->
+       <!-- جزئیات آپارتمان -->
       <div id="apartmentDetails" class="form-section hidden">
-        <h3>جزئیات آپارتمان</h3>
+         <h3>جزئیات آپارتمان</h3>
         <div class="row">
           <div class="col-md-6">
             <label for="landArea-apartment" class="form-label">متراژ زمین (متر)</label>
@@ -616,7 +614,7 @@
 
       <!-- جزئیات ویلا -->
       <div id="villaDetails" class="form-section hidden">
-        <h3>جزئیات ویلا</h3>
+         <h3>جزئیات ویلا</h3>
         <div class="row">
           <div class="col-md-6">
             <label for="landArea-villa" class="form-label">متراژ زمین (متر) <span class="required-star">*</span></label>
@@ -643,8 +641,7 @@
         </div>
         <div class="mt-3">
           <label class="form-label">مشخصات آشپزخانه</label>
-          <div class="row">
-            <div class="col-6 col-md-3"><div class="form-check"><input class="form-check-input" type="checkbox" name="kitchen-villa" id="kitchen-villa-1" value="کابینت فلزی"><label class="form-check-label" for="kitchen-villa-1">کابینت فلزی</label></div></div>
+          <div class="row">            <div class="col-6 col-md-3"><div class="form-check"><input class="form-check-input" type="checkbox" name="kitchen-villa" id="kitchen-villa-1" value="کابینت فلزی"><label class="form-check-label" for="kitchen-villa-1">کابینت فلزی</label></div></div>
             <div class="col-6 col-md-3"><div class="form-check"><input class="form-check-input" type="checkbox" name="kitchen-villa" id="kitchen-villa-2" value="کابینت MDF"><label class="form-check-label" for="kitchen-villa-2">کابینت MDF</label></div></div>
             <div class="col-6 col-md-3"><div class="form-check"><input class="form-check-input" type="checkbox" name="kitchen-villa" id="kitchen-villa-3" value="هایگلس"><label class="form-check-label" for="kitchen-villa-3">هایگلس</label></div></div>
             <div class="col-6 col-md-3"><div class="form-check"><input class="form-check-input" type="checkbox" name="kitchen-villa" id="kitchen-villa-4" value="ممبران"><label class="form-check-label" for="kitchen-villa-4">ممبران</label></div></div>
@@ -695,8 +692,7 @@
           </div>
           <div id="document-villaError" class="error hidden">لطفاً وضعیت سند را انتخاب کنید</div>
         </div>
-        <div class="mb-4">
-          <h3>قیمت</h3>
+        <div class="mb-4">          <h3>قیمت</h3>
           <div class="row">
             <div class="col-md-6">
               <label for="price-villa" class="form-label">قیمت کلی (تومان) <span class="required-star">*</span></label>
@@ -727,7 +723,7 @@
 
       <!-- جزئیات زمین -->
       <div id="landDetails" class="form-section hidden">
-        <h3>جزئیات زمین</h3>
+         <h3>جزئیات زمین</h3>
         <div class="row">
           <div class="col-md-6">
             <label for="landArea-land" class="form-label">متراژ زمین (متر) <span class="required-star">*</span></label>
@@ -811,8 +807,7 @@
 
       <!-- جزئیات تجاری / مغازه -->
       <div id="commercialDetails" class="form-section hidden">
-        <h3>جزئیات تجاری / مغازه</h3>
-        <div class="row">
+         <h3>جزئیات تجاری / مغازه</h3>        <div class="row">
           <div class="col-md-4">
             <label for="shopArea" class="form-label">متراژ مغازه (متر) <span class="required-star">*</span></label>
             <input type="text" id="shopArea" class="form-control numeric-only" required>
@@ -882,7 +877,7 @@
 
       <!-- جزئیات کلنگی -->
       <div id="oldDetails" class="form-section hidden">
-        <h3>جزئیات کلنگی</h3>
+         <h3>جزئیات کلنگی</h3>
         <div class="row">
           <div class="col-md-6">
             <label for="landArea-old" class="form-label">متراژ زمین (متر) <span class="required-star">*</span></label>
@@ -895,8 +890,7 @@
             <div id="buildingArea-oldError" class="error hidden"></div>
           </div>
         </div>
-        <div class="row mt-3">
-          <div class="col-md-6">
+        <div class="row mt-3">          <div class="col-md-6">
             <label for="landWidth-old" class="form-label">بَر زمین (متر)</label>
             <input type="text" id="landWidth-old" class="form-control numeric-only">
           </div>
@@ -911,8 +905,7 @@
             <div class="col-6"><div class="form-check"><input class="form-check-input" type="radio" name="livability" id="livability-1" value="قابل سکونت"><label class="form-check-label" for="livability-1">قابل سکونت</label></div></div>
             <div class="col-6"><div class="form-check"><input class="form-check-input" type="radio" name="livability" id="livability-2" value="غیر قابل سکونت"><label class="form-check-label" for="livability-2">غیر قابل سکونت</label></div></div>
           </div>
-        </div>
-        <div class="mt-3">
+        </div>        <div class="mt-3">
           <label class="form-label">امتیازات</label>
           <div class="row">
             <div class="col-6 col-md-3"><div class="form-check"><input class="form-check-input" type="checkbox" name="utilities" id="utilities-1" value="آب"><label class="form-check-label" for="utilities-1">آب</label></div></div>
@@ -962,8 +955,7 @@
           </div>
           <div id="saleConditions-oldError" class="error hidden">لطفاً حداقل یک شرط فروش را انتخاب کنید</div>
         </div>
-        <div class="mb-4">
-          <label for="address-old" class="form-label">آدرس <span class="required-star">*</span></label>
+        <div class="mb-4">          <label for="address-old" class="form-label">آدرس <span class="required-star">*</span></label>
           <textarea id="address-old" class="form-control persian-and-numbers-only" rows="3" required placeholder="آدرس دقیق ملک"></textarea>
           <div id="address-oldError" class="error hidden"></div>
         </div>
@@ -971,7 +963,7 @@
 
       <!-- جزئیات پیش‌فروش آپارتمان -->
       <div id="presaleApartmentDetails" class="form-section hidden">
-        <h3>جزئیات پیش‌فروش آپارتمان</h3>
+         <h3>جزئیات پیش‌فروش آپارتمان</h3>
         <div class="row">
           <div class="col-md-6">
             <label for="landArea-presale-apartment" class="form-label">متراژ زمین (متر)</label>
@@ -1074,7 +1066,7 @@
 
       <!-- جزئیات پیش‌فروش ویلا -->
       <div id="presaleVillaDetails" class="form-section hidden">
-        <h3>جزئیات پیش‌فروش ویلا</h3>
+         <h3>جزئیات پیش‌فروش ویلا</h3>
         <div class="row">
           <div class="col-md-6">
             <label for="landArea-presale-villa" class="form-label">متراژ زمین (متر) <span class="required-star">*</span></label>
@@ -1118,8 +1110,7 @@
         </div>
         <div class="mt-3">
           <label for="otherDetails-presale-villa" class="form-label">سایر توضیحات و امکانات</label>
-          <textarea id="otherDetails-presale-villa" class="form-control persian-and-numbers-only" rows="3" placeholder="هر توضیح دیگری که لازم است وارد کنید"></textarea>
-          <div id="otherDetails-presale-villaError" class="error hidden"></div>
+          <textarea id="otherDetails-presale-villa" class="form-control persian-and-numbers-only" rows="3" placeholder="هر توضیح دیگری که لازم است وارد کنید"></textarea>          <div id="otherDetails-presale-villaError" class="error hidden"></div>
         </div>
         <div class="mb-4 mt-4">
           <label class="form-label">وضعیت سند <span class="required-star">*</span></label>
@@ -1159,6 +1150,7 @@
           <div id="address-presale-villaError" class="error hidden"></div>
         </div>
       </div>
+      <!-- === پایان بخش‌های جزئیات === -->
 
       <!-- خطاهای اعتبارسنجی -->
       <div id="validationErrors" class="validation-errors hidden">
@@ -1174,7 +1166,7 @@
     </form>
   </div>
 
-  <!-- منوی همبرگری -->
+  <!-- منوی همبرگری Overlay (بدون تغییر) -->
   <div id="menuOverlay" class="menu-overlay">
     <div id="menuClose" class="menu-close">×</div>
     <div class="menu-content">
@@ -1188,7 +1180,7 @@
     </div>
   </div>
 
-  <!-- پیام موفقیت -->
+  <!-- پیام موفقیت (بدون تغییر) -->
   <div id="successOverlay" class="overlay">
     <div class="overlay-content">
       <div class="success-icon"><i>✓</i></div>
@@ -1201,9 +1193,7 @@
       </div>
       <button id="closeSuccessBtn" class="btn btn-secondary mt-3">بستن</button>
     </div>
-  </div>
-
-  <!-- پیام تأیید -->
+  </div>  <!-- پیام تأیید (بدون تغییر) -->
   <div id="confirmOverlay" class="overlay">
     <div class="overlay-content">
       <h3>آیا مطمئن هستید؟</h3>
@@ -1212,19 +1202,18 @@
         <button id="confirmYesBtn" class="btn btn-danger">بله، پاک کن</button>
         <button id="confirmNoBtn" class="btn btn-secondary">خیر</button>
       </div>
-    </div>
-  </div>
+    </div>  </div>
 
-  <!-- پیام در حال ارسال -->
+  <!-- پیام در حال ارسال (بدون تغییر ساختاری - نوار پیشرفت توسط JS اضافه می‌شود) -->
   <div id="sendingOverlay" class="overlay">
     <div class="overlay-content">
       <h3>در حال ثبت اطلاعات...</h3>
       <p>لطفاً صبر کنید.</p>
-      <div class="spinner-border text-primary mt-3" role="status"><span class="visually-hidden">Loading...</span></div>
+      <div class="spinner-border text-primary mt-3 visually-hidden" role="status"><span class="visually-hidden">Loading...</span></div>
     </div>
   </div>
 
-  <!-- پیام خطا در ارسال اطلاعات -->
+  <!-- پیام خطا در ارسال اطلاعات (بدون تغییر) -->
   <div id="errorOverlay" class="overlay">
     <div class="overlay-content">
       <h3>خطا در ثبت اطلاعات</h3>
@@ -1233,14 +1222,14 @@
     </div>
   </div>
 
-  <!-- صداهای موفقیت و دینگ -->
+  <!-- صداهای موفقیت و دینگ (بدون تغییر) -->
   <audio id="successSound" preload="auto"><source src="https://assets.mixkit.co/active_storage/sfx/2005/2005-preview.mp3" type="audio/mpeg"></audio>
   <audio id="dingSound" preload="auto"><source src="https://assets.mixkit.co/active_storage/sfx/1862/1862-preview.mp3" type="audio/mpeg"></audio>
 
-  <!-- EmailJS SDK -->
+  <!-- EmailJS SDK (بدون تغییر) -->
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
-  <!-- کد جاوااسکریپت -->
+  <!-- کد جاوااسکریپت شما (بدون تغییر) -->
   <script src="script.js"></script>
 </body>
 </html>
