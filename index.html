@@ -1,8 +1,8 @@
+<!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>فرم ثبت ملک - املاک معین رامسر</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <title>فرم ثبت ملک - املاک معین رامسر</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.rtl.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v27.2.2/dist/font-face.css">
   <style>
@@ -22,17 +22,26 @@
       max-width: 800px;
       margin: 20px auto;
       background-color: #fff;
-      padding: 20px; /* حفظ پدینگ برای فاصله کلی */
-      border-radius: 10px;
+      padding: 20px; /* حفظ پدینگ برای فاصله کلی */      border-radius: 10px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
 
     /* استایل‌های h1 و h2 حذف شدند چون تگ‌ها حذف شدند */
 
+    h2 { /* Style for section titles */
+        color: #000;
+        margin-top: 10px;
+        margin-bottom: 15px;
+        font-size: 1.4rem;
+        font-weight: bold;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 5px;
+        font-family: Vazir, Tahoma, Arial, sans-serif !important;
+    }
+
     h3 {
       color: #000;
-      margin-top: 15px;
-      margin-bottom: 10px;
+      margin-top: 15px;      margin-bottom: 10px;
       font-size: 1.2rem;
       font-family: Vazir, Tahoma, Arial, sans-serif !important;
     }
@@ -53,14 +62,15 @@
 
     /* --- استایل اصلاح شده منوی همبرگری --- */
     .hamburger-menu {
-      position: absolute;      top: 50%; /* قرار دادن لبه بالایی در وسط عمودی */
+      position: absolute;
+      top: 50%; /* قرار دادن لبه بالایی در وسط عمودی */
       right: 20px; /* انتقال به سمت راست */
       /* left: 20px; <-- حذف شد */
       transform: translateY(-50%); /* جابجایی به بالا به اندازه نصف ارتفاع خودش برای وسط‌چینی دقیق */
       z-index: 100;
       cursor: pointer;
-      background-color: #FFD700;
-      color: #000;
+      background-color: #FFD700; /* Yellow color */
+      color: #000; /* Black text */
       width: 35px;
       height: 35px;
       border-radius: 50%;
@@ -69,7 +79,13 @@
       justify-content: center;
       font-size: 18px;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      border: none; /* Ensure no border */
     }
+     /* Add hover effect for hamburger */
+    .hamburger-menu:hover {
+        background-color: #F4C430; /* Darker yellow on hover */
+    }
+
 
     /* --- بقیه استایل‌های موجود شما --- */
     .form-section {
@@ -89,8 +105,8 @@
     }
 
     .required-star {
-      color: #dc3545;
-      margin-right: 3px;
+      color: #dc3545; /* Red color for required */
+      margin-right: 3px; /* Space after label text */
     }
 
     .form-control {
@@ -98,26 +114,31 @@
       border: 1px solid #ced4da;
       padding: 8px 12px;
       width: 100%;
-      margin-bottom: 15px;
+      margin-bottom: 15px; /* Space below input */
       font-family: Vazir, Tahoma, Arial, sans-serif !important;
+       transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out; /* Smooth transition */
     }
 
     .form-control:focus {
-      border-color: #80bdff;
+      border-color: #86b7fe; /* Bootstrap focus color */
       outline: 0;
-      box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+      box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25); /* Bootstrap focus shadow */
     }
 
     .form-check {
       margin-bottom: 10px;
+      padding-right: 1.5em; /* Align checkbox text properly in RTL */
     }
 
     .form-check-input {
-      margin-left: 10px;
+      margin-right: -1.5em; /* Adjust position for RTL */
+      margin-left: 0; /* Reset margin-left */      float: right; /* Float input to the right */
     }
+
 
     .form-check-label {
       font-family: Vazir, Tahoma, Arial, sans-serif !important;
+      cursor: pointer; /* Make label clickable */
     }
 
     .btn {
@@ -126,22 +147,24 @@
       font-weight: bold;
       cursor: pointer;
       transition: all 0.3s;
-      font-family: Vazir, Tahoma, Arial, sans-serif !important;
-      text-decoration: none; /* Ensure links styled as buttons don't have underlines */
+      font-family: Vazir, Tahoma, Arial, sans-serif !important;      text-decoration: none; /* Ensure links styled as buttons don't have underlines */
+      border: 1px solid transparent; /* Base border */
     }
 
+    /* Submit Button Style (Yellow) */
     .btn-primary {
-      background-color: #FFD700;
+      background-color: #FFD700; /* Nice Yellow */
       border-color: #FFD700;
-      color: #000;
+      color: #000; /* Black text */
     }
 
     .btn-primary:hover {
-      background-color: #F4C430;
+      background-color: #F4C430; /* Slightly darker yellow */
       border-color: #F4C430;
       color: #000;
     }
 
+    /* Reset Button Style (Red) */
     .btn-danger {
       background-color: #dc3545;
       border-color: #dc3545;
@@ -153,8 +176,8 @@
       border-color: #bd2130;
     }
 
-    .btn-secondary {
-      background-color: #6c757d;
+    /* Secondary/Close Button Style (Gray) */
+    .btn-secondary {      background-color: #6c757d;
       border-color: #6c757d;
       color: white;
     }
@@ -167,20 +190,22 @@
     .button-group {
       display: flex;
       justify-content: center;
-      gap: 10px;
+      gap: 10px; /* Space between buttons */
       margin-top: 20px;
     }
 
     .error {
       color: #dc3545;
-      font-size: 0.875rem;
-      margin-top: -10px;
-      margin-bottom: 10px;
+      font-size: 0.875rem; /* Slightly smaller font */
+      margin-top: -10px; /* Pull up below the input */
+      margin-bottom: 10px; /* Space below error */
       font-family: Vazir, Tahoma, Arial, sans-serif !important;
+      display: block; /* Ensure it takes space */
     }
 
     .error-field {
-      border-color: #dc3545 !important;
+      border-color: #dc3545 !important; /* Red border for error */
+       box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important; /* Red shadow */
     }
 
     .hidden {
@@ -188,35 +213,47 @@
     }
 
     .overlay {
-      display: none;
-      position: fixed;
-      top: 0;      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .overlay-content {
-      background-color: white;
-      padding: 20px;
-      border-radius: 10px;
-      max-width: 90%;
-      width: 400px;      text-align: center;
-      font-family: Vazir, Tahoma, Arial, sans-serif !important;
-    }
-
-    .menu-overlay {
-      display: none;
+      display: none; /* Hidden by default */
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background-color: rgba(0, 0, 0, 0.8);
-      z-index: 999;
+      background-color: rgba(0, 0, 0, 0.6); /* Slightly darker overlay */
+      z-index: 1050; /* Ensure overlay is on top */
+      align-items: center;
+      justify-content: center;
+      padding: 15px; /* Padding for smaller screens */
+    }
+
+    .overlay-content {
+      background-color: white;
+      padding: 25px 30px; /* More padding */
+      border-radius: 10px;
+      max-width: 90%;
+      width: 450px; /* Slightly wider */
+      text-align: center;
+      font-family: Vazir, Tahoma, Arial, sans-serif !important;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* Stronger shadow */
+    }    .overlay-content h3 {
+        margin-bottom: 15px;
+        font-size: 1.3rem;
+    }
+     .overlay-content p {
+        margin-bottom: 20px;
+        font-size: 1rem;
+        color: #555;
+    }
+
+    /* Menu Overlay Specific Styles */
+    .menu-overlay {
+      display: none; /* Hidden by default */
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.85); /* Darker menu background */
+      z-index: 1040; /* Below general overlay, above content */
       flex-direction: column;
       align-items: center;
       justify-content: center;
@@ -224,158 +261,234 @@
 
     .menu-close {
       position: absolute;
-      top: 15px;
-      right: 15px;
+      top: 20px;
+      right: 20px;
       color: white;
-      font-size: 24px;
+      font-size: 30px; /* Larger close button */
       cursor: pointer;
+      line-height: 1;
+      padding: 5px;
+    }
+     .menu-close:hover {
+        color: #ddd;
     }
 
     .menu-content {
-      background-color: white;
+      background-color: #fff; /* White background for menu box */
       border-radius: 8px;
-      padding: 15px;
-      width: 70%;
-      max-width: 350px;
+      padding: 20px; /* More padding */
+      width: 80%; /* Wider on mobile */
+      max-width: 380px; /* Max width */
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
+
     .menu-table {
       width: 100%;
-      border-collapse: collapse;
+      border-collapse: collapse; /* Remove gaps between cells */
+      margin-bottom: 0; /* Remove default table margin */
     }
 
-    .menu-table tr:nth-child(odd) {
-      background-color: #f2f2f2;
-    }
-
-    .menu-table tr:nth-child(even) {
-      background-color: #e6e6e6;
-    }
-
-    .menu-table td {
-      padding: 10px 12px;
+     .menu-table tr {
+         border-bottom: 1px solid #ddd; /* Separator lines */
+     }
+      .menu-table tr:last-child {
+         border-bottom: none; /* No border on last row */
+     }    .menu-table td {
+      padding: 12px 10px; /* Adjust padding */
       text-align: right;
+      vertical-align: middle; /* Center content vertically */
     }
+     .menu-table td:first-child { /* Link column */
+         font-weight: 500;
+     }
+      .menu-table td:first-child a {
+         color: #0d6efd; /* Bootstrap link blue */
+         text-decoration: none;
+     }
+      .menu-table td:first-child a:hover {
+         text-decoration: underline;
+     }
 
-    .menu-table td:last-child {
+    .menu-table td:last-child { /* Hint column */
       text-align: left;
+      font-size: 0.85rem;
+      color: #6c757d; /* Gray hint text */
     }
 
-    .menu-social {
-      display: flex;
-      gap: 15px;
-      margin-top: 30px;
-    }
-
-    .social-icon {
-      color: white;
-      font-size: 24px;
-      transition: all 0.3s;
-    }
-    .social-icon:hover {
-      transform: scale(1.2);
-    }
-
+    /* Styles for Presale Project Progress Input */
     .project-progress {
-      border: 2px solid #dc3545;
+      border: 1px solid #ced4da; /* Match default input border */
       border-radius: 5px;
-      padding: 10px;
+      padding: 8px 12px;      /* Remove specific red border unless it's an error */
     }
+     /* Error state for project progress */
+     .project-progress.error-field {
+         border-color: #dc3545 !important;
+         box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important;
+     }
 
+
+    /* Progress Bar Styles (within Sending Overlay) */
     .progress {
       height: 20px;
-      margin-top: 10px;
-      margin-bottom: 10px;
+      margin-bottom: 0; /* Remove bottom margin if added by default */
+      overflow: hidden; /* Ensure inner bar respects border radius */
+      background-color: #e9ecef; /* Background of the container */
+       border-radius: .25rem; /* Match Bootstrap's default */
+    }    .progress-bar {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        overflow: hidden;
+        color: #fff; /* Text color on the bar */
+        text-align: center;
+        white-space: nowrap;
+        background-color: #198754; /* Bootstrap success green */
+        transition: width .6s ease; /* Smooth animation */
+        font-size: 0.8rem; /* Smaller text */
+    }
+    .progress-bar-striped {
+        background-image: linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent);
+        background-size: 1rem 1rem;
+    }
+    .progress-bar-animated {
+        animation: 1s linear infinite progress-bar-stripes;
+    }
+    @keyframes progress-bar-stripes {
+        0% { background-position-x: 1rem; }
     }
 
-    .success-checkmark {
-      width: 80px;
-      height: 80px;
-      margin: 0 auto;
-      position: relative;
-    }
 
-    .success-checkmark .check-icon {
-      width: 80px;
-      height: 80px;
-      position: relative;
-      border-radius: 50%;
-      box-sizing: content-box;
-      border: 4px solid #4CAF50;
-    }
-
-    .success-checkmark .check-icon::before {
-      top: 43px;
-      left: 19px;
-      width: 14px;
-      transform: rotate(45deg);
-      position: absolute;
-      content: "";
-      height: 4px;
-      background-color: #4CAF50;
-    }
-
-    .success-checkmark .check-icon::after {
-      top: 38px;
-      left: 26px;
-      width: 28px;
-      transform: rotate(45deg);
-      position: absolute;
-      content: "";
-      height: 4px;
-      background-color: #4CAF50;
-    }
-
-    @keyframes checkmark { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }    @keyframes checkmark-check-1 { 0% { width: 0; opacity: 0; } 100% { width: 14px; opacity: 1; } }
-    @keyframes checkmark-check-2 { 0% { width: 0; opacity: 0; } 100% { width: 28px; opacity: 1; } }
-
-    @media (max-width: 576px) {
-      .container { padding: 15px; margin: 10px; }      /* h1 { font-size: 1.5rem; } <-- No longer needed */
-      .button-group { flex-direction: column; }
-      .btn { width: 100%; margin-bottom: 10px; }
-      .menu-content { width: 95%; }
-      .social-buttons-container { flex-direction: column; }
-      .social-buttons-container .btn { width: 100%; margin: 5px 0 !important; }
-      /* Adjust hamburger position for smaller screens if needed */
-      .hamburger-menu { right: 15px; /* Slightly less padding on mobile */ }
-    }
-
+    /* Success Checkmark Icon (Animation removed as requested by user previously for icon) */
     .success-icon {
-      width: 80px;
-      height: 80px;
+      width: 70px; /* Slightly smaller */
+      height: 70px;
       border-radius: 50%;
-      background-color: #4CAF50;
+      background-color: #198754; /* Bootstrap success green */
       display: flex;
       align-items: center;
-      justify-content: center;
-      margin: 0 auto 20px;
-      animation: scale-up 0.5s ease-in-out;
-    }    .success-icon i { color: white; font-size: 40px; }
-    @keyframes scale-up { 0% { transform: scale(0); } 70% { transform: scale(1.1); } 100% { transform: scale(1); } }
+      justify-content: center;      margin: 0 auto 20px; /* Center and space below */
+      color: white;
+      font-size: 35px; /* Size of the checkmark */
+      font-weight: bold;
+    }
+    /* Simple Checkmark using text */
+    .success-icon::before {
+        content: '✓';
+    }
 
+
+    /* Validation Errors Box */
     .validation-errors {
-      color: #dc3545;
-      background-color: #f8d7da;
-      border: 1px solid #f5c6cb;
+      color: #842029; /* Darker red text */
+      background-color: #f8d7da; /* Light red background */
+      border: 1px solid #f5c2c7; /* Red border */
       border-radius: 5px;
-      padding: 10px 15px;
+      padding: 15px 20px; /* More padding */
       margin-top: 20px;
-      margin-bottom: 10px;
+      margin-bottom: 15px; /* Space below */
       font-family: Vazir, Tahoma, Arial, sans-serif !important;
     }
-    .validation-errors h4 { margin-top: 0; font-size: 1rem; font-weight: bold; }
-    .validation-errors ul { margin-bottom: 0; padding-right: 20px; }
+    .validation-errors h4 {
+        margin-top: 0;
+        margin-bottom: 10px; /* Space below heading */
+        font-size: 1.1rem; /* Slightly larger heading */
+        font-weight: bold;
+        color: #6a1a21; /* Even darker red for heading */
+    }
+    .validation-errors ul {
+        margin-bottom: 0;        padding-right: 20px; /* Indent list items */
+        list-style-type: disc; /* Use standard bullets */
+    }
+     .validation-errors li {
+         margin-bottom: 5px; /* Space between list items */
+     }
 
+
+    /* Social Buttons Container (Telegram/WhatsApp in Success Message) */
     .social-buttons-container {
         display: flex;
-        justify-content: space-between;
-        gap: 10px;
-        margin-top: 15px;
+        flex-direction: column; /* Stack buttons vertically */
+        gap: 10px; /* Space between buttons */
+        margin-top: 20px;
         margin-bottom: 15px;
     }
-    .social-buttons-container .btn { flex: 1; display: flex; align-items: center; justify-content: center; padding: 10px 15px; font-size: 0.9rem; }
-    .social-buttons-container .btn-telegram { background-color: #0088CC; color: white; border-color: #0077B5; }    .social-buttons-container .btn-telegram:hover { background-color: #0077B5; color: white; }
-    .social-buttons-container .btn-whatsapp { background-color: #25D366; color: white; border-color: #1DA851; }
-    .social-buttons-container .btn-whatsapp:hover { background-color: #1DA851; color: white; }
+    .social-buttons-container .btn {
+        flex: 1; /* Make buttons take full width */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 15px;
+        font-size: 0.95rem; /* Slightly larger text */
+        text-align: center;
+    }
+    /* Specific button colors */
+    .social-buttons-container .btn-telegram {
+        background-color: #0088CC;
+        color: white;
+        border-color: #0077B5;
+    }
+    .social-buttons-container .btn-telegram:hover {
+        background-color: #0077B5;
+        color: white;
+    }
+    .social-buttons-container .btn-whatsapp {
+        background-color: #25D366;
+        color: white;
+        border-color: #1DA851;
+    }
+    .social-buttons-container .btn-whatsapp:hover {
+        background-color: #1DA851;
+        color: white;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+         .hamburger-menu {
+             right: 15px; /* Adjust position slightly */
+         }
+         .overlay-content {
+             width: 90%; /* Wider overlay on smaller screens */
+         }
+         .menu-content {
+             width: 90%; /* Wider menu on smaller screens */
+         }
+    }
+
+
+    @media (max-width: 576px) {
+      .container {
+          padding: 15px;
+          margin: 10px;
+      }
+      h2 { font-size: 1.3rem; }
+      h3 { font-size: 1.1rem; }      .button-group {
+          flex-direction: column; /* Stack main buttons */
+      }
+      .button-group .btn {
+          width: 100%;
+          margin-bottom: 10px; /* Space when stacked */
+      }
+       .button-group .btn:last-child {
+          margin-bottom: 0;
+      }
+
+      .social-buttons-container .btn {
+          font-size: 0.9rem; /* Smaller text on small screens */
+      }
+       /* Ensure radio/checkbox labels don't wrap awkwardly */
+      .form-check-label {
+         display: inline-block; /* Prevent wrapping if possible */
+         margin-bottom: 0; /* Remove extra margin */
+      }
+       .form-check {
+           display: flex; /* Try flex layout for better alignment */
+           align-items: center;
+       }
+       .form-check-input {
+           margin-top: 0; /* Align input with label text */
+       }
+    }
   </style>
 </head>
 <body>
@@ -387,13 +500,13 @@
       <img src="header-banner.png"
            alt="بنر فرم ثبت ملک املاک معین رامسر"
            class="img-fluid header-banner">
-      <!-- منوی همبرگری (موقعیت با CSS تغییر کرد) -->
-      <div id="hamburgerMenu" class="hamburger-menu">☰</div>
+      <!-- منوی همبرگری (دکمه برای دسترسی‌پذیری بهتر) -->
+       <button type="button" id="hamburgerMenu" class="hamburger-menu" aria-label="باز کردن منو">☰</button>
       <!-- تگ‌های h1 و h2 حذف شدند -->
     </div>
     <!-- ===== پایان بخش هدر اصلاح شده ===== -->
 
-    <form id="propertyForm">
+    <form id="propertyForm" novalidate> <!-- novalidate prevents default browser validation -->
       <!-- اطلاعات شخصی -->
       <div class="form-section">
         <h2>اطلاعات شخصی</h2>
@@ -412,11 +525,12 @@
         <div class="row">
           <div class="col-md-6">
             <label for="phone" class="form-label">شماره تماس <span class="required-star">*</span></label>
-            <input type="tel" id="phone" class="form-control numeric-only" placeholder="09123456789" required>
+            <input type="tel" id="phone" class="form-control numeric-only" placeholder="09123456789" required inputmode="tel"> <!-- type=tel is appropriate -->
             <div id="phoneError" class="error hidden"></div>
           </div>
           <div class="col-md-6">
-            <label for="altPhone" class="form-label">شماره تماس دیگر</label>            <input type="tel" id="altPhone" class="form-control numeric-only" placeholder="09123456789">
+            <label for="altPhone" class="form-label">شماره تماس دیگر</label>
+            <input type="tel" id="altPhone" class="form-control numeric-only" placeholder="اختیاری" inputmode="tel"> <!-- type=tel is appropriate -->
           </div>
         </div>
       </div>
@@ -424,37 +538,38 @@
       <!-- نوع ملک -->
       <div class="form-section">
         <h2>نوع ملک <span class="required-star">*</span></h2>
-        <div class="row">
-          <div class="col-6 col-md-4 col-lg-3">
+        <div class="row">          <!-- Use col-6 col-md-4 for better layout on medium screens -->
+          <div class="col-6 col-md-4">
             <div class="form-check">
               <input class="form-check-input" type="radio" name="propertyType" id="apartment" value="آپارتمان">
               <label class="form-check-label" for="apartment">آپارتمان</label>
             </div>
           </div>
-          <div class="col-6 col-md-4 col-lg-3">
+          <div class="col-6 col-md-4">
             <div class="form-check">
               <input class="form-check-input" type="radio" name="propertyType" id="villa" value="ویلا">
-              <label class="form-check-label" for="villa">ویلا</label>            </div>
+              <label class="form-check-label" for="villa">ویلا</label>
+            </div>
           </div>
-          <div class="col-6 col-md-4 col-lg-3">
+          <div class="col-6 col-md-4">
             <div class="form-check">
               <input class="form-check-input" type="radio" name="propertyType" id="land" value="زمین">
               <label class="form-check-label" for="land">زمین</label>
             </div>
           </div>
-          <div class="col-6 col-md-4 col-lg-3">
+          <div class="col-6 col-md-4">
             <div class="form-check">
               <input class="form-check-input" type="radio" name="propertyType" id="commercial" value="تجاری / مغازه">
               <label class="form-check-label" for="commercial">تجاری / مغازه</label>
             </div>
           </div>
-          <div class="col-6 col-md-4 col-lg-3">
+          <div class="col-6 col-md-4">
             <div class="form-check">
               <input class="form-check-input" type="radio" name="propertyType" id="old" value="کلنگی">
               <label class="form-check-label" for="old">کلنگی</label>
             </div>
           </div>
-          <div class="col-6 col-md-4 col-lg-3">
+          <div class="col-6 col-md-4">
             <div class="form-check">
               <input class="form-check-input" type="radio" name="propertyType" id="presale" value="پیش‌فروش">
               <label class="form-check-label" for="presale">پیش‌فروش</label>
@@ -467,14 +582,14 @@
       <!-- جزئیات پیش‌فروش -->
       <div id="presaleTypeSection" class="form-section hidden">
         <h3>نوع پیش‌فروش <span class="required-star">*</span></h3>
-        <div class="row">          <div class="col-6">
+        <div class="row">
+          <div class="col-6">
             <div class="form-check">
               <input class="form-check-input" type="radio" name="presaleType" id="presaleApartment" value="آپارتمان">
               <label class="form-check-label" for="presaleApartment">آپارتمان</label>
             </div>
           </div>
-          <div class="col-6">
-            <div class="form-check">
+          <div class="col-6">            <div class="form-check">
               <input class="form-check-input" type="radio" name="presaleType" id="presaleVilla" value="ویلا">
               <label class="form-check-label" for="presaleVilla">ویلا</label>
             </div>
@@ -488,33 +603,33 @@
         </div>
       </div>
 
-      <!-- === محتوای کامل بخش‌های جزئیات ملک (آپارتمان، ویلا، زمین و ...) بدون تغییر در اینجا قرار می‌گیرد === -->
        <!-- جزئیات آپارتمان -->
       <div id="apartmentDetails" class="form-section hidden">
          <h3>جزئیات آپارتمان</h3>
         <div class="row">
           <div class="col-md-6">
             <label for="landArea-apartment" class="form-label">متراژ زمین (متر)</label>
-            <input type="text" id="landArea-apartment" class="form-control numeric-only">
+            <input type="text" id="landArea-apartment" class="form-control numeric-only" inputmode="numeric">
           </div>
           <div class="col-md-6">
             <label for="unitArea-apartment" class="form-label">متراژ واحد (متر) <span class="required-star">*</span></label>
-            <input type="text" id="unitArea-apartment" class="form-control numeric-only" required>
+            <input type="text" id="unitArea-apartment" class="form-control numeric-only" required inputmode="numeric">
             <div id="unitArea-apartmentError" class="error hidden"></div>
           </div>
         </div>
         <div class="row mt-3">
           <div class="col-md-6">
             <label for="roomCount-apartment" class="form-label">تعداد اتاق‌ها <span class="required-star">*</span></label>
-            <input type="text" id="roomCount-apartment" class="form-control numeric-only" required>
+            <input type="text" id="roomCount-apartment" class="form-control numeric-only" required inputmode="numeric">
             <div id="roomCount-apartmentError" class="error hidden"></div>
           </div>
           <div class="col-md-6">
             <label for="buildYear-apartment" class="form-label">سال ساخت <span class="required-star">*</span></label>
-            <input type="text" id="buildYear-apartment" class="form-control numeric-only" required>
+            <input type="text" id="buildYear-apartment" class="form-control numeric-only" required inputmode="numeric" placeholder="مثال: ۱۴۰۲">
             <div id="buildYear-apartmentError" class="error hidden"></div>
           </div>
         </div>
+        <!-- Checkbox sections remain unchanged -->
         <div class="mt-3">
           <label class="form-label">مشخصات آشپزخانه</label>
           <div class="row">
@@ -583,11 +698,11 @@
           <div class="row">
             <div class="col-md-6">
               <label for="pricePerMeter-apartment" class="form-label">قیمت متری (تومان)</label>
-              <input type="text" id="pricePerMeter-apartment" class="form-control price-input" placeholder="فقط عدد وارد کنید">
+              <input type="text" id="pricePerMeter-apartment" class="form-control price-input" placeholder="فقط عدد وارد کنید" inputmode="numeric">
             </div>
             <div class="col-md-6">
               <label for="totalPrice-apartment" class="form-label">قیمت کلی (تومان) <span class="required-star">*</span></label>
-              <input type="text" id="totalPrice-apartment" class="form-control price-input" required placeholder="فقط عدد وارد کنید">
+              <input type="text" id="totalPrice-apartment" class="form-control price-input" required placeholder="محاسبه خودکار یا دستی" inputmode="numeric">
               <div id="totalPrice-apartmentError" class="error hidden"></div>
             </div>
           </div>
@@ -600,7 +715,7 @@
             <div class="col-6 col-md-4"><div class="form-check"><input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-apartment-3" value="معاوضه"><label class="form-check-label" for="saleConditions-apartment-3">معاوضه</label></div></div>
           </div>
           <div class="mt-2">
-            <input type="text" id="saleConditionDetails-apartment" class="form-control persian-and-numbers-only" placeholder="توضیحات شرایط فروش">
+            <input type="text" id="saleConditionDetails-apartment" class="form-control persian-and-numbers-only" placeholder="توضیحات شرایط فروش (اختیاری)">
             <div id="saleConditionDetails-apartmentError" class="error hidden"></div>
           </div>
           <div id="saleConditions-apartmentError" class="error hidden">لطفاً حداقل یک شرط فروش را انتخاب کنید</div>
@@ -618,30 +733,32 @@
         <div class="row">
           <div class="col-md-6">
             <label for="landArea-villa" class="form-label">متراژ زمین (متر) <span class="required-star">*</span></label>
-            <input type="text" id="landArea-villa" class="form-control numeric-only" required>
+            <input type="text" id="landArea-villa" class="form-control numeric-only" required inputmode="numeric">
             <div id="landArea-villaError" class="error hidden"></div>
           </div>
           <div class="col-md-6">
             <label for="buildingArea-villa" class="form-label">متراژ بنا (متر) <span class="required-star">*</span></label>
-            <input type="text" id="buildingArea-villa" class="form-control numeric-only" required>
+            <input type="text" id="buildingArea-villa" class="form-control numeric-only" required inputmode="numeric">
             <div id="buildingArea-villaError" class="error hidden"></div>
           </div>
         </div>
         <div class="row mt-3">
           <div class="col-md-6">
             <label for="roomCount-villa" class="form-label">تعداد اتاق‌ها <span class="required-star">*</span></label>
-            <input type="text" id="roomCount-villa" class="form-control numeric-only" required>
+            <input type="text" id="roomCount-villa" class="form-control numeric-only" required inputmode="numeric">
             <div id="roomCount-villaError" class="error hidden"></div>
           </div>
           <div class="col-md-6">
             <label for="buildYear-villa" class="form-label">سال ساخت <span class="required-star">*</span></label>
-            <input type="text" id="buildYear-villa" class="form-control numeric-only" required>
+            <input type="text" id="buildYear-villa" class="form-control numeric-only" required inputmode="numeric" placeholder="مثال: ۱۳۹۸">
             <div id="buildYear-villaError" class="error hidden"></div>
           </div>
         </div>
-        <div class="mt-3">
+        <!-- Checkbox sections remain unchanged -->
+         <div class="mt-3">
           <label class="form-label">مشخصات آشپزخانه</label>
-          <div class="row">            <div class="col-6 col-md-3"><div class="form-check"><input class="form-check-input" type="checkbox" name="kitchen-villa" id="kitchen-villa-1" value="کابینت فلزی"><label class="form-check-label" for="kitchen-villa-1">کابینت فلزی</label></div></div>
+          <div class="row">
+            <div class="col-6 col-md-3"><div class="form-check"><input class="form-check-input" type="checkbox" name="kitchen-villa" id="kitchen-villa-1" value="کابینت فلزی"><label class="form-check-label" for="kitchen-villa-1">کابینت فلزی</label></div></div>
             <div class="col-6 col-md-3"><div class="form-check"><input class="form-check-input" type="checkbox" name="kitchen-villa" id="kitchen-villa-2" value="کابینت MDF"><label class="form-check-label" for="kitchen-villa-2">کابینت MDF</label></div></div>
             <div class="col-6 col-md-3"><div class="form-check"><input class="form-check-input" type="checkbox" name="kitchen-villa" id="kitchen-villa-3" value="هایگلس"><label class="form-check-label" for="kitchen-villa-3">هایگلس</label></div></div>
             <div class="col-6 col-md-3"><div class="form-check"><input class="form-check-input" type="checkbox" name="kitchen-villa" id="kitchen-villa-4" value="ممبران"><label class="form-check-label" for="kitchen-villa-4">ممبران</label></div></div>
@@ -661,8 +778,7 @@
             <div class="col-6 col-md-3"><div class="form-check"><input class="form-check-input" type="checkbox" name="facilities-villa" id="facilities-villa-1" value="شوفاژ"><label class="form-check-label" for="facilities-villa-1">شوفاژ</label></div></div>
             <div class="col-6 col-md-3"><div class="form-check"><input class="form-check-input" type="checkbox" name="facilities-villa" id="facilities-villa-2" value="چیلر"><label class="form-check-label" for="facilities-villa-2">چیلر</label></div></div>
             <div class="col-6 col-md-3"><div class="form-check"><input class="form-check-input" type="checkbox" name="facilities-villa" id="facilities-villa-3" value="پکیج"><label class="form-check-label" for="facilities-villa-3">پکیج</label></div></div>
-            <div class="col-6 col-md-3"><div class="form-check"><input class="form-check-input" type="checkbox" name="facilities-villa" id="facilities-villa-4" value="کولر گازی"><label class="form-check-label" for="facilities-villa-4">کولر گازی</label></div></div>
-            <div class="col-6 col-md-3"><div class="form-check"><input class="form-check-input" type="checkbox" name="facilities-villa" id="facilities-villa-5" value="سایر"><label class="form-check-label" for="facilities-villa-5">سایر</label></div></div>
+            <div class="col-6 col-md-3"><div class="form-check"><input class="form-check-input" type="checkbox" name="facilities-villa" id="facilities-villa-4" value="کولر گازی"><label class="form-check-label" for="facilities-villa-4">کولر گازی</label></div></div>            <div class="col-6 col-md-3"><div class="form-check"><input class="form-check-input" type="checkbox" name="facilities-villa" id="facilities-villa-5" value="سایر"><label class="form-check-label" for="facilities-villa-5">سایر</label></div></div>
           </div>
           <div class="mt-2"><input type="text" id="otherFacilities-villa" class="form-control persian-and-numbers-only" placeholder="در صورت انتخاب سایر، تاسیسات را وارد کنید"><div id="otherFacilities-villaError" class="error hidden"></div></div>
         </div>
@@ -690,13 +806,13 @@
             <div class="col-6 col-md-4"><div class="form-check"><input class="form-check-input" type="radio" name="document" id="document-villa-2" value="سند دفترچه‌ای"><label class="form-check-label" for="document-villa-2">سند دفترچه‌ای</label></div></div>
             <div class="col-6 col-md-4"><div class="form-check"><input class="form-check-input" type="radio" name="document" id="document-villa-3" value="قولنامه‌ای"><label class="form-check-label" for="document-villa-3">قولنامه‌ای</label></div></div>
           </div>
-          <div id="document-villaError" class="error hidden">لطفاً وضعیت سند را انتخاب کنید</div>
-        </div>
-        <div class="mb-4">          <h3>قیمت</h3>
+          <div id="document-villaError" class="error hidden">لطفاً وضعیت سند را انتخاب کنید</div>        </div>
+        <div class="mb-4">
+          <h3>قیمت</h3>
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6"> <!-- Villa only has total price -->
               <label for="price-villa" class="form-label">قیمت کلی (تومان) <span class="required-star">*</span></label>
-              <input type="text" id="price-villa" class="form-control price-input" required placeholder="فقط عدد وارد کنید">
+              <input type="text" id="price-villa" class="form-control price-input" required placeholder="فقط عدد وارد کنید" inputmode="numeric">
               <div id="price-villaError" class="error hidden"></div>
             </div>
           </div>
@@ -709,7 +825,7 @@
             <div class="col-6 col-md-4"><div class="form-check"><input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-villa-3" value="معاوضه"><label class="form-check-label" for="saleConditions-villa-3">معاوضه</label></div></div>
           </div>
           <div class="mt-2">
-            <input type="text" id="saleConditionDetails-villa" class="form-control persian-and-numbers-only" placeholder="توضیحات شرایط فروش">
+            <input type="text" id="saleConditionDetails-villa" class="form-control persian-and-numbers-only" placeholder="توضیحات شرایط فروش (اختیاری)">
             <div id="saleConditionDetails-villaError" class="error hidden"></div>
           </div>
           <div id="saleConditions-villaError" class="error hidden">لطفاً حداقل یک شرط فروش را انتخاب کنید</div>
@@ -727,7 +843,7 @@
         <div class="row">
           <div class="col-md-6">
             <label for="landArea-land" class="form-label">متراژ زمین (متر) <span class="required-star">*</span></label>
-            <input type="text" id="landArea-land" class="form-control numeric-only" required>
+            <input type="text" id="landArea-land" class="form-control numeric-only" required inputmode="numeric">
             <div id="landArea-landError" class="error hidden"></div>
           </div>
           <div class="col-md-6">
@@ -739,15 +855,15 @@
         <div class="row mt-3">
           <div class="col-md-4">
             <label for="landWidth" class="form-label">بَر زمین (متر)</label>
-            <input type="text" id="landWidth" class="form-control numeric-only">
+            <input type="text" id="landWidth" class="form-control numeric-only" inputmode="numeric">
           </div>
           <div class="col-md-4">
             <label for="landDepth" class="form-label">عمق زمین (متر)</label>
-            <input type="text" id="landDepth" class="form-control numeric-only">
+            <input type="text" id="landDepth" class="form-control numeric-only" inputmode="numeric">
           </div>
           <div class="col-md-4">
             <label for="alleyWidth" class="form-label">عرض کوچه (متر)</label>
-            <input type="text" id="alleyWidth" class="form-control numeric-only">
+            <input type="text" id="alleyWidth" class="form-control numeric-only" inputmode="numeric">
           </div>
         </div>
         <div class="mt-3">
@@ -756,9 +872,9 @@
             <div class="col-6"><div class="form-check"><input class="form-check-input" type="radio" name="enclosed" id="enclosed-yes" value="هست"><label class="form-check-label" for="enclosed-yes">هست</label></div></div>
             <div class="col-6"><div class="form-check"><input class="form-check-input" type="radio" name="enclosed" id="enclosed-no" value="نیست"><label class="form-check-label" for="enclosed-no">نیست</label></div></div>
           </div>
+          <!-- No specific error div needed for radio unless required -->
         </div>
-        <div class="mt-3">
-          <label for="otherDetails-land" class="form-label">سایر توضیحات</label>
+        <div class="mt-3">          <label for="otherDetails-land" class="form-label">سایر توضیحات</label>
           <textarea id="otherDetails-land" class="form-control persian-and-numbers-only" rows="3" placeholder="هر توضیح دیگری که لازم است وارد کنید"></textarea>
           <div id="otherDetails-landError" class="error hidden"></div>
         </div>
@@ -776,11 +892,11 @@
           <div class="row">
             <div class="col-md-6">
               <label for="pricePerMeter-land" class="form-label">قیمت متری (تومان)</label>
-              <input type="text" id="pricePerMeter-land" class="form-control price-input" placeholder="فقط عدد وارد کنید">
+              <input type="text" id="pricePerMeter-land" class="form-control price-input" placeholder="فقط عدد وارد کنید" inputmode="numeric">
             </div>
             <div class="col-md-6">
               <label for="totalPrice-land" class="form-label">قیمت کلی (تومان) <span class="required-star">*</span></label>
-              <input type="text" id="totalPrice-land" class="form-control price-input" required placeholder="فقط عدد وارد کنید">
+              <input type="text" id="totalPrice-land" class="form-control price-input" required placeholder="محاسبه خودکار یا دستی" inputmode="numeric">
               <div id="totalPrice-landError" class="error hidden"></div>
             </div>
           </div>
@@ -793,7 +909,7 @@
             <div class="col-6 col-md-4"><div class="form-check"><input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-land-3" value="معاوضه"><label class="form-check-label" for="saleConditions-land-3">معاوضه</label></div></div>
           </div>
           <div class="mt-2">
-            <input type="text" id="saleConditionDetails-land" class="form-control persian-and-numbers-only" placeholder="توضیحات شرایط فروش">
+            <input type="text" id="saleConditionDetails-land" class="form-control persian-and-numbers-only" placeholder="توضیحات شرایط فروش (اختیاری)">
             <div id="saleConditionDetails-landError" class="error hidden"></div>
           </div>
           <div id="saleConditions-landError" class="error hidden">لطفاً حداقل یک شرط فروش را انتخاب کنید</div>
@@ -807,19 +923,19 @@
 
       <!-- جزئیات تجاری / مغازه -->
       <div id="commercialDetails" class="form-section hidden">
-         <h3>جزئیات تجاری / مغازه</h3>        <div class="row">
+         <h3>جزئیات تجاری / مغازه</h3>         <div class="row">
           <div class="col-md-4">
             <label for="shopArea" class="form-label">متراژ مغازه (متر) <span class="required-star">*</span></label>
-            <input type="text" id="shopArea" class="form-control numeric-only" required>
+            <input type="text" id="shopArea" class="form-control numeric-only" required inputmode="numeric">
             <div id="shopAreaError" class="error hidden"></div>
           </div>
           <div class="col-md-4">
             <label for="shopHeight" class="form-label">ارتفاع مغازه (متر)</label>
-            <input type="text" id="shopHeight" class="form-control numeric-only">
+            <input type="text" id="shopHeight" class="form-control numeric-only" inputmode="numeric">
           </div>
           <div class="col-md-4">
             <label for="shopWidth" class="form-label">دهنه مغازه (متر)</label>
-            <input type="text" id="shopWidth" class="form-control numeric-only">
+            <input type="text" id="shopWidth" class="form-control numeric-only" inputmode="numeric">
           </div>
         </div>
         <div class="mt-3">
@@ -829,7 +945,7 @@
         </div>
         <div class="mt-3">
           <label for="otherDetails-commercial" class="form-label">چه امکاناتی دارد</label>
-          <textarea id="otherDetails-commercial" class="form-control persian-and-numbers-only" rows="3" placeholder="امکانات مغازه را وارد کنید"></textarea>
+          <textarea id="otherDetails-commercial" class="form-control persian-and-numbers-only" rows="3" placeholder="امکانات مغازه را وارد کنید (مثال: آب، برق، گاز، سرویس بهداشتی)"></textarea>
           <div id="otherDetails-commercialError" class="error hidden"></div>
         </div>
         <div class="mb-4 mt-4">
@@ -846,11 +962,11 @@
           <div class="row">
             <div class="col-md-6">
               <label for="pricePerMeter-commercial" class="form-label">قیمت متری (تومان)</label>
-              <input type="text" id="pricePerMeter-commercial" class="form-control price-input" placeholder="فقط عدد وارد کنید">
+              <input type="text" id="pricePerMeter-commercial" class="form-control price-input" placeholder="فقط عدد وارد کنید" inputmode="numeric">
             </div>
             <div class="col-md-6">
               <label for="totalPrice-commercial" class="form-label">قیمت کلی (تومان) <span class="required-star">*</span></label>
-              <input type="text" id="totalPrice-commercial" class="form-control price-input" required placeholder="فقط عدد وارد کنید">
+              <input type="text" id="totalPrice-commercial" class="form-control price-input" required placeholder="محاسبه خودکار یا دستی" inputmode="numeric">
               <div id="totalPrice-commercialError" class="error hidden"></div>
             </div>
           </div>
@@ -863,7 +979,7 @@
             <div class="col-6 col-md-4"><div class="form-check"><input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-commercial-3" value="معاوضه"><label class="form-check-label" for="saleConditions-commercial-3">معاوضه</label></div></div>
           </div>
           <div class="mt-2">
-            <input type="text" id="saleConditionDetails-commercial" class="form-control persian-and-numbers-only" placeholder="توضیحات شرایط فروش">
+            <input type="text" id="saleConditionDetails-commercial" class="form-control persian-and-numbers-only" placeholder="توضیحات شرایط فروش (اختیاری)">
             <div id="saleConditionDetails-commercialError" class="error hidden"></div>
           </div>
           <div id="saleConditions-commercialError" class="error hidden">لطفاً حداقل یک شرط فروش را انتخاب کنید</div>
@@ -881,31 +997,34 @@
         <div class="row">
           <div class="col-md-6">
             <label for="landArea-old" class="form-label">متراژ زمین (متر) <span class="required-star">*</span></label>
-            <input type="text" id="landArea-old" class="form-control numeric-only" required>
+            <input type="text" id="landArea-old" class="form-control numeric-only" required inputmode="numeric">
             <div id="landArea-oldError" class="error hidden"></div>
           </div>
           <div class="col-md-6">
-            <label for="buildingArea-old" class="form-label">متراژ بنا (متر) <span class="required-star">*</span></label>
-            <input type="text" id="buildingArea-old" class="form-control numeric-only" required>
+            <label for="buildingArea-old" class="form-label">متراژ بنای موجود (متر) <span class="required-star">*</span></label>
+            <input type="text" id="buildingArea-old" class="form-control numeric-only" required inputmode="numeric">
             <div id="buildingArea-oldError" class="error hidden"></div>
           </div>
         </div>
-        <div class="row mt-3">          <div class="col-md-6">
+        <div class="row mt-3">
+          <div class="col-md-6">
             <label for="landWidth-old" class="form-label">بَر زمین (متر)</label>
-            <input type="text" id="landWidth-old" class="form-control numeric-only">
+            <input type="text" id="landWidth-old" class="form-control numeric-only" inputmode="numeric">
           </div>
           <div class="col-md-6">
             <label for="landDepth-old" class="form-label">عمق زمین (متر)</label>
-            <input type="text" id="landDepth-old" class="form-control numeric-only">
+            <input type="text" id="landDepth-old" class="form-control numeric-only" inputmode="numeric">
           </div>
         </div>
         <div class="mt-3">
-          <label class="form-label">وضعیت سکونت</label>
+          <label class="form-label">وضعیت سکونت بنای موجود</label>
           <div class="row">
             <div class="col-6"><div class="form-check"><input class="form-check-input" type="radio" name="livability" id="livability-1" value="قابل سکونت"><label class="form-check-label" for="livability-1">قابل سکونت</label></div></div>
             <div class="col-6"><div class="form-check"><input class="form-check-input" type="radio" name="livability" id="livability-2" value="غیر قابل سکونت"><label class="form-check-label" for="livability-2">غیر قابل سکونت</label></div></div>
           </div>
-        </div>        <div class="mt-3">
+           <!-- No specific error div needed for radio unless required -->
+        </div>
+        <div class="mt-3">
           <label class="form-label">امتیازات</label>
           <div class="row">
             <div class="col-6 col-md-3"><div class="form-check"><input class="form-check-input" type="checkbox" name="utilities" id="utilities-1" value="آب"><label class="form-check-label" for="utilities-1">آب</label></div></div>
@@ -913,10 +1032,11 @@
             <div class="col-6 col-md-3"><div class="form-check"><input class="form-check-input" type="checkbox" name="utilities" id="utilities-3" value="گاز"><label class="form-check-label" for="utilities-3">گاز</label></div></div>
             <div class="col-6 col-md-3"><div class="form-check"><input class="form-check-input" type="checkbox" name="utilities" id="utilities-4" value="تلفن"><label class="form-check-label" for="utilities-4">تلفن</label></div></div>
           </div>
+           <!-- No specific error div needed for checkboxes unless required -->
         </div>
         <div class="mt-3">
-          <label for="amenities-old" class="form-label">امکانات</label>
-          <textarea id="amenities-old" class="form-control persian-and-numbers-only" rows="3" placeholder="امکانات ملک را وارد کنید"></textarea>
+          <label for="amenities-old" class="form-label">امکانات بنای موجود</label>
+          <textarea id="amenities-old" class="form-control persian-and-numbers-only" rows="3" placeholder="امکانات بنای فعلی را وارد کنید (اختیاری)"></textarea>
           <div id="amenities-oldError" class="error hidden"></div>
         </div>
         <div class="mb-4 mt-4">
@@ -932,12 +1052,12 @@
           <h3>قیمت</h3>
           <div class="row">
             <div class="col-md-6">
-              <label for="pricePerMeter-old" class="form-label">قیمت متری (تومان)</label>
-              <input type="text" id="pricePerMeter-old" class="form-control price-input" placeholder="فقط عدد وارد کنید">
+              <label for="pricePerMeter-old" class="form-label">قیمت متری زمین (تومان)</label>
+              <input type="text" id="pricePerMeter-old" class="form-control price-input" placeholder="فقط عدد وارد کنید" inputmode="numeric">
             </div>
             <div class="col-md-6">
               <label for="totalPrice-old" class="form-label">قیمت کلی (تومان) <span class="required-star">*</span></label>
-              <input type="text" id="totalPrice-old" class="form-control price-input" required placeholder="فقط عدد وارد کنید">
+              <input type="text" id="totalPrice-old" class="form-control price-input" required placeholder="قیمت کل ملک کلنگی" inputmode="numeric">
               <div id="totalPrice-oldError" class="error hidden"></div>
             </div>
           </div>
@@ -949,61 +1069,59 @@
             <div class="col-6 col-md-4"><div class="form-check"><input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-old-2" value="قسطی"><label class="form-check-label" for="saleConditions-old-2">قسطی</label></div></div>
             <div class="col-6 col-md-4"><div class="form-check"><input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-old-3" value="معاوضه"><label class="form-check-label" for="saleConditions-old-3">معاوضه</label></div></div>
           </div>
-          <div class="mt-2">
-            <input type="text" id="saleConditionDetails-old" class="form-control persian-and-numbers-only" placeholder="توضیحات شرایط فروش">
+          <div class="mt-2">            <input type="text" id="saleConditionDetails-old" class="form-control persian-and-numbers-only" placeholder="توضیحات شرایط فروش (اختیاری)">
             <div id="saleConditionDetails-oldError" class="error hidden"></div>
           </div>
           <div id="saleConditions-oldError" class="error hidden">لطفاً حداقل یک شرط فروش را انتخاب کنید</div>
         </div>
-        <div class="mb-4">          <label for="address-old" class="form-label">آدرس <span class="required-star">*</span></label>
+        <div class="mb-4">
+          <label for="address-old" class="form-label">آدرس <span class="required-star">*</span></label>
           <textarea id="address-old" class="form-control persian-and-numbers-only" rows="3" required placeholder="آدرس دقیق ملک"></textarea>
           <div id="address-oldError" class="error hidden"></div>
         </div>
-      </div>
-
-      <!-- جزئیات پیش‌فروش آپارتمان -->
+      </div>      <!-- جزئیات پیش‌فروش آپارتمان -->
       <div id="presaleApartmentDetails" class="form-section hidden">
          <h3>جزئیات پیش‌فروش آپارتمان</h3>
         <div class="row">
           <div class="col-md-6">
-            <label for="landArea-presale-apartment" class="form-label">متراژ زمین (متر)</label>
-            <input type="text" id="landArea-presale-apartment" class="form-control numeric-only">
+            <label for="landArea-presale-apartment" class="form-label">متراژ زمین پروژه (متر)</label>
+            <input type="text" id="landArea-presale-apartment" class="form-control numeric-only" inputmode="numeric">
           </div>
           <div class="col-md-6">
             <label for="unitArea-presale-apartment" class="form-label">متراژ واحد (متر) <span class="required-star">*</span></label>
-            <input type="text" id="unitArea-presale-apartment" class="form-control numeric-only" required>
+            <input type="text" id="unitArea-presale-apartment" class="form-control numeric-only" required inputmode="numeric">
             <div id="unitArea-presale-apartmentError" class="error hidden"></div>
           </div>
         </div>
         <div class="row mt-3">
           <div class="col-md-3">
             <label for="roomCount-presale-apartment" class="form-label">تعداد اتاق <span class="required-star">*</span></label>
-            <input type="text" id="roomCount-presale-apartment" class="form-control numeric-only" required>
+            <input type="text" id="roomCount-presale-apartment" class="form-control numeric-only" required inputmode="numeric">
             <div id="roomCount-presale-apartmentError" class="error hidden"></div>
           </div>
           <div class="col-md-3">
-            <label for="floorCount-presale-apartment" class="form-label">تعداد طبقه</label>
-            <input type="text" id="floorCount-presale-apartment" class="form-control numeric-only">
+            <label for="floorCount-presale-apartment" class="form-label">تعداد کل طبقات</label>
+            <input type="text" id="floorCount-presale-apartment" class="form-control numeric-only" inputmode="numeric">
           </div>
           <div class="col-md-3">
-            <label for="floorNumber-presale-apartment" class="form-label">طبقه چندم؟</label>
-            <input type="text" id="floorNumber-presale-apartment" class="form-control numeric-only">
+            <label for="floorNumber-presale-apartment" class="form-label">طبقه واحد</label>
+            <input type="text" id="floorNumber-presale-apartment" class="form-control numeric-only" inputmode="numeric">
           </div>
           <div class="col-md-3">
-            <label for="unitsPerFloor-presale-apartment" class="form-label">تعداد واحد در هر طبقه</label>
-            <input type="text" id="unitsPerFloor-presale-apartment" class="form-control numeric-only">
+            <label for="unitsPerFloor-presale-apartment" class="form-label">واحد در طبقه</label>
+            <input type="text" id="unitsPerFloor-presale-apartment" class="form-control numeric-only" inputmode="numeric">
           </div>
         </div>
         <div class="mt-3">
-          <label for="moreDetails-presale-apartment" class="form-label">توضیحات بیشتر</label>
-          <textarea id="moreDetails-presale-apartment" class="form-control persian-and-numbers-only" rows="2" placeholder="جزئیات بیشتر درباره پروژه"></textarea>
+          <label for="moreDetails-presale-apartment" class="form-label">توضیحات بیشتر پروژه</label>
+          <textarea id="moreDetails-presale-apartment" class="form-control persian-and-numbers-only" rows="2" placeholder="جزئیات بیشتر درباره پروژه (اختیاری)"></textarea>
           <div id="moreDetails-presale-apartmentError" class="error hidden"></div>
         </div>
+         <!-- Checkbox sections remain unchanged -->
         <div class="mt-3">
-          <label class="form-label">مشخصات آشپزخانه</label>
+          <label class="form-label">مشخصات آشپزخانه (تحویلی)</label>
           <div class="row">
-            <div class="col-6 col-md-3"><div class="form-check"><input class="form-check-input" type="checkbox" name="kitchen-presale-apartment" id="kitchen-presale-apartment-1" value="کابینت فلزی"><label class="form-check-label" for="kitchen-presale-apartment-1">کابینت فلزی</label></div></div>
-            <div class="col-6 col-md-3"><div class="form-check"><input class="form-check-input" type="checkbox" name="kitchen-presale-apartment" id="kitchen-presale-apartment-2" value="کابینت MDF"><label class="form-check-label" for="kitchen-presale-apartment-2">کابینت MDF</label></div></div>
+            <div class="col-6 col-md-3"><div class="form-check"><input class="form-check-input" type="checkbox" name="kitchen-presale-apartment" id="kitchen-presale-apartment-1" value="کابینت فلزی"><label class="form-check-label" for="kitchen-presale-apartment-1">کابینت فلزی</label></div></div>            <div class="col-6 col-md-3"><div class="form-check"><input class="form-check-input" type="checkbox" name="kitchen-presale-apartment" id="kitchen-presale-apartment-2" value="کابینت MDF"><label class="form-check-label" for="kitchen-presale-apartment-2">کابینت MDF</label></div></div>
             <div class="col-6 col-md-3"><div class="form-check"><input class="form-check-input" type="checkbox" name="kitchen-presale-apartment" id="kitchen-presale-apartment-3" value="هایگلس"><label class="form-check-label" for="kitchen-presale-apartment-3">هایگلس</label></div></div>
             <div class="col-6 col-md-3"><div class="form-check"><input class="form-check-input" type="checkbox" name="kitchen-presale-apartment" id="kitchen-presale-apartment-4" value="ممبران"><label class="form-check-label" for="kitchen-presale-apartment-4">ممبران</label></div></div>
             <div class="col-6 col-md-3"><div class="form-check"><input class="form-check-input" type="checkbox" name="kitchen-presale-apartment" id="kitchen-presale-apartment-5" value="اجاق گاز"><label class="form-check-label" for="kitchen-presale-apartment-5">اجاق گاز</label></div></div>
@@ -1017,16 +1135,16 @@
           </div>
         </div>
         <div class="mt-3">
-          <label for="otherDetails-presale-apartment" class="form-label">سایر توضیحات و امکانات</label>
-          <textarea id="otherDetails-presale-apartment" class="form-control persian-and-numbers-only" rows="3" placeholder="هر توضیح دیگری که لازم است وارد کنید"></textarea>
+          <label for="otherDetails-presale-apartment" class="form-label">سایر توضیحات و امکانات (تحویلی)</label>
+          <textarea id="otherDetails-presale-apartment" class="form-control persian-and-numbers-only" rows="3" placeholder="هر توضیح دیگری که لازم است وارد کنید (اختیاری)"></textarea>
           <div id="otherDetails-presale-apartmentError" class="error hidden"></div>
         </div>
         <div class="mb-4 mt-4">
           <label class="form-label">وضعیت سند <span class="required-star">*</span></label>
           <div class="row">
-            <div class="col-6 col-md-4"><div class="form-check"><input class="form-check-input" type="radio" name="document" id="document-presale-apartment-1" value="سند تک برگ"><label class="form-check-label" for="document-presale-apartment-1">سند تک برگ</label></div></div>
-            <div class="col-6 col-md-4"><div class="form-check"><input class="form-check-input" type="radio" name="document" id="document-presale-apartment-2" value="سند دفترچه‌ای"><label class="form-check-label" for="document-presale-apartment-2">سند دفترچه‌ای</label></div></div>
-            <div class="col-6 col-md-4"><div class="form-check"><input class="form-check-input" type="radio" name="document" id="document-presale-apartment-3" value="قولنامه‌ای"><label class="form-check-label" for="document-presale-apartment-3">قولنامه‌ای</label></div></div>
+            <div class="col-6 col-md-4"><div class="form-check"><input class="form-check-input" type="radio" name="document" id="document-presale-apartment-1" value="سند تک برگ (پس از تکمیل)"><label class="form-check-label" for="document-presale-apartment-1">سند تک برگ (پس از تکمیل)</label></div></div>
+            <div class="col-6 col-md-4"><div class="form-check"><input class="form-check-input" type="radio" name="document" id="document-presale-apartment-2" value="سند دفترچه‌ای (پس از تکمیل)"><label class="form-check-label" for="document-presale-apartment-2">سند دفترچه‌ای (پس از تکمیل)</label></div></div>
+            <div class="col-6 col-md-4"><div class="form-check"><input class="form-check-input" type="radio" name="document" id="document-presale-apartment-3" value="قولنامه‌ای / تعهد به سند"><label class="form-check-label" for="document-presale-apartment-3">قولنامه‌ای / تعهد به سند</label></div></div>
           </div>
           <div id="document-presale-apartmentError" class="error hidden">لطفاً وضعیت سند را انتخاب کنید</div>
         </div>
@@ -1035,31 +1153,30 @@
           <div class="row">
             <div class="col-md-6">
               <label for="pricePerMeter-presale-apartment" class="form-label">قیمت متری (تومان)</label>
-              <input type="text" id="pricePerMeter-presale-apartment" class="form-control price-input" placeholder="فقط عدد وارد کنید">
+              <input type="text" id="pricePerMeter-presale-apartment" class="form-control price-input" placeholder="فقط عدد وارد کنید" inputmode="numeric">
             </div>
             <div class="col-md-6">
-              <label for="totalPrice-presale-apartment" class="form-label">قیمت کلی (تومان) <span class="required-star">*</span></label>
-              <input type="text" id="totalPrice-presale-apartment" class="form-control price-input" required placeholder="فقط عدد وارد کنید">
+              <label for="totalPrice-presale-apartment" class="form-label">قیمت کلی واحد (تومان) <span class="required-star">*</span></label>
+              <input type="text" id="totalPrice-presale-apartment" class="form-control price-input" required placeholder="فقط عدد وارد کنید" inputmode="numeric">
               <div id="totalPrice-presale-apartmentError" class="error hidden"></div>
             </div>
           </div>
         </div>
         <div class="mb-4">
-          <label class="form-label">شرایط فروش <span class="required-star">*</span></label>
-          <div class="row">
+          <label class="form-label">شرایط فروش <span class="required-star">*</span></label>          <div class="row">
             <div class="col-6 col-md-4"><div class="form-check"><input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-presale-apartment-1" value="نقدی"><label class="form-check-label" for="saleConditions-presale-apartment-1">نقدی</label></div></div>
             <div class="col-6 col-md-4"><div class="form-check"><input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-presale-apartment-2" value="قسطی"><label class="form-check-label" for="saleConditions-presale-apartment-2">قسطی</label></div></div>
             <div class="col-6 col-md-4"><div class="form-check"><input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-presale-apartment-3" value="معاوضه"><label class="form-check-label" for="saleConditions-presale-apartment-3">معاوضه</label></div></div>
           </div>
           <div class="mt-2">
-            <input type="text" id="saleConditionDetails-presale-apartment" class="form-control persian-and-numbers-only" placeholder="توضیحات شرایط فروش">
+            <input type="text" id="saleConditionDetails-presale-apartment" class="form-control persian-and-numbers-only" placeholder="توضیحات شرایط فروش (اختیاری)">
             <div id="saleConditionDetails-presale-apartmentError" class="error hidden"></div>
           </div>
           <div id="saleConditions-presale-apartmentError" class="error hidden">لطفاً حداقل یک شرط فروش را انتخاب کنید</div>
         </div>
         <div class="mb-4">
-          <label for="address-presale-apartment" class="form-label">آدرس <span class="required-star">*</span></label>
-          <textarea id="address-presale-apartment" class="form-control persian-and-numbers-only" rows="3" required placeholder="آدرس دقیق ملک"></textarea>
+          <label for="address-presale-apartment" class="form-label">آدرس پروژه <span class="required-star">*</span></label>
+          <textarea id="address-presale-apartment" class="form-control persian-and-numbers-only" rows="3" required placeholder="آدرس دقیق پروژه"></textarea>
           <div id="address-presale-apartmentError" class="error hidden"></div>
         </div>
       </div>
@@ -1070,29 +1187,30 @@
         <div class="row">
           <div class="col-md-6">
             <label for="landArea-presale-villa" class="form-label">متراژ زمین (متر) <span class="required-star">*</span></label>
-            <input type="text" id="landArea-presale-villa" class="form-control numeric-only" required>
+            <input type="text" id="landArea-presale-villa" class="form-control numeric-only" required inputmode="numeric">
             <div id="landArea-presale-villaError" class="error hidden"></div>
           </div>
           <div class="col-md-6">
             <label for="buildingArea-presale-villa" class="form-label">متراژ بنا (متر) <span class="required-star">*</span></label>
-            <input type="text" id="buildingArea-presale-villa" class="form-control numeric-only" required>
+            <input type="text" id="buildingArea-presale-villa" class="form-control numeric-only" required inputmode="numeric">
             <div id="buildingArea-presale-villaError" class="error hidden"></div>
           </div>
         </div>
         <div class="row mt-3">
           <div class="col-md-6">
             <label for="roomCount-presale-villa" class="form-label">تعداد اتاق‌ها <span class="required-star">*</span></label>
-            <input type="text" id="roomCount-presale-villa" class="form-control numeric-only" required>
+            <input type="text" id="roomCount-presale-villa" class="form-control numeric-only" required inputmode="numeric">
             <div id="roomCount-presale-villaError" class="error hidden"></div>
           </div>
           <div class="col-md-6">
             <label for="floorCount-presale-villa" class="form-label">تعداد طبقات <span class="required-star">*</span></label>
-            <input type="text" id="floorCount-presale-villa" class="form-control numeric-only" required>
+            <input type="text" id="floorCount-presale-villa" class="form-control numeric-only" required inputmode="numeric">
             <div id="floorCount-presale-villaError" class="error hidden"></div>
           </div>
         </div>
+         <!-- Checkbox sections remain unchanged -->
         <div class="mt-3">
-          <label class="form-label">مشخصات آشپزخانه</label>
+          <label class="form-label">مشخصات آشپزخانه (تحویلی)</label>
           <div class="row">
             <div class="col-6 col-md-3"><div class="form-check"><input class="form-check-input" type="checkbox" name="kitchen-presale-villa" id="kitchen-presale-villa-1" value="کابینت فلزی"><label class="form-check-label" for="kitchen-presale-villa-1">کابینت فلزی</label></div></div>
             <div class="col-6 col-md-3"><div class="form-check"><input class="form-check-input" type="checkbox" name="kitchen-presale-villa" id="kitchen-presale-villa-2" value="کابینت MDF"><label class="form-check-label" for="kitchen-presale-villa-2">کابینت MDF</label></div></div>
@@ -1109,116 +1227,121 @@
           </div>
         </div>
         <div class="mt-3">
-          <label for="otherDetails-presale-villa" class="form-label">سایر توضیحات و امکانات</label>
-          <textarea id="otherDetails-presale-villa" class="form-control persian-and-numbers-only" rows="3" placeholder="هر توضیح دیگری که لازم است وارد کنید"></textarea>          <div id="otherDetails-presale-villaError" class="error hidden"></div>
+          <label for="otherDetails-presale-villa" class="form-label">سایر توضیحات و امکانات (تحویلی)</label>
+          <textarea id="otherDetails-presale-villa" class="form-control persian-and-numbers-only" rows="3" placeholder="هر توضیح دیگری که لازم است وارد کنید (اختیاری)"></textarea>
+          <div id="otherDetails-presale-villaError" class="error hidden"></div>
         </div>
         <div class="mb-4 mt-4">
           <label class="form-label">وضعیت سند <span class="required-star">*</span></label>
           <div class="row">
-            <div class="col-6 col-md-4"><div class="form-check"><input class="form-check-input" type="radio" name="document" id="document-presale-villa-1" value="سند تک برگ"><label class="form-check-label" for="document-presale-villa-1">سند تک برگ</label></div></div>
-            <div class="col-6 col-md-4"><div class="form-check"><input class="form-check-input" type="radio" name="document" id="document-presale-villa-2" value="سند دفترچه‌ای"><label class="form-check-label" for="document-presale-villa-2">سند دفترچه‌ای</label></div></div>
-            <div class="col-6 col-md-4"><div class="form-check"><input class="form-check-input" type="radio" name="document" id="document-presale-villa-3" value="قولنامه‌ای"><label class="form-check-label" for="document-presale-villa-3">قولنامه‌ای</label></div></div>
+             <div class="col-6 col-md-4"><div class="form-check"><input class="form-check-input" type="radio" name="document" id="document-presale-villa-1" value="سند تک برگ (پس از تکمیل)"><label class="form-check-label" for="document-presale-villa-1">سند تک برگ (پس از تکمیل)</label></div></div>
+            <div class="col-6 col-md-4"><div class="form-check"><input class="form-check-input" type="radio" name="document" id="document-presale-villa-2" value="سند دفترچه‌ای (پس از تکمیل)"><label class="form-check-label" for="document-presale-villa-2">سند دفترچه‌ای (پس از تکمیل)</label></div></div>
+            <div class="col-6 col-md-4"><div class="form-check"><input class="form-check-input" type="radio" name="document" id="document-presale-villa-3" value="قولنامه‌ای / تعهد به سند"><label class="form-check-label" for="document-presale-villa-3">قولنامه‌ای / تعهد به سند</label></div></div>
           </div>
           <div id="document-presale-villaError" class="error hidden">لطفاً وضعیت سند را انتخاب کنید</div>
         </div>
         <div class="mb-4">
           <h3>قیمت</h3>
           <div class="row">
-            <div class="col-md-6">
-              <label for="price-presale-villa" class="form-label">قیمت کلی (تومان) <span class="required-star">*</span></label>
-              <input type="text" id="price-presale-villa" class="form-control price-input" required placeholder="فقط عدد وارد کنید">
+            <div class="col-md-6"> <!-- Presale Villa only has total price -->
+              <label for="price-presale-villa" class="form-label">قیمت کلی ویلا (تومان) <span class="required-star">*</span></label>
+              <input type="text" id="price-presale-villa" class="form-control price-input" required placeholder="فقط عدد وارد کنید" inputmode="numeric">
               <div id="price-presale-villaError" class="error hidden"></div>
             </div>
           </div>
-        </div>
-        <div class="mb-4">
+        </div>        <div class="mb-4">
           <label class="form-label">شرایط فروش <span class="required-star">*</span></label>
           <div class="row">
-            <div class="col-6 col-md-4"><div class="form-check"><input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-presale-villa-1" value="نقدی"><label class="form-check-label" for="saleConditions-presale-villa-1">نقدی</label></div></div>
-            <div class="col-6 col-md-4"><div class="form-check"><input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-presale-villa-2" value="قسطی"><label class="form-check-label" for="saleConditions-presale-villa-2">قسطی</label></div></div>
+            <div class="col-6 col-md-4"><div class="form-check"><input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-presale-villa-1" value="نقدی"><label class="form-check-label" for="saleConditions-presale-villa-1">نقدی</label></div></div>            <div class="col-6 col-md-4"><div class="form-check"><input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-presale-villa-2" value="قسطی"><label class="form-check-label" for="saleConditions-presale-villa-2">قسطی</label></div></div>
             <div class="col-6 col-md-4"><div class="form-check"><input class="form-check-input" type="checkbox" name="saleConditions" id="saleConditions-presale-villa-3" value="معاوضه"><label class="form-check-label" for="saleConditions-presale-villa-3">معاوضه</label></div></div>
           </div>
           <div class="mt-2">
-            <input type="text" id="saleConditionDetails-presale-villa" class="form-control persian-and-numbers-only" placeholder="توضیحات شرایط فروش">
+            <input type="text" id="saleConditionDetails-presale-villa" class="form-control persian-and-numbers-only" placeholder="توضیحات شرایط فروش (اختیاری)">
             <div id="saleConditionDetails-presale-villaError" class="error hidden"></div>
           </div>
           <div id="saleConditions-presale-villaError" class="error hidden">لطفاً حداقل یک شرط فروش را انتخاب کنید</div>
         </div>
         <div class="mb-4">
-          <label for="address-presale-villa" class="form-label">آدرس <span class="required-star">*</span></label>
-          <textarea id="address-presale-villa" class="form-control persian-and-numbers-only" rows="3" required placeholder="آدرس دقیق ملک"></textarea>
+          <label for="address-presale-villa" class="form-label">آدرس پروژه <span class="required-star">*</span></label>
+          <textarea id="address-presale-villa" class="form-control persian-and-numbers-only" rows="3" required placeholder="آدرس دقیق پروژه"></textarea>
           <div id="address-presale-villaError" class="error hidden"></div>
         </div>
       </div>
       <!-- === پایان بخش‌های جزئیات === -->
 
       <!-- خطاهای اعتبارسنجی -->
-      <div id="validationErrors" class="validation-errors hidden">
-        <h4>لطفاً موارد زیر را تکمیل کنید:</h4>
+      <div id="validationErrors" class="validation-errors hidden" aria-live="polite"> <!-- Added aria-live -->
+        <h4>لطفاً موارد زیر را تکمیل یا اصلاح کنید:</h4>
         <ul id="errorsList"></ul>
       </div>
 
       <!-- دکمه‌های فرم -->
       <div class="button-group">
         <button type="submit" class="btn btn-primary">ارسال اطلاعات</button>
-        <button type="button" id="resetBtn" class="btn btn-danger">پاک کردن</button>
+        <button type="button" id="resetBtn" class="btn btn-danger">پاک کردن فرم</button>
       </div>
     </form>
   </div>
 
-  <!-- منوی همبرگری Overlay (بدون تغییر) -->
+  <!-- منوی همبرگری Overlay (بدون تغییر ساختاری) -->
   <div id="menuOverlay" class="menu-overlay">
-    <div id="menuClose" class="menu-close">×</div>
+    <button type="button" id="menuClose" class="menu-close" aria-label="بستن منو">×</button> <!-- Use button -->
     <div class="menu-content">
       <table class="menu-table">
-        <tr><td><a href="tel:09113930981" class="text-dark text-decoration-none">۰۹۱۱۳۹۳۰۹۸۱</a></td><td>(کلیک کنید)</td></tr>
-        <tr><td><a href="tel:09112903932" class="text-dark text-decoration-none">۰۹۱۱۲۹۰۳۹۳۲</a></td><td>(کلیک کنید)</td></tr>
-        <tr><td><a href="https://nshn.ir/rbW89MIxXInd" target="_blank" class="text-dark text-decoration-none">لوکیشن</a></td><td></td></tr>
-        <tr><td><a href="https://t.me/amlakmoein4" target="_blank" class="text-dark text-decoration-none">کانال معرفی ملک‌ها</a></td><td></td></tr>
-        <tr><td><a href="https://www.instagram.com/Amlak.moein" target="_blank" class="text-dark text-decoration-none">اینستاگرام ما</a></td><td></td></tr>
+        <tr><td><a href="tel:09113930981" class="text-decoration-none">۰۹۱۱۳۹۳۰۹۸۱</a></td><td>(تماس)</td></tr>
+        <tr><td><a href="tel:09112903932" class="text-decoration-none">۰۹۱۱۲۹۰۳۹۳۲</a></td><td>(تماس)</td></tr>
+        <tr><td><a href="https://nshn.ir/rbW89MIxXInd" target="_blank" class="text-decoration-none">لوکیشن دفتر</a></td><td>(نقشه)</td></tr>
+        <tr><td><a href="https://t.me/amlakmoein4" target="_blank" class="text-decoration-none">کانال تلگرام</a></td><td>(مشاهده)</td></tr>
+        <tr><td><a href="https://www.instagram.com/Amlak.moein" target="_blank" class="text-decoration-none">اینستاگرام</a></td><td>(مشاهده)</td></tr>
       </table>
     </div>
   </div>
 
-  <!-- پیام موفقیت (بدون تغییر) -->
+  <!-- پیام موفقیت (بدون تغییر ساختاری) -->
   <div id="successOverlay" class="overlay">
     <div class="overlay-content">
-      <div class="success-icon"><i>✓</i></div>
-      <h3>اطلاعات شما با موفقیت ثبت شد.</h3>
-      <p>کد شناسه شما: <strong id="uniqueIdDisplay"></strong></p>
-      <p>برای ارسال عکس یکی از این دو گزینه را انتخاب کنید:</p>
+      <div class="success-icon" aria-hidden="true"></div> <!-- Icon is decorative -->
+      <h3>اطلاعات با موفقیت ثبت شد</h3>
+      <p>کد شناسه ملک شما: <strong id="uniqueIdDisplay"></strong></p>
+      <p>جهت ارسال عکس‌های ملک، لطفاً کد شناسه بالا را به همراه عکس‌ها به یکی از شماره‌های زیر در تلگرام یا واتساپ ارسال فرمایید:</p>
       <div class="social-buttons-container">
-          <a href="https://t.me/Amlak_moein" target="_blank" class="btn btn-telegram">ارسال عکس به تلگرام (Amlak_moein)</a>
-          <a href="https://wa.me/989113930981" target="_blank" class="btn btn-whatsapp">ارسال عکس به واتساپ (09113930981)</a>
+          <a href="https://t.me/Amlak_moein" target="_blank" class="btn btn-telegram">ارسال به تلگرام (Amlak_moein)</a>
+          <a href="https://wa.me/989113930981" target="_blank" class="btn btn-whatsapp">ارسال به واتساپ (09113930981)</a>
       </div>
-      <button id="closeSuccessBtn" class="btn btn-secondary mt-3">بستن</button>
-    </div>
-  </div>  <!-- پیام تأیید (بدون تغییر) -->
-  <div id="confirmOverlay" class="overlay">
-    <div class="overlay-content">
-      <h3>آیا مطمئن هستید؟</h3>
-      <p>با این کار تمام اطلاعات وارد شده پاک خواهد شد.</p>
-      <div class="button-group">
-        <button id="confirmYesBtn" class="btn btn-danger">بله، پاک کن</button>
-        <button id="confirmNoBtn" class="btn btn-secondary">خیر</button>
-      </div>
-    </div>  </div>
-
-  <!-- پیام در حال ارسال (بدون تغییر ساختاری - نوار پیشرفت توسط JS اضافه می‌شود) -->
-  <div id="sendingOverlay" class="overlay">
-    <div class="overlay-content">
-      <h3>در حال ثبت اطلاعات...</h3>
-      <p>لطفاً صبر کنید.</p>
-      <div class="spinner-border text-primary mt-3 visually-hidden" role="status"><span class="visually-hidden">Loading...</span></div>
+      <button type="button" id="closeSuccessBtn" class="btn btn-secondary mt-3">ثبت ملک جدید</button>
     </div>
   </div>
 
-  <!-- پیام خطا در ارسال اطلاعات (بدون تغییر) -->
+  <!-- پیام تأیید پاک کردن فرم (بدون تغییر ساختاری) -->
+  <div id="confirmOverlay" class="overlay">
+    <div class="overlay-content">
+      <h3>پاک کردن فرم</h3>
+      <p>آیا از پاک کردن تمام اطلاعات وارد شده مطمئن هستید؟</p>
+      <div class="button-group">
+        <button type="button" id="confirmYesBtn" class="btn btn-danger">بله، پاک کن</button>
+        <button type="button" id="confirmNoBtn" class="btn btn-secondary">خیر، ادامه می‌دهم</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- پیام در حال ارسال (بدون تغییر ساختاری - نوار پیشرفت توسط JS اضافه/کنترل می‌شود) -->
+  <div id="sendingOverlay" class="overlay">
+    <div class="overlay-content">
+      <h3>در حال ثبت اطلاعات...</h3>
+      <p>لطفاً چند لحظه صبر کنید.</p>
+      <!-- Progress bar will be injected here by JavaScript -->
+    </div>
+  </div>
+
+  <!-- پیام خطا در ارسال اطلاعات (بدون تغییر ساختاری) -->
   <div id="errorOverlay" class="overlay">
     <div class="overlay-content">
-      <h3>خطا در ثبت اطلاعات</h3>
-      <p>مشکلی در ثبت اطلاعات پیش آمد. لطفاً دوباره تلاش کنید یا با ما تماس بگیرید.</p>
-      <div class="button-group"><button id="closeErrorBtn" class="btn btn-primary">متوجه شدم</button></div>
+      <h3 class="text-danger">خطا در ثبت اطلاعات</h3> <!-- Use text-danger for heading -->
+      <p>متاسفانه مشکلی در هنگام ثبت اطلاعات پیش آمد. لطفاً اتصال اینترنت خود را بررسی کرده و دوباره تلاش کنید.</p>
+      <p>در صورت تکرار مشکل، می‌توانید مستقیماً با ما تماس بگیرید.</p>
+      <div class="button-group">
+          <button type="button" id="closeErrorBtn" class="btn btn-primary">متوجه شدم، تلاش مجدد</button>
+       </div>
     </div>
   </div>
 
@@ -1229,7 +1352,8 @@
   <!-- EmailJS SDK (بدون تغییر) -->
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
-  <!-- کد جاوااسکریپت شما (بدون تغییر) -->
-  <script src="script.js"></script>
+  <!-- کد جاوااسکریپت شما (فایل script.js یا کد درون تگ <script>) -->
+  <script src="script.js"></script> <!-- یا کد JS را اینجا قرار دهید -->
+
 </body>
 </html>
