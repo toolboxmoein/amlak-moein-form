@@ -27,6 +27,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // تنظیم رویدادها
   setupEventListeners();
+  setupNumericInputs(); // اضافه کردن تابع جدید برای تنظیم فیلدهای عددی
+
+  // تنظیم فیلدهای عددی برای کیبورد مخصوص اعداد
+  function setupNumericInputs() {
+    // اضافه کردن ویژگی inputmode="numeric" به فیلدهای عددی
+    document.querySelectorAll('.numeric-only, .price-input').forEach(input => {
+      input.setAttribute('inputmode', 'numeric');
+    });
+  }
 
   // تنظیم رویدادهای فرم
   function setupEventListeners() {
@@ -61,16 +70,16 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
 
-    // فرمت قیمت با جدا کننده هزارگان - اصلاح شده برای فقط اعداد
+    // فرمت قیمت با جدا کننده هزارگان - اصلاح شده برای اعداد چند رقمی
     document.querySelectorAll('.price-input').forEach(input => {
-      input.addEventListener('input', function() {
+      input.addEventListener('input', function(e) {
         // حذف همه کاراکترهای غیر عددی
-        let value = this.value.replace(/[^0-9]/g, '');
-
+        let value = this.value.replace(/[^\d]/g, '');
+        
         // اگر مقدار خالی نیست، آن را فرمت کنیم
         if (value) {
-          // تبدیل به عدد و سپس فرمت با جداکننده هزارگان
-          this.value = Number(value).toLocaleString();
+          // فرمت با جداکننده هزارگان بدون تبدیل به عدد (برای پشتیبانی از اعداد بزرگ)
+          this.value = formatNumber(value);
         } else {
           this.value = '';
         }
@@ -117,13 +126,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // رویدادهای چک باکس‌های شرایط فروش
     document.querySelectorAll('input[name="saleConditions"]').forEach(checkbox => {
       checkbox.addEventListener('change', function() {
-        const propertyType = getSelectedPropertyType();        if (propertyType) {
+        const propertyType = getSelectedPropertyType();
+        if (propertyType) {
           const errorId = `saleConditions-${propertyType}Error`;
           document.getElementById(errorId).classList.add('hidden');
           // بررسی آیا همه خطاها برطرف شده‌اند
           checkAndHideErrorsContainer();
         }
-      });    });
+      });
+    });
 
     // رویدادهای رادیو باتن‌های وضعیت سند
     document.querySelectorAll('input[name="document"]').forEach(radio => {
@@ -148,6 +159,16 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
+  // تابع کمکی برای فرمت کردن اعداد با جداکننده هزارگان
+  function formatNumber(num) {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  // تابع کمکی برای حذف جداکننده‌های هزارگان و تبدیل به عدد
+  function unformatNumber(formattedNum) {
+    return parseInt(formattedNum.replace(/,/g, ''), 10);
+  }
+
   // بررسی و مخفی کردن کادر خطاها اگر همه خطاها برطرف شده باشند
   function checkAndHideErrorsContainer() {
     // بررسی آیا هیچ خطای نمایش داده شده‌ای وجود دارد
@@ -157,52 +178,53 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // محاسبه قیمت کلی آپارتمان
+  // محاسبه قیمت کلی آپارتمان - بهبود یافته برای پشتیبانی از اعداد با فرمت
   function calculateApartmentTotalPrice() {
     const unitArea = document.getElementById('unitArea-apartment').value.trim();
     const pricePerMeter = document.getElementById('pricePerMeter-apartment').value.trim();
 
     if (unitArea && pricePerMeter) {
       // تبدیل مقادیر به اعداد (حذف جداکننده‌های هزارگان)
-      const area = parseInt(unitArea.replace(/[^\d]/g, ''));
-      const price = parseInt(pricePerMeter.replace(/[^\d]/g, ''));
+      const area = unformatNumber(unitArea);
+      const price = unformatNumber(pricePerMeter);
 
       if (!isNaN(area) && !isNaN(price)) {
-        const totalPrice = area * price;        document.getElementById('totalPrice-apartment').value = totalPrice.toLocaleString();
+        const totalPrice = area * price;
+        document.getElementById('totalPrice-apartment').value = formatNumber(totalPrice);
       }
     }
   }
 
-  // محاسبه قیمت کلی زمین
+  // محاسبه قیمت کلی زمین - بهبود یافته برای پشتیبانی از اعداد با فرمت
   function calculateLandTotalPrice() {
     const landArea = document.getElementById('landArea-land').value.trim();
     const pricePerMeter = document.getElementById('pricePerMeter-land').value.trim();
 
     if (landArea && pricePerMeter) {
       // تبدیل مقادیر به اعداد (حذف جداکننده‌های هزارگان)
-      const area = parseInt(landArea.replace(/[^\d]/g, ''));
-      const price = parseInt(pricePerMeter.replace(/[^\d]/g, ''));
+      const area = unformatNumber(landArea);
+      const price = unformatNumber(pricePerMeter);
 
       if (!isNaN(area) && !isNaN(price)) {
         const totalPrice = area * price;
-        document.getElementById('totalPrice-land').value = totalPrice.toLocaleString();
+        document.getElementById('totalPrice-land').value = formatNumber(totalPrice);
       }
     }
   }
 
-  // محاسبه قیمت کلی تجاری
+  // محاسبه قیمت کلی تجاری - بهبود یافته برای پشتیبانی از اعداد با فرمت
   function calculateCommercialTotalPrice() {
     const shopArea = document.getElementById('shopArea').value.trim();
     const pricePerMeter = document.getElementById('pricePerMeter-commercial').value.trim();
 
     if (shopArea && pricePerMeter) {
       // تبدیل مقادیر به اعداد (حذف جداکننده‌های هزارگان)
-      const area = parseInt(shopArea.replace(/[^\d]/g, ''));
-      const price = parseInt(pricePerMeter.replace(/[^\d]/g, ''));
+      const area = unformatNumber(shopArea);
+      const price = unformatNumber(pricePerMeter);
 
       if (!isNaN(area) && !isNaN(price)) {
         const totalPrice = area * price;
-        document.getElementById('totalPrice-commercial').value = totalPrice.toLocaleString();
+        document.getElementById('totalPrice-commercial').value = formatNumber(totalPrice);
       }
     }
   }
@@ -222,7 +244,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // نمایش بخش جزئیات مربوط به نوع انتخاب شده
     if (detailSections[selectedType]) {
       detailSections[selectedType].classList.remove('hidden');
-    }    // پاک کردن خطاها
+    }
+    // پاک کردن خطاها
     document.getElementById('typeError').classList.add('hidden');
 
     // پخش صدای دینگ
@@ -428,7 +451,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     requiredFields.forEach(field => {
       const element = document.getElementById(field);
-      if (element && element.required && element.value.trim() === '') {        const label = document.querySelector(`label[for="${field}"]`);
+      if (element && element.required && element.value.trim() === '') {
+        const label = document.querySelector(`label[for="${field}"]`);
         if (label) {
           const fieldName = label.textContent.replace('*', '').trim();
           errors.push(fieldName);
@@ -556,7 +580,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // پنهان کردن خطای یک فیلد
   function hideFieldError(fieldId) {
-    const field = document.getElementById(fieldId);    const errorElement = document.getElementById(fieldId + 'Error');
+    const field = document.getElementById(fieldId);
+    const errorElement = document.getElementById(fieldId + 'Error');
 
     if (field) {
       field.classList.remove('error-field');
@@ -589,7 +614,6 @@ document.addEventListener('DOMContentLoaded', function() {
       default: return null;
     }
   }
-
 
   // جمع‌آوری اطلاعات فرم
   function collectFormData() {
@@ -689,7 +713,7 @@ document.addEventListener('DOMContentLoaded', function() {
       landWidth: document.getElementById('landWidth').value.trim() || 'وارد نشده',
       landDepth: document.getElementById('landDepth').value.trim() || 'وارد نشده',
       alleyWidth: document.getElementById('alleyWidth').value.trim() || 'وارد نشده',
-      enclosed: getSelectedRadioValue('enclosed', 'enclosed-land') || 'وارد نشده', // اصلاح: اضافه کردن پیشوند آیدی
+      enclosed: getSelectedRadioValue('enclosed', 'enclosed-land') || 'وارد نشده',
       otherDetails: document.getElementById('otherDetails-land').value.trim() || 'وارد نشده',
       document: getSelectedRadioValue('document', 'document-land'),
       pricePerMeter: document.getElementById('pricePerMeter-land').value.trim() || 'وارد نشده',
@@ -724,8 +748,8 @@ document.addEventListener('DOMContentLoaded', function() {
       buildingArea: document.getElementById('buildingArea-old').value.trim(),
       landWidth: document.getElementById('landWidth-old').value.trim() || 'وارد نشده',
       landDepth: document.getElementById('landDepth-old').value.trim() || 'وارد نشده',
-      livability: getSelectedRadioValue('livability', 'livability-old') || 'وارد نشده', // اصلاح: اضافه کردن پیشوند آیدی
-      utilities: getCheckedValues('utilities-old'), // اصلاح: اضافه کردن پیشوند آیدی
+      livability: getSelectedRadioValue('livability', 'livability-old') || 'وارد نشده',
+      utilities: getCheckedValues('utilities-old'),
       amenities: document.getElementById('amenities-old').value.trim() || 'وارد نشده',
       document: getSelectedRadioValue('document', 'document-old'),
       pricePerMeter: document.getElementById('pricePerMeter-old').value.trim() || 'وارد نشده',
@@ -736,11 +760,11 @@ document.addEventListener('DOMContentLoaded', function() {
     };
   }
 
-
   // جمع‌آوری اطلاعات پیش‌فروش آپارتمان
   function collectPresaleApartmentData() {
     return {
-      landArea: document.getElementById('landArea-presale-apartment').value.trim() || 'وارد نشده',      unitArea: document.getElementById('unitArea-presale-apartment').value.trim(),
+      landArea: document.getElementById('landArea-presale-apartment').value.trim() || 'وارد نشده',
+      unitArea: document.getElementById('unitArea-presale-apartment').value.trim(),
       roomCount: document.getElementById('roomCount-presale-apartment').value.trim(),
       floorCount: document.getElementById('floorCount-presale-apartment').value.trim() || 'وارد نشده',
       floorNumber: document.getElementById('floorNumber-presale-apartment').value.trim() || 'وارد نشده',
@@ -775,237 +799,185 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // دریافت مقادیر انتخاب شده چک باکس‌ها
-  function getCheckedValues(name) { // حذف پارامتر idPrefix چون در جمع‌آوری داده‌ها استفاده نشد
+  function getCheckedValues(name) {
     const checkboxes = document.querySelectorAll(`input[name="${name}"]:checked`);
     if (checkboxes.length === 0) return 'هیچکدام';
-
     return Array.from(checkboxes).map(cb => cb.value).join('، ');
   }
 
-
   // دریافت مقدار انتخاب شده رادیو باتن‌ها
-  function getSelectedRadioValue(name) { // حذف پارامتر idPrefix چون در جمع‌آوری داده‌ها استفاده نشد
+  function getSelectedRadioValue(name) {
     const radio = document.querySelector(`input[name="${name}"]:checked`);
     return radio ? radio.value : '';
   }
 
-
-  // ارسال ایمیل با EmailJS
+  // --- تابع اصلاح شده sendEmail ---
   async function sendEmail(formData) {
-    // تبدیل اطلاعات به متن فارسی برای ارسال
-    const messageText = formatFormDataForEmail(formData);
-
-    // ارسال به تلگرام با استفاده از EmailJS
-    const templateParams = {
-      to_name: "املاک معین",
-      message: messageText,
-      unique_id: uniqueId,
-      subject: `ثبت ملک جدید - ${formData.firstName} ${formData.lastName}`,
-      reply_to: "no-reply@example.com" // یا ایمیل فرستنده اگر نیاز به پاسخ است
+    // تابع کمکی برای فرمت قیمت
+    const formatPrice = (priceString) => {
+      if (!priceString || priceString === 'وارد نشده') {
+        return 'وارد نشده';
+      }
+      // حذف کاراکترهای غیر عددی (مثل کاما) برای تبدیل به عدد
+      const numericValue = unformatNumber(priceString);
+      if (isNaN(numericValue)) {
+        return 'وارد نشده'; // اگر تبدیل ناموفق بود
+      }
+      return formatNumber(numericValue) + " تومان";
     };
 
-    //                  شناسه سرویس صحیح ---->  <---- شناسه قالب اصلاح شده بر اساس عکس
-    return emailjs.send("service_rds9l25", "template_5do0c0n", templateParams);
-  }
+    // ایجاد آبجکت templateParams
+    const templateParams = {
+      to_name: "املاک معین", // نام گیرنده (می‌تواند ثابت باشد)
+      subject: `ثبت ملک جدید - ${formData.firstName} ${formData.lastName}`, // موضوع ایمیل
+      reply_to: "no-reply@example.com", // ایمیل پاسخ (اختیاری)
 
-  // فرمت کردن اطلاعات فرم برای ارسال ایمیل
-  function formatFormDataForEmail(data) {
-    let message = `کد شناسه: ${data.uniqueId}\n\n`;
+      // مپ کردن فیلدهای اصلی
+      unique_id: formData.uniqueId,
+      name: `${formData.firstName} ${formData.lastName}`,
+      phone: formData.phone,
+      altPhone: formData.altPhone || 'وارد نشده', // مدیریت مقدار پیش‌فرض
+      property_type: formData.propertyType,
+      documentType: formData.document || '', // نام متغیر در قالب (مطمئن شوید در قالب EmailJS همین نام است)
+      address: formData.address || '', // آدرس ممکن است برای همه انواع نباشد
+      saleConditions: formData.saleConditions || 'هیچکدام',
+      saleConditionDetails: formData.saleConditionDetails || '',
 
-    // اطلاعات شخصی
-    message += `نام: ${data.firstName}\n`;
-    message += `نام خانوادگی: ${data.lastName}\n`;
-    message += `شماره تماس: ${data.phone}\n`;
-    message += `شماره تماس دیگر: ${data.altPhone}\n\n`;
+      // مپ کردن قیمت‌ها (با فرمت)
+      pricePerMeter: formatPrice(formData.pricePerMeter),
+      totalPrice: formatPrice(formData.totalPrice),
+      price: formatPrice(formData.price), // قیمت کلی (برای ویلا و پیش‌فروش ویلا)
 
-    // نوع ملک
-    message += `نوع ملک: ${data.propertyType}\n\n`;    // اطلاعات اختصاصی هر نوع ملک
-    switch (data.propertyType) {
+      // فیلدهای پیش‌فروش
+      presaleType: formData.presaleType || '',
+      projectProgress: formData.projectProgress ? `${formData.projectProgress}%` : '',
+
+      // جزئیات هر نوع ملک (با استفاده از تابع کمکی جدید)
+      apartmentDetails: '',
+      villaDetails: '',
+      landDetails: '',
+      commercialDetails: '',
+      oldDetails: '',
+      presaleApartmentDetails: '',
+      presaleVillaDetails: ''
+    };
+
+    // پر کردن بخش جزئیات مربوطه بر اساس نوع ملک
+    switch (formData.propertyType) {
       case 'آپارتمان':
-        message += formatApartmentData(data);
+        templateParams.apartmentDetails = formatDetailsForEmail(formData, 'apartment');
         break;
       case 'ویلا':
-        message += formatVillaData(data);
-        break;      case 'زمین':
-        message += formatLandData(data);
+        templateParams.villaDetails = formatDetailsForEmail(formData, 'villa');
+        break;
+      case 'زمین':
+        templateParams.landDetails = formatDetailsForEmail(formData, 'land');
         break;
       case 'تجاری / مغازه':
-        message += formatCommercialData(data);
+        templateParams.commercialDetails = formatDetailsForEmail(formData, 'commercial');
         break;
       case 'کلنگی':
-        message += formatOldData(data);
+        templateParams.oldDetails = formatDetailsForEmail(formData, 'old');
         break;
       case 'پیش‌فروش':
-        message += `نوع پیش‌فروش: ${data.presaleType}\n`;
-        message += `پیشرفت پروژه: ${data.projectProgress}%\n\n`; // اضافه کردن درصد
-
-        if (data.presaleType === 'آپارتمان') {
-          message += formatPresaleApartmentData(data);
-        } else if (data.presaleType === 'ویلا') {
-          message += formatPresaleVillaData(data);
+        if (formData.presaleType === 'آپارتمان') {
+          templateParams.presaleApartmentDetails = formatDetailsForEmail(formData, 'presaleApartment');
+        } else if (formData.presaleType === 'ویلا') {
+          templateParams.presaleVillaDetails = formatDetailsForEmail(formData, 'presaleVilla');
         }
         break;
     }
 
-    return message;
+    console.log("Sending templateParams:", templateParams); // برای دیباگ
+
+    // ارسال به EmailJS با آبجکت templateParams
+    //                  شناسه سرویس صحیح ---->  <---- شناسه قالب
+    return emailjs.send("service_rds9l25", "template_5do0c0n", templateParams);
   }
 
-  // فرمت کردن اطلاعات آپارتمان
-  function formatApartmentData(data) {
-    let message = '';
-    message += `متراژ زمین: ${data.landArea} متر\n`;
-    message += `متراژ واحد: ${data.unitArea} متر\n`;
-    message += `تعداد اتاق‌ها: ${data.roomCount}\n`;
-    message += `سال ساخت: ${data.buildYear}\n\n`;
+  // --- تابع کمکی جدید برای فرمت جزئیات ---
+  function formatDetailsForEmail(data, type) {
+    let details = '';
+    switch (type) {
+      case 'apartment':
+        details += `متراژ زمین: ${data.landArea || 'وارد نشده'} متر\n`;
+        details += `متراژ واحد: ${data.unitArea || 'وارد نشده'} متر\n`;
+        details += `تعداد اتاق‌ها: ${data.roomCount || 'وارد نشده'}\n`;
+        details += `سال ساخت: ${data.buildYear || 'وارد نشده'}\n\n`;
+        details += `مشخصات آشپزخانه: ${data.kitchen || 'وارد نشده'}\n`;
+        details += `تاسیسات: ${data.facilities || 'وارد نشده'}\n`;
+        details += `سایر تاسیسات: ${data.otherFacilities || 'وارد نشده'}\n`;
+        details += `امکانات: ${data.amenities || 'وارد نشده'}\n`;
+        details += `سایر امکانات: ${data.otherAmenities || 'وارد نشده'}\n`;
+        details += `مشاعات: ${data.commonAreas || 'وارد نشده'}\n`;
+        details += `سایر مشاعات: ${data.otherCommonAreas || 'وارد نشده'}\n\n`;
+        details += `سایر توضیحات: ${data.otherDetails || 'وارد نشده'}\n`;
+        break;
 
-    message += `مشخصات آشپزخانه: ${data.kitchen}\n`;
-    message += `تاسیسات: ${data.facilities}\n`;
-    message += `سایر تاسیسات: ${data.otherFacilities}\n`;
-    message += `امکانات: ${data.amenities}\n`;
-    message += `سایر امکانات: ${data.otherAmenities}\n`;
-    message += `مشاعات: ${data.commonAreas}\n`;
-    message += `سایر مشاعات: ${data.otherCommonAreas}\n\n`;
+      case 'villa':
+        details += `متراژ زمین: ${data.landArea || 'وارد نشده'} متر\n`;
+        details += `متراژ بنا: ${data.buildingArea || 'وارد نشده'} متر\n`;
+        details += `تعداد اتاق‌ها: ${data.roomCount || 'وارد نشده'}\n`;
+        details += `سال ساخت: ${data.buildYear || 'وارد نشده'}\n\n`;
+        details += `مشخصات آشپزخانه: ${data.kitchen || 'وارد نشده'}\n`;
+        details += `تاسیسات: ${data.facilities || 'وارد نشده'}\n`;
+        details += `سایر تاسیسات: ${data.otherFacilities || 'وارد نشده'}\n`;
+        details += `امکانات: ${data.amenities || 'وارد نشده'}\n`;
+        details += `سایر امکانات: ${data.otherAmenities || 'وارد نشده'}\n\n`;
+        details += `سایر توضیحات: ${data.otherDetails || 'وارد نشده'}\n`;
+        break;
 
-    message += `سایر توضیحات: ${data.otherDetails}\n\n`;
-    message += `وضعیت سند: ${data.document}\n\n`;
-    message += `قیمت متری: ${data.pricePerMeter} تومان\n`;
-    message += `قیمت کلی: ${data.totalPrice} تومان\n\n`;
-    message += `شرایط فروش: ${data.saleConditions}\n`;
-    message += `توضیحات شرایط فروش: ${data.saleConditionDetails}\n\n`;
-    message += `آدرس: ${data.address}\n`;
+      case 'land':
+        details += `متراژ زمین: ${data.landArea || 'وارد نشده'} متر\n`;
+        details += `کاربری: ${data.landUsage || 'وارد نشده'}\n`;
+        details += `بَر زمین: ${data.landWidth || 'وارد نشده'} متر\n`;
+        details += `عمق زمین: ${data.landDepth || 'وارد نشده'} متر\n`;
+        details += `عرض کوچه: ${data.alleyWidth || 'وارد نشده'} متر\n`;
+        details += `محصور: ${data.enclosed || 'وارد نشده'}\n\n`;
+        details += `سایر توضیحات: ${data.otherDetails || 'وارد نشده'}\n`;
+        break;
 
-    return message;
+      case 'commercial':
+        details += `متراژ مغازه: ${data.shopArea || 'وارد نشده'} متر\n`;
+        details += `ارتفاع مغازه: ${data.shopHeight || 'وارد نشده'} متر\n`;
+        details += `دهنه مغازه: ${data.shopWidth || 'وارد نشده'} متر\n`;
+        details += `توضیحات شکل مغازه: ${data.shopDetails || 'وارد نشده'}\n\n`;
+        details += `امکانات: ${data.otherDetails || 'وارد نشده'}\n`;
+        break;
+
+      case 'old':
+        details += `متراژ زمین: ${data.landArea || 'وارد نشده'} متر\n`;
+        details += `متراژ بنا: ${data.buildingArea || 'وارد نشده'} متر\n`;
+        details += `بَر زمین: ${data.landWidth || 'وارد نشده'} متر\n`;
+        details += `عمق زمین: ${data.landDepth || 'وارد نشده'} متر\n`;
+        details += `وضعیت سکونت: ${data.livability || 'وارد نشده'}\n`;
+        details += `امتیازات: ${data.utilities || 'وارد نشده'}\n`;
+        details += `امکانات: ${data.amenities || 'وارد نشده'}\n`;
+        break;
+
+      case 'presaleApartment':
+        details += `متراژ زمین: ${data.landArea || 'وارد نشده'} متر\n`;
+        details += `متراژ واحد: ${data.unitArea || 'وارد نشده'} متر\n`;
+        details += `تعداد اتاق: ${data.roomCount || 'وارد نشده'}\n`;
+        details += `تعداد طبقه: ${data.floorCount || 'وارد نشده'}\n`;
+        details += `طبقه چندم: ${data.floorNumber || 'وارد نشده'}\n`;
+        details += `تعداد واحد در هر طبقه: ${data.unitsPerFloor || 'وارد نشده'}\n\n`;
+        details += `توضیحات بیشتر: ${data.moreDetails || 'وارد نشده'}\n`;
+        details += `مشخصات آشپزخانه: ${data.kitchen || 'وارد نشده'}\n`;
+        details += `سایر توضیحات و امکانات: ${data.otherDetails || 'وارد نشده'}\n`;
+        break;
+
+      case 'presaleVilla':
+        details += `متراژ زمین: ${data.landArea || 'وارد نشده'} متر\n`;
+        details += `متراژ بنا: ${data.buildingArea || 'وارد نشده'} متر\n`;
+        details += `تعداد اتاق‌ها: ${data.roomCount || 'وارد نشده'}\n`;
+        details += `تعداد طبقات: ${data.floorCount || 'وارد نشده'}\n\n`;
+        details += `مشخصات آشپزخانه: ${data.kitchen || 'وارد نشده'}\n`;
+        details += `سایر توضیحات و امکانات: ${data.otherDetails || 'وارد نشده'}\n`;
+        break;
+    }
+    return details.trim() || ''; // اگر هیچ جزئیاتی نبود، رشته خالی برگردان
   }
-
-  // فرمت کردن اطلاعات ویلا
-  function formatVillaData(data) {
-    let message = '';
-    message += `متراژ زمین: ${data.landArea} متر\n`;
-    message += `متراژ بنا: ${data.buildingArea} متر\n`;
-    message += `تعداد اتاق‌ها: ${data.roomCount}\n`;
-    message += `سال ساخت: ${data.buildYear}\n\n`;
-
-    message += `مشخصات آشپزخانه: ${data.kitchen}\n`;
-    message += `تاسیسات: ${data.facilities}\n`;
-    message += `سایر تاسیسات: ${data.otherFacilities}\n`;
-    message += `امکانات: ${data.amenities}\n`;
-    message += `سایر امکانات: ${data.otherAmenities}\n\n`;
-
-    message += `سایر توضیحات: ${data.otherDetails}\n\n`;
-    message += `وضعیت سند: ${data.document}\n\n`;
-    message += `قیمت کلی: ${data.price} تومان\n\n`;
-    message += `شرایط فروش: ${data.saleConditions}\n`;
-    message += `توضیحات شرایط فروش: ${data.saleConditionDetails}\n\n`;
-    message += `آدرس: ${data.address}\n`;
-
-    return message;
-  }
-
-  // فرمت کردن اطلاعات زمین
-  function formatLandData(data) {
-    let message = '';
-    message += `متراژ زمین: ${data.landArea} متر\n`;
-    message += `کاربری: ${data.landUsage}\n`;
-    message += `بَر زمین: ${data.landWidth} متر\n`;
-    message += `عمق زمین: ${data.landDepth} متر\n`;
-    message += `عرض کوچه: ${data.alleyWidth} متر\n`;
-    message += `محصور: ${data.enclosed}\n\n`;
-
-    message += `سایر توضیحات: ${data.otherDetails}\n\n`;
-    message += `وضعیت سند: ${data.document}\n\n`;
-    message += `قیمت متری: ${data.pricePerMeter} تومان\n`;
-    message += `قیمت کلی: ${data.totalPrice} تومان\n\n`;
-    message += `شرایط فروش: ${data.saleConditions}\n`;
-    message += `توضیحات شرایط فروش: ${data.saleConditionDetails}\n\n`;
-    message += `آدرس: ${data.address}\n`;
-
-    return message;
-  }
-
-  // فرمت کردن اطلاعات تجاری / مغازه
-  function formatCommercialData(data) {
-    let message = '';
-    message += `متراژ مغازه: ${data.shopArea} متر\n`;
-    message += `ارتفاع مغازه: ${data.shopHeight} متر\n`;
-    message += `دهنه مغازه: ${data.shopWidth} متر\n`;
-    message += `توضیحات شکل مغازه: ${data.shopDetails}\n\n`;
-
-    message += `امکانات: ${data.otherDetails}\n\n`; // عنوان 'امکانات' شاید نیاز به بازنگری داشته باشد
-    message += `وضعیت سند: ${data.document}\n\n`;
-    message += `قیمت متری: ${data.pricePerMeter} تومان\n`;
-    message += `قیمت کلی: ${data.totalPrice} تومان\n\n`;
-    message += `شرایط فروش: ${data.saleConditions}\n`;
-    message += `توضیحات شرایط فروش: ${data.saleConditionDetails}\n\n`;
-    message += `آدرس: ${data.address}\n`;
-
-    return message;
-  }
-
-  // فرمت کردن اطلاعات کلنگی
-  function formatOldData(data) {
-    let message = '';
-    message += `متراژ زمین: ${data.landArea} متر\n`;
-    message += `متراژ بنا: ${data.buildingArea} متر\n`;
-    message += `بَر زمین: ${data.landWidth} متر\n`;
-    message += `عمق زمین: ${data.landDepth} متر\n`;
-    message += `وضعیت سکونت: ${data.livability}\n`;
-    message += `امتیازات: ${data.utilities}\n`;
-    message += `امکانات: ${data.amenities}\n\n`;
-
-    message += `وضعیت سند: ${data.document}\n\n`;
-    message += `قیمت متری: ${data.pricePerMeter} تومان\n`;
-    message += `قیمت کلی: ${data.totalPrice} تومان\n\n`;
-    message += `شرایط فروش: ${data.saleConditions}\n`;
-    message += `توضیحات شرایط فروش: ${data.saleConditionDetails}\n\n`;
-    message += `آدرس: ${data.address}\n`;
-
-    return message;
-  }
-
-  // فرمت کردن اطلاعات پیش‌فروش آپارتمان
-  function formatPresaleApartmentData(data) {
-    let message = '';
-    message += `متراژ زمین: ${data.landArea} متر\n`;
-    message += `متراژ واحد: ${data.unitArea} متر\n`;
-    message += `تعداد اتاق: ${data.roomCount}\n`;
-    message += `تعداد طبقه: ${data.floorCount}\n`;
-    message += `طبقه چندم: ${data.floorNumber}\n`;
-    message += `تعداد واحد در هر طبقه: ${data.unitsPerFloor}\n\n`;
-
-    message += `توضیحات بیشتر: ${data.moreDetails}\n`;
-    message += `مشخصات آشپزخانه: ${data.kitchen}\n`;
-    message += `سایر توضیحات و امکانات: ${data.otherDetails}\n\n`;
-
-    message += `وضعیت سند: ${data.document}\n\n`;
-    message += `قیمت متری: ${data.pricePerMeter} تومان\n`;
-    message += `قیمت کلی: ${data.totalPrice} تومان\n\n`;
-    message += `شرایط فروش: ${data.saleConditions}\n`;
-    message += `توضیحات شرایط فروش: ${data.saleConditionDetails}\n\n`;
-    message += `آدرس: ${data.address}\n`;
-
-    return message;
-  }
-
-  // فرمت کردن اطلاعات پیش‌فروش ویلا
-  function formatPresaleVillaData(data) {
-    let message = '';
-    message += `متراژ زمین: ${data.landArea} متر\n`;
-    message += `متراژ بنا: ${data.buildingArea} متر\n`;
-    message += `تعداد اتاق‌ها: ${data.roomCount}\n`;
-    message += `تعداد طبقات: ${data.floorCount}\n\n`;
-
-    message += `مشخصات آشپزخانه: ${data.kitchen}\n`;
-    message += `سایر توضیحات و امکانات: ${data.otherDetails}\n\n`;
-
-    message += `وضعیت سند: ${data.document}\n\n`;
-    message += `قیمت کلی: ${data.price} تومان\n\n`;
-    message += `شرایط فروش: ${data.saleConditions}\n`;
-    message += `توضیحات شرایط فروش: ${data.saleConditionDetails}\n\n`;
-    message += `آدرس: ${data.address}\n`;
-
-    return message;
-  }
-
 
   // تولید شناسه یکتا
   function generateUniqueId() {
@@ -1052,7 +1024,6 @@ document.addEventListener('DOMContentLoaded', function() {
        progressBar.style.width = '0%';
        progressBar.setAttribute('aria-valuenow', '0');
     }
-
 
     // نمایش پیام در حال ارسال
     showOverlay('sendingOverlay');
@@ -1136,7 +1107,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (validationErrors) validationErrors.classList.add('hidden');
     const errorsList = document.getElementById('errorsList');
     if (errorsList) errorsList.innerHTML = '';
-
 
     // تولید شناسه یکتای جدید
     uniqueId = generateUniqueId();
