@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // تنظیمات EmailJS
   (function() {
     emailjs.init({
-      publicKey: "7zOCMQKI0bRjmv6cn", // کلید عمومی اصلاح شده
+      publicKey: "7zOCMQKI0bRjmv6cn", // کلید عمومی صحیح است
     });
   })();
 
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
       input.addEventListener('input', function() {
         // حذف همه کاراکترهای غیر عددی
         let value = this.value.replace(/[^0-9]/g, '');
-        
+
         // اگر مقدار خالی نیست، آن را فرمت کنیم
         if (value) {
           // تبدیل به عدد و سپس فرمت با جداکننده هزارگان
@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // ارسال فرم
     document.getElementById('propertyForm').addEventListener('submit', handleFormSubmit);
-    
+
     // رویدادهای ورودی برای بررسی خطاها در زمان تایپ
     document.querySelectorAll('input[required], textarea[required]').forEach(input => {
       input.addEventListener('input', function() {
@@ -113,20 +113,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       });
     });
-    
+
     // رویدادهای چک باکس‌های شرایط فروش
     document.querySelectorAll('input[name="saleConditions"]').forEach(checkbox => {
       checkbox.addEventListener('change', function() {
-        const propertyType = getSelectedPropertyType();
-        if (propertyType) {
+        const propertyType = getSelectedPropertyType();        if (propertyType) {
           const errorId = `saleConditions-${propertyType}Error`;
           document.getElementById(errorId).classList.add('hidden');
           // بررسی آیا همه خطاها برطرف شده‌اند
           checkAndHideErrorsContainer();
         }
-      });
-    });
-    
+      });    });
+
     // رویدادهای رادیو باتن‌های وضعیت سند
     document.querySelectorAll('input[name="document"]').forEach(radio => {
       radio.addEventListener('change', function() {
@@ -139,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       });
     });
-    
+
     // رویدادهای رادیو باتن‌های نوع ملک
     document.querySelectorAll('input[name="propertyType"]').forEach(radio => {
       radio.addEventListener('change', function() {
@@ -163,15 +161,14 @@ document.addEventListener('DOMContentLoaded', function() {
   function calculateApartmentTotalPrice() {
     const unitArea = document.getElementById('unitArea-apartment').value.trim();
     const pricePerMeter = document.getElementById('pricePerMeter-apartment').value.trim();
-    
+
     if (unitArea && pricePerMeter) {
       // تبدیل مقادیر به اعداد (حذف جداکننده‌های هزارگان)
       const area = parseInt(unitArea.replace(/[^\d]/g, ''));
       const price = parseInt(pricePerMeter.replace(/[^\d]/g, ''));
-      
+
       if (!isNaN(area) && !isNaN(price)) {
-        const totalPrice = area * price;
-        document.getElementById('totalPrice-apartment').value = totalPrice.toLocaleString();
+        const totalPrice = area * price;        document.getElementById('totalPrice-apartment').value = totalPrice.toLocaleString();
       }
     }
   }
@@ -180,12 +177,12 @@ document.addEventListener('DOMContentLoaded', function() {
   function calculateLandTotalPrice() {
     const landArea = document.getElementById('landArea-land').value.trim();
     const pricePerMeter = document.getElementById('pricePerMeter-land').value.trim();
-    
+
     if (landArea && pricePerMeter) {
       // تبدیل مقادیر به اعداد (حذف جداکننده‌های هزارگان)
       const area = parseInt(landArea.replace(/[^\d]/g, ''));
       const price = parseInt(pricePerMeter.replace(/[^\d]/g, ''));
-      
+
       if (!isNaN(area) && !isNaN(price)) {
         const totalPrice = area * price;
         document.getElementById('totalPrice-land').value = totalPrice.toLocaleString();
@@ -197,12 +194,12 @@ document.addEventListener('DOMContentLoaded', function() {
   function calculateCommercialTotalPrice() {
     const shopArea = document.getElementById('shopArea').value.trim();
     const pricePerMeter = document.getElementById('pricePerMeter-commercial').value.trim();
-    
+
     if (shopArea && pricePerMeter) {
       // تبدیل مقادیر به اعداد (حذف جداکننده‌های هزارگان)
       const area = parseInt(shopArea.replace(/[^\d]/g, ''));
       const price = parseInt(pricePerMeter.replace(/[^\d]/g, ''));
-      
+
       if (!isNaN(area) && !isNaN(price)) {
         const totalPrice = area * price;
         document.getElementById('totalPrice-commercial').value = totalPrice.toLocaleString();
@@ -213,7 +210,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // تغییر نوع ملک
   function handlePropertyTypeChange() {
     const selectedType = document.querySelector('input[name="propertyType"]:checked').value;
-    
+
     // مخفی کردن همه بخش‌های جزئیات
     Object.values(detailSections).forEach(section => {
       section.classList.add('hidden');
@@ -221,15 +218,13 @@ document.addEventListener('DOMContentLoaded', function() {
     Object.values(presaleDetailSections).forEach(section => {
       section.classList.add('hidden');
     });
-    
+
     // نمایش بخش جزئیات مربوط به نوع انتخاب شده
     if (detailSections[selectedType]) {
       detailSections[selectedType].classList.remove('hidden');
-    }
-    
-    // پاک کردن خطاها
+    }    // پاک کردن خطاها
     document.getElementById('typeError').classList.add('hidden');
-    
+
     // پخش صدای دینگ
     playSound('dingSound');
   }
@@ -237,20 +232,20 @@ document.addEventListener('DOMContentLoaded', function() {
   // تغییر نوع پیش‌فروش
   function handlePresaleTypeChange() {
     const selectedType = document.querySelector('input[name="presaleType"]:checked').value;
-    
+
     // مخفی کردن همه بخش‌های جزئیات پیش‌فروش
     Object.values(presaleDetailSections).forEach(section => {
       section.classList.add('hidden');
     });
-    
+
     // نمایش بخش جزئیات مربوط به نوع پیش‌فروش انتخاب شده
     if (presaleDetailSections[selectedType]) {
       presaleDetailSections[selectedType].classList.remove('hidden');
     }
-    
+
     // پاک کردن خطاها
     document.getElementById('presaleTypeError').classList.add('hidden');
-    
+
     // پخش صدای دینگ
     playSound('dingSound');
   }
@@ -258,35 +253,35 @@ document.addEventListener('DOMContentLoaded', function() {
   // ارسال فرم
   async function handleFormSubmit(e) {
     e.preventDefault();
-    
+
     // اعتبارسنجی فرم
     if (!validateForm()) {
       return;
     }
-    
+
     // نمایش پیام در حال ارسال با نوار پیشرفت
     showSendingOverlayWithProgress();
-    
+
     try {
       // شبیه‌سازی پیشرفت ارسال
       await simulateProgress();
-      
+
       // جمع‌آوری اطلاعات فرم
       const formData = collectFormData();
-      
+
       // ارسال ایمیل با EmailJS
       await sendEmail(formData);
-      
+
       // نمایش پیام موفقیت
       hideOverlay('sendingOverlay');
       showSuccessOverlay();
-      
+
       // پخش صدای موفقیت
       playSound('successSound');
-      
+
     } catch (error) {
       console.error("Error sending email:", error);
-      
+
       // نمایش پیام خطا
       hideOverlay('sendingOverlay');
       showErrorOverlay();
@@ -297,7 +292,7 @@ document.addEventListener('DOMContentLoaded', function() {
   async function simulateProgress() {
     const progressBar = document.getElementById('sendingProgressBar');
     progressBar.style.width = '0%';
-    
+
     // شبیه‌سازی پیشرفت از 0 تا 100 درصد
     for (let i = 0; i <= 100; i += 5) {
       progressBar.style.width = i + '%';
@@ -310,7 +305,7 @@ document.addEventListener('DOMContentLoaded', function() {
   function validateForm() {
     let isValid = true;
     const errors = [];
-    
+
     // پاک کردن همه خطاها
     document.querySelectorAll('.error').forEach(el => {
       el.classList.add('hidden');
@@ -319,22 +314,22 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.error-field').forEach(el => {
       el.classList.remove('error-field');
     });
-    
+
     // مخفی کردن کادر خطاهای اعتبارسنجی
     document.getElementById('validationErrors').classList.add('hidden');
     document.getElementById('errorsList').innerHTML = '';
-    
+
     // اعتبارسنجی اطلاعات شخصی
     if (!validateField('firstName', 'نام را وارد کنید')) {
       isValid = false;
       errors.push('نام');
     }
-    
+
     if (!validateField('lastName', 'نام خانوادگی را وارد کنید')) {
       isValid = false;
       errors.push('نام خانوادگی');
     }
-    
+
     if (!validateField('phone', 'شماره تماس را وارد کنید')) {
       isValid = false;
       errors.push('شماره تماس');
@@ -342,7 +337,7 @@ document.addEventListener('DOMContentLoaded', function() {
       isValid = false;
       errors.push('شماره تماس (فرمت صحیح نیست)');
     }
-    
+
     // اعتبارسنجی نوع ملک
     const selectedType = document.querySelector('input[name="propertyType"]:checked');
     if (!selectedType) {
@@ -397,7 +392,7 @@ document.addEventListener('DOMContentLoaded', function() {
               isValid = false;
               errors.push('پیشرفت پروژه');
             }
-            
+
             // اعتبارسنجی بر اساس نوع پیش‌فروش انتخاب شده
             switch (selectedPresaleType.value) {
               case 'آپارتمان':
@@ -417,12 +412,12 @@ document.addEventListener('DOMContentLoaded', function() {
           break;
       }
     }
-    
+
     // اگر خطایی وجود داشت، آنها را نمایش بده
     if (!isValid) {
       showValidationErrors(errors);
     }
-    
+
     return isValid;
   }
 
@@ -430,28 +425,27 @@ document.addEventListener('DOMContentLoaded', function() {
   function collectPropertyTypeErrors(propertyType) {
     const errors = [];
     const requiredFields = getRequiredFieldsForPropertyType(propertyType);
-    
+
     requiredFields.forEach(field => {
       const element = document.getElementById(field);
-      if (element && element.required && element.value.trim() === '') {
-        const label = document.querySelector(`label[for="${field}"]`);
+      if (element && element.required && element.value.trim() === '') {        const label = document.querySelector(`label[for="${field}"]`);
         if (label) {
           const fieldName = label.textContent.replace('*', '').trim();
           errors.push(fieldName);
         }
       }
     });
-    
+
     // بررسی وضعیت سند
     if (!document.querySelector(`input[name="document"][id^="document-${propertyType}"]:checked`)) {
       errors.push('وضعیت سند');
     }
-    
+
     // بررسی شرایط فروش
     if (!document.querySelector(`input[name="saleConditions"][id^="saleConditions-${propertyType}"]:checked`)) {
       errors.push('شرایط فروش');
     }
-    
+
     return errors;
   }
 
@@ -459,16 +453,16 @@ document.addEventListener('DOMContentLoaded', function() {
   function showValidationErrors(errors) {
     const errorsList = document.getElementById('errorsList');
     errorsList.innerHTML = '';
-    
+
     errors.forEach(error => {
       const li = document.createElement('li');
       li.textContent = error;
       errorsList.appendChild(li);
     });
-    
+
     const validationErrorsContainer = document.getElementById('validationErrors');
     validationErrorsContainer.classList.remove('hidden');
-    
+
     // اسکرول به بالای کادر خطاها
     validationErrorsContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
@@ -477,9 +471,9 @@ document.addEventListener('DOMContentLoaded', function() {
   function validateField(fieldId, errorMessage) {
     const field = document.getElementById(fieldId);
     if (!field) return true;
-    
+
     const errorElement = document.getElementById(fieldId + 'Error');
-    
+
     if (field.required && field.value.trim() === '') {
       field.classList.add('error-field');
       if (errorElement) {
@@ -488,7 +482,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       return false;
     }
-    
+
     return true;
   }
 
@@ -497,7 +491,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const field = document.getElementById(fieldId);
     const value = field.value.trim();
     const errorElement = document.getElementById(fieldId + 'Error');
-    
+
     // بررسی فرمت شماره تلفن همراه ایران
     if (!/^09\d{9}$/.test(value)) {
       field.classList.add('error-field');
@@ -507,7 +501,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       return false;
     }
-    
+
     return true;
   }
 
@@ -515,26 +509,26 @@ document.addEventListener('DOMContentLoaded', function() {
   function validatePropertyType(propertyType) {
     let isValid = true;
     const requiredFields = getRequiredFieldsForPropertyType(propertyType);
-    
+
     // اعتبارسنجی فیلدهای الزامی
     requiredFields.forEach(field => {
       if (!validateField(field, `لطفاً این فیلد را پر کنید`)) {
         isValid = false;
       }
     });
-    
+
     // اعتبارسنجی وضعیت سند
     if (!document.querySelector(`input[name="document"][id^="document-${propertyType}"]:checked`)) {
       document.getElementById(`document-${propertyType}Error`).classList.remove('hidden');
       isValid = false;
     }
-    
+
     // اعتبارسنجی شرایط فروش
     if (!document.querySelector(`input[name="saleConditions"][id^="saleConditions-${propertyType}"]:checked`)) {
       document.getElementById(`saleConditions-${propertyType}Error`).classList.remove('hidden');
       isValid = false;
     }
-    
+
     return isValid;
   }
 
@@ -562,13 +556,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // پنهان کردن خطای یک فیلد
   function hideFieldError(fieldId) {
-    const field = document.getElementById(fieldId);
-    const errorElement = document.getElementById(fieldId + 'Error');
-    
+    const field = document.getElementById(fieldId);    const errorElement = document.getElementById(fieldId + 'Error');
+
     if (field) {
       field.classList.remove('error-field');
     }
-    
+
     if (errorElement) {
       errorElement.classList.add('hidden');
       errorElement.textContent = '';
@@ -579,13 +572,14 @@ document.addEventListener('DOMContentLoaded', function() {
   function getSelectedPropertyType() {
     const selectedType = document.querySelector('input[name="propertyType"]:checked');
     if (!selectedType) return null;
-    
+
     if (selectedType.value === 'پیش‌فروش') {
       const selectedPresaleType = document.querySelector('input[name="presaleType"]:checked');
       if (!selectedPresaleType) return null;
-      return `presale-${selectedPresaleType.value}`;
+      // اصلاح برای مطابقت با کلیدهای presaleDetailSections
+      return `presale-${selectedPresaleType.value === 'آپارتمان' ? 'apartment' : 'villa'}`;
     }
-    
+
     switch (selectedType.value) {
       case 'آپارتمان': return 'apartment';
       case 'ویلا': return 'villa';
@@ -595,6 +589,7 @@ document.addEventListener('DOMContentLoaded', function() {
       default: return null;
     }
   }
+
 
   // جمع‌آوری اطلاعات فرم
   function collectFormData() {
@@ -607,7 +602,7 @@ document.addEventListener('DOMContentLoaded', function() {
       phone: document.getElementById('phone').value.trim(),
       altPhone: document.getElementById('altPhone').value.trim() || 'وارد نشده'
     };
-    
+
     // اطلاعات اختصاصی هر نوع ملک
     switch (selectedType) {
       case 'آپارتمان':
@@ -629,7 +624,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const presaleType = document.querySelector('input[name="presaleType"]:checked').value;
         data.presaleType = presaleType;
         data.projectProgress = document.getElementById('projectProgress').value.trim();
-        
+
         if (presaleType === 'آپارتمان') {
           Object.assign(data, collectPresaleApartmentData());
         } else if (presaleType === 'ویلا') {
@@ -637,7 +632,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         break;
     }
-    
+
     return data;
   }
 
@@ -694,7 +689,7 @@ document.addEventListener('DOMContentLoaded', function() {
       landWidth: document.getElementById('landWidth').value.trim() || 'وارد نشده',
       landDepth: document.getElementById('landDepth').value.trim() || 'وارد نشده',
       alleyWidth: document.getElementById('alleyWidth').value.trim() || 'وارد نشده',
-      enclosed: getSelectedRadioValue('enclosed') || 'وارد نشده',
+      enclosed: getSelectedRadioValue('enclosed', 'enclosed-land') || 'وارد نشده', // اصلاح: اضافه کردن پیشوند آیدی
       otherDetails: document.getElementById('otherDetails-land').value.trim() || 'وارد نشده',
       document: getSelectedRadioValue('document', 'document-land'),
       pricePerMeter: document.getElementById('pricePerMeter-land').value.trim() || 'وارد نشده',
@@ -729,8 +724,8 @@ document.addEventListener('DOMContentLoaded', function() {
       buildingArea: document.getElementById('buildingArea-old').value.trim(),
       landWidth: document.getElementById('landWidth-old').value.trim() || 'وارد نشده',
       landDepth: document.getElementById('landDepth-old').value.trim() || 'وارد نشده',
-      livability: getSelectedRadioValue('livability') || 'وارد نشده',
-      utilities: getCheckedValues('utilities'),
+      livability: getSelectedRadioValue('livability', 'livability-old') || 'وارد نشده', // اصلاح: اضافه کردن پیشوند آیدی
+      utilities: getCheckedValues('utilities-old'), // اصلاح: اضافه کردن پیشوند آیدی
       amenities: document.getElementById('amenities-old').value.trim() || 'وارد نشده',
       document: getSelectedRadioValue('document', 'document-old'),
       pricePerMeter: document.getElementById('pricePerMeter-old').value.trim() || 'وارد نشده',
@@ -741,11 +736,11 @@ document.addEventListener('DOMContentLoaded', function() {
     };
   }
 
+
   // جمع‌آوری اطلاعات پیش‌فروش آپارتمان
   function collectPresaleApartmentData() {
     return {
-      landArea: document.getElementById('landArea-presale-apartment').value.trim() || 'وارد نشده',
-      unitArea: document.getElementById('unitArea-presale-apartment').value.trim(),
+      landArea: document.getElementById('landArea-presale-apartment').value.trim() || 'وارد نشده',      unitArea: document.getElementById('unitArea-presale-apartment').value.trim(),
       roomCount: document.getElementById('roomCount-presale-apartment').value.trim(),
       floorCount: document.getElementById('floorCount-presale-apartment').value.trim() || 'وارد نشده',
       floorNumber: document.getElementById('floorNumber-presale-apartment').value.trim() || 'وارد نشده',
@@ -780,58 +775,58 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // دریافت مقادیر انتخاب شده چک باکس‌ها
-  function getCheckedValues(name, idPrefix = '') {
+  function getCheckedValues(name) { // حذف پارامتر idPrefix چون در جمع‌آوری داده‌ها استفاده نشد
     const checkboxes = document.querySelectorAll(`input[name="${name}"]:checked`);
     if (checkboxes.length === 0) return 'هیچکدام';
-    
+
     return Array.from(checkboxes).map(cb => cb.value).join('، ');
   }
 
+
   // دریافت مقدار انتخاب شده رادیو باتن‌ها
-  function getSelectedRadioValue(name, idPrefix = '') {
+  function getSelectedRadioValue(name) { // حذف پارامتر idPrefix چون در جمع‌آوری داده‌ها استفاده نشد
     const radio = document.querySelector(`input[name="${name}"]:checked`);
     return radio ? radio.value : '';
   }
+
 
   // ارسال ایمیل با EmailJS
   async function sendEmail(formData) {
     // تبدیل اطلاعات به متن فارسی برای ارسال
     const messageText = formatFormDataForEmail(formData);
-    
+
     // ارسال به تلگرام با استفاده از EmailJS
     const templateParams = {
       to_name: "املاک معین",
       message: messageText,
       unique_id: uniqueId,
       subject: `ثبت ملک جدید - ${formData.firstName} ${formData.lastName}`,
-      reply_to: "no-reply@example.com"
+      reply_to: "no-reply@example.com" // یا ایمیل فرستنده اگر نیاز به پاسخ است
     };
-    
-    return emailjs.send("service_rds9l25", "template_bvx4ixe", templateParams);
+
+    //                  شناسه سرویس صحیح ---->  <---- شناسه قالب اصلاح شده بر اساس عکس
+    return emailjs.send("service_rds9l25", "template_5do0c0n", templateParams);
   }
 
   // فرمت کردن اطلاعات فرم برای ارسال ایمیل
   function formatFormDataForEmail(data) {
     let message = `کد شناسه: ${data.uniqueId}\n\n`;
-    
+
     // اطلاعات شخصی
     message += `نام: ${data.firstName}\n`;
     message += `نام خانوادگی: ${data.lastName}\n`;
     message += `شماره تماس: ${data.phone}\n`;
     message += `شماره تماس دیگر: ${data.altPhone}\n\n`;
-    
+
     // نوع ملک
-    message += `نوع ملک: ${data.propertyType}\n\n`;
-    
-    // اطلاعات اختصاصی هر نوع ملک
+    message += `نوع ملک: ${data.propertyType}\n\n`;    // اطلاعات اختصاصی هر نوع ملک
     switch (data.propertyType) {
       case 'آپارتمان':
         message += formatApartmentData(data);
         break;
       case 'ویلا':
         message += formatVillaData(data);
-        break;
-      case 'زمین':
+        break;      case 'زمین':
         message += formatLandData(data);
         break;
       case 'تجاری / مغازه':
@@ -842,8 +837,8 @@ document.addEventListener('DOMContentLoaded', function() {
         break;
       case 'پیش‌فروش':
         message += `نوع پیش‌فروش: ${data.presaleType}\n`;
-        message += `پیشرفت پروژه: ${data.projectProgress}\n\n`;
-        
+        message += `پیشرفت پروژه: ${data.projectProgress}%\n\n`; // اضافه کردن درصد
+
         if (data.presaleType === 'آپارتمان') {
           message += formatPresaleApartmentData(data);
         } else if (data.presaleType === 'ویلا') {
@@ -851,7 +846,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         break;
     }
-    
+
     return message;
   }
 
@@ -862,7 +857,7 @@ document.addEventListener('DOMContentLoaded', function() {
     message += `متراژ واحد: ${data.unitArea} متر\n`;
     message += `تعداد اتاق‌ها: ${data.roomCount}\n`;
     message += `سال ساخت: ${data.buildYear}\n\n`;
-    
+
     message += `مشخصات آشپزخانه: ${data.kitchen}\n`;
     message += `تاسیسات: ${data.facilities}\n`;
     message += `سایر تاسیسات: ${data.otherFacilities}\n`;
@@ -870,7 +865,7 @@ document.addEventListener('DOMContentLoaded', function() {
     message += `سایر امکانات: ${data.otherAmenities}\n`;
     message += `مشاعات: ${data.commonAreas}\n`;
     message += `سایر مشاعات: ${data.otherCommonAreas}\n\n`;
-    
+
     message += `سایر توضیحات: ${data.otherDetails}\n\n`;
     message += `وضعیت سند: ${data.document}\n\n`;
     message += `قیمت متری: ${data.pricePerMeter} تومان\n`;
@@ -878,7 +873,7 @@ document.addEventListener('DOMContentLoaded', function() {
     message += `شرایط فروش: ${data.saleConditions}\n`;
     message += `توضیحات شرایط فروش: ${data.saleConditionDetails}\n\n`;
     message += `آدرس: ${data.address}\n`;
-    
+
     return message;
   }
 
@@ -889,20 +884,20 @@ document.addEventListener('DOMContentLoaded', function() {
     message += `متراژ بنا: ${data.buildingArea} متر\n`;
     message += `تعداد اتاق‌ها: ${data.roomCount}\n`;
     message += `سال ساخت: ${data.buildYear}\n\n`;
-    
+
     message += `مشخصات آشپزخانه: ${data.kitchen}\n`;
     message += `تاسیسات: ${data.facilities}\n`;
     message += `سایر تاسیسات: ${data.otherFacilities}\n`;
     message += `امکانات: ${data.amenities}\n`;
     message += `سایر امکانات: ${data.otherAmenities}\n\n`;
-    
+
     message += `سایر توضیحات: ${data.otherDetails}\n\n`;
     message += `وضعیت سند: ${data.document}\n\n`;
     message += `قیمت کلی: ${data.price} تومان\n\n`;
     message += `شرایط فروش: ${data.saleConditions}\n`;
     message += `توضیحات شرایط فروش: ${data.saleConditionDetails}\n\n`;
     message += `آدرس: ${data.address}\n`;
-    
+
     return message;
   }
 
@@ -915,7 +910,7 @@ document.addEventListener('DOMContentLoaded', function() {
     message += `عمق زمین: ${data.landDepth} متر\n`;
     message += `عرض کوچه: ${data.alleyWidth} متر\n`;
     message += `محصور: ${data.enclosed}\n\n`;
-    
+
     message += `سایر توضیحات: ${data.otherDetails}\n\n`;
     message += `وضعیت سند: ${data.document}\n\n`;
     message += `قیمت متری: ${data.pricePerMeter} تومان\n`;
@@ -923,7 +918,7 @@ document.addEventListener('DOMContentLoaded', function() {
     message += `شرایط فروش: ${data.saleConditions}\n`;
     message += `توضیحات شرایط فروش: ${data.saleConditionDetails}\n\n`;
     message += `آدرس: ${data.address}\n`;
-    
+
     return message;
   }
 
@@ -934,15 +929,15 @@ document.addEventListener('DOMContentLoaded', function() {
     message += `ارتفاع مغازه: ${data.shopHeight} متر\n`;
     message += `دهنه مغازه: ${data.shopWidth} متر\n`;
     message += `توضیحات شکل مغازه: ${data.shopDetails}\n\n`;
-    
-    message += `امکانات: ${data.otherDetails}\n\n`;
+
+    message += `امکانات: ${data.otherDetails}\n\n`; // عنوان 'امکانات' شاید نیاز به بازنگری داشته باشد
     message += `وضعیت سند: ${data.document}\n\n`;
     message += `قیمت متری: ${data.pricePerMeter} تومان\n`;
     message += `قیمت کلی: ${data.totalPrice} تومان\n\n`;
     message += `شرایط فروش: ${data.saleConditions}\n`;
     message += `توضیحات شرایط فروش: ${data.saleConditionDetails}\n\n`;
     message += `آدرس: ${data.address}\n`;
-    
+
     return message;
   }
 
@@ -956,14 +951,14 @@ document.addEventListener('DOMContentLoaded', function() {
     message += `وضعیت سکونت: ${data.livability}\n`;
     message += `امتیازات: ${data.utilities}\n`;
     message += `امکانات: ${data.amenities}\n\n`;
-    
+
     message += `وضعیت سند: ${data.document}\n\n`;
     message += `قیمت متری: ${data.pricePerMeter} تومان\n`;
     message += `قیمت کلی: ${data.totalPrice} تومان\n\n`;
     message += `شرایط فروش: ${data.saleConditions}\n`;
     message += `توضیحات شرایط فروش: ${data.saleConditionDetails}\n\n`;
     message += `آدرس: ${data.address}\n`;
-    
+
     return message;
   }
 
@@ -976,18 +971,18 @@ document.addEventListener('DOMContentLoaded', function() {
     message += `تعداد طبقه: ${data.floorCount}\n`;
     message += `طبقه چندم: ${data.floorNumber}\n`;
     message += `تعداد واحد در هر طبقه: ${data.unitsPerFloor}\n\n`;
-    
+
     message += `توضیحات بیشتر: ${data.moreDetails}\n`;
     message += `مشخصات آشپزخانه: ${data.kitchen}\n`;
     message += `سایر توضیحات و امکانات: ${data.otherDetails}\n\n`;
-    
+
     message += `وضعیت سند: ${data.document}\n\n`;
     message += `قیمت متری: ${data.pricePerMeter} تومان\n`;
     message += `قیمت کلی: ${data.totalPrice} تومان\n\n`;
     message += `شرایط فروش: ${data.saleConditions}\n`;
     message += `توضیحات شرایط فروش: ${data.saleConditionDetails}\n\n`;
     message += `آدرس: ${data.address}\n`;
-    
+
     return message;
   }
 
@@ -998,18 +993,19 @@ document.addEventListener('DOMContentLoaded', function() {
     message += `متراژ بنا: ${data.buildingArea} متر\n`;
     message += `تعداد اتاق‌ها: ${data.roomCount}\n`;
     message += `تعداد طبقات: ${data.floorCount}\n\n`;
-    
+
     message += `مشخصات آشپزخانه: ${data.kitchen}\n`;
     message += `سایر توضیحات و امکانات: ${data.otherDetails}\n\n`;
-    
+
     message += `وضعیت سند: ${data.document}\n\n`;
     message += `قیمت کلی: ${data.price} تومان\n\n`;
     message += `شرایط فروش: ${data.saleConditions}\n`;
     message += `توضیحات شرایط فروش: ${data.saleConditionDetails}\n\n`;
     message += `آدرس: ${data.address}\n`;
-    
+
     return message;
   }
+
 
   // تولید شناسه یکتا
   function generateUniqueId() {
@@ -1030,16 +1026,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // اضافه کردن نوار پیشرفت به پیام در حال ارسال
     const sendingOverlay = document.getElementById('sendingOverlay');
     const overlayContent = sendingOverlay.querySelector('.overlay-content');
-    
+
     // اگر نوار پیشرفت قبلاً اضافه نشده است
-    if (!document.getElementById('sendingProgressContainer')) {
+    let progressBar = document.getElementById('sendingProgressBar');
+    if (!progressBar) {
       const progressContainer = document.createElement('div');
       progressContainer.id = 'sendingProgressContainer';
       progressContainer.className = 'progress mt-3';
       progressContainer.style.height = '20px';
       progressContainer.style.width = '100%';
-      
-      const progressBar = document.createElement('div');
+
+      progressBar = document.createElement('div');
       progressBar.id = 'sendingProgressBar';
       progressBar.className = 'progress-bar bg-success';
       progressBar.style.width = '0%';
@@ -1047,11 +1044,16 @@ document.addEventListener('DOMContentLoaded', function() {
       progressBar.setAttribute('aria-valuenow', '0');
       progressBar.setAttribute('aria-valuemin', '0');
       progressBar.setAttribute('aria-valuemax', '100');
-      
+
       progressContainer.appendChild(progressBar);
       overlayContent.appendChild(progressContainer);
+    } else {
+       // ریست کردن نوار پیشرفت اگر قبلا وجود داشته
+       progressBar.style.width = '0%';
+       progressBar.setAttribute('aria-valuenow', '0');
     }
-    
+
+
     // نمایش پیام در حال ارسال
     showOverlay('sendingOverlay');
   }
@@ -1080,7 +1082,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // مخفی کردن پیام موفقیت
   function hideSuccessOverlay() {
     hideOverlay('successOverlay');
-    resetForm();
+    resetForm(); // فرم پس از بستن پیام موفقیت ریست شود
   }
 
   // مخفی کردن پیام خطا
@@ -1111,15 +1113,15 @@ document.addEventListener('DOMContentLoaded', function() {
   // پاک کردن فرم
   function resetForm() {
     document.getElementById('propertyForm').reset();
-    
+
     // مخفی کردن همه بخش‌های جزئیات
     Object.values(detailSections).forEach(section => {
-      section.classList.add('hidden');
+      if (section) section.classList.add('hidden');
     });
     Object.values(presaleDetailSections).forEach(section => {
-      section.classList.add('hidden');
+      if (section) section.classList.add('hidden');
     });
-    
+
     // پاک کردن همه خطاها
     document.querySelectorAll('.error').forEach(el => {
       el.classList.add('hidden');
@@ -1128,15 +1130,21 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.error-field').forEach(el => {
       el.classList.remove('error-field');
     });
-    
+
     // مخفی کردن کادر خطاهای اعتبارسنجی
-    document.getElementById('validationErrors').classList.add('hidden');
-    document.getElementById('errorsList').innerHTML = '';
-    
+    const validationErrors = document.getElementById('validationErrors');
+    if (validationErrors) validationErrors.classList.add('hidden');
+    const errorsList = document.getElementById('errorsList');
+    if (errorsList) errorsList.innerHTML = '';
+
+
     // تولید شناسه یکتای جدید
     uniqueId = generateUniqueId();
-    
-    // مخفی کردن پیام تأیید
+
+    // مخفی کردن پیام تأیید (اگر باز بود)
     hideConfirmOverlay();
+
+    // اسکرول به بالای صفحه
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 });
